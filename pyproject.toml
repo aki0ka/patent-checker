@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "patent-checker"
+version = "0.1.0"
+description = "特許明細書の自動方式チェックツール"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "aki0ka" }]
+requires-python = ">=3.10"
+keywords = ["patent", "特許", "明細書", "方式審査"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Legal Industry",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "fugashi>=1.3",
+    "unidic-lite>=1.0.8",
+    "pyperclip>=1.9",
+]
+
+[project.optional-dependencies]
+gui = ["pywebview>=5.0"]
+mcp = ["fastmcp>=0.4"]
+all = ["pywebview>=5.0", "fastmcp>=0.4"]
+
+[project.scripts]
+patent-checker = "patent_checker.cli:main"
+
+[project.urls]
+Repository = "https://github.com/aki0ka/patent-checker"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["patent_checker*"]
+
+[tool.setuptools.package-data]
+patent_checker = ["html_template.html"]

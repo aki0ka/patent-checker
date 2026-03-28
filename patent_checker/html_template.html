@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>特許明細書チェッカー</title>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDPMincho:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f4f6;--surface:#ffffff;--surface2:#ececf2;--surface3:#dcdce8;
+  --border:#c8c8d8;--border2:#aaaacc;
+  --ink:#1a1a2e;--ink2:#4a4a6a;--ink3:#8888aa;
+  --red:#c0392b;--redbg:#fdecea;
+  --blue:#2563eb;--bluebg:#eff6ff;
+  --gold:#b45309;--goldbg:#fffbeb;
+  --green:#16a34a;--greenbg:#f0fdf4;
+  --cyan:#0891b2;
+  --yellow:#ca8a04;
+  --style:#7c3aed;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'BIZ UDPMincho','Hiragino Mincho ProN','Yu Mincho',serif;
+  --sans:'BIZ UDPGothic','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  --viewer-fs:14px;
+  --hdr:48px;
+}
+/* ダークモード */
+html[data-theme="dark"]{
+  --bg:#16161a;--surface:#1f1f27;--surface2:#28282f;--surface3:#323240;
+  --border:#3a3a50;--border2:#4a4a60;
+  --ink:#e8e6f0;--ink2:#a8a6c0;--ink3:#6a6888;
+  --red:#e05555;--redbg:#2a1a1a;
+  --blue:#5b9cf6;--bluebg:#1a2240;
+  --gold:#e6b84a;--goldbg:#261f0a;
+  --green:#4ade80;--greenbg:#0a2018;
+  --cyan:#38d9f5;
+  --yellow:#facc15;
+  --style:#b06af5;
+}
+.support-hl{background:rgba(250,204,21,.5);border-radius:2px;padding:0 1px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:13px;line-height:1.65}
+header{height:var(--hdr);display:flex;align-items:center;gap:14px;
+  padding:0 20px;background:var(--surface);border-bottom:1px solid var(--border);
+  position:fixed;top:0;left:0;right:0;z-index:200;}
+.logo{font-family:var(--serif);font-size:10px;line-height:1.4;
+  border:1.5px solid var(--red);color:var(--red);padding:3px 7px;border-radius:2px;flex-shrink:0;}
+.hbadges{margin-left:auto;display:flex;gap:8px;align-items:center}
+.hb{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px;
+  letter-spacing:.06em;border:1px solid transparent;}
+.theme-btns{display:flex;gap:2px;background:var(--surface2);border-radius:4px;padding:2px;border:1px solid var(--border)}
+.theme-btn{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:3px;transition:all .15s}
+.theme-btn:hover{background:var(--surface3);color:var(--ink)}
+.theme-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.hb-on{background:rgba(74,222,128,.15);color:var(--green);border-color:rgba(74,222,128,.3)}
+.hb-off{background:var(--surface2);color:var(--ink3);border-color:var(--border)}
+.clip-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
+  padding:4px 10px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);}
+.clip-dot{width:7px;height:7px;border-radius:50%;background:var(--ink3);transition:background .3s,box-shadow .3s;}
+.clip-dot.active{background:var(--green);box-shadow:0 0 6px var(--green)}
+.clip-dot.busy{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.main{position:fixed;top:var(--hdr);left:0;right:0;bottom:0;
+  display:grid;grid-template-columns:1fr 380px;background:var(--bg);}
+.viewer{overflow-y:auto;border-right:1px solid var(--border);scroll-behavior:smooth;}
+.viewer-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:var(--ink3);gap:12px;}
+.viewer-empty .big{font-size:40px}
+.viewer-empty p{font-size:12px;text-align:center;line-height:2;max-width:280px}
+.viewer-empty kbd{font-family:var(--mono);font-size:10px;background:var(--surface2);
+  border:1px solid var(--border2);padding:2px 7px;border-radius:3px;color:var(--ink2)}
+.block-wrap{padding:20px 24px}
+.block-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px;
+  font-size:11px;color:var(--ink3);}
+.block-nav button{background:var(--surface2);border:1px solid var(--border);color:var(--ink2);
+  padding:3px 10px;border-radius:2px;cursor:pointer;font-size:11px;transition:all .15s;}
+.block-nav button:hover{background:var(--surface3);color:var(--ink)}
+.block-sep{text-align:center;font-size:10px;color:var(--ink3);padding:4px 0 2px;
+  letter-spacing:.1em;font-family:var(--mono);border-top:1px solid var(--border);margin-bottom:4px;}
+.block{background:var(--surface);border:1px solid var(--border);
+  border-radius:3px;margin-bottom:10px;overflow:hidden;transition:border-color .2s;}
+.block.focused{border-color:var(--blue)}
+.block.focused-orig{border-color:var(--yellow)}
+.block.has-error{border-color:rgba(224,85,85,.5)}
+.block-header{padding:8px 14px;background:var(--surface2);
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.block-label{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:500;}
+.block-role{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:2px;}
+.role-ref{background:rgba(56,217,245,.15);color:var(--cyan);}
+.role-orig{background:rgba(250,204,21,.15);color:var(--yellow);}
+.block-err-badge{font-family:var(--mono);font-size:9px;background:var(--red);color:#fff;
+  padding:1px 6px;border-radius:2px;margin-left:auto;}
+.block-body{padding:14px 16px;font-size:var(--viewer-fs);line-height:1.95;
+  font-family:var(--sans);color:var(--ink);word-break:break-all;letter-spacing:.02em;}
+.block.neighbor .block-body{color:var(--ink2)}
+.block.neighbor .block-header{opacity:.7}
+/* ハイライト */
+.hl-zenshou{background:transparent;color:inherit;
+  border-bottom:1.5px solid rgba(56,217,245,.5);
+  border-radius:2px 2px 0 0;padding:0 1px;cursor:pointer;transition:background .15s;}
+.hl-zenshou:hover{background:rgba(56,217,245,.15)}
+.hl-zenshou-err{background:rgba(224,85,85,.2);color:var(--red);
+  border-bottom:1.5px solid rgba(224,85,85,.6);
+  border-radius:2px 2px 0 0;padding:0 1px;cursor:pointer;}
+.hl-noun{background:transparent;color:inherit;
+  border:1px solid rgba(250,204,21,.4);border-radius:2px;padding:0 1px;}
+.hl-noun-err{background:rgba(224,85,85,.15);color:var(--red);border-radius:2px;padding:0 1px;}
+.hl-first-noun{background:transparent;color:inherit;
+  border:1px solid rgba(250,204,21,.4);border-radius:2px;padding:0 2px;cursor:default;}
+.hl-noun.ref-active,.hl-first-noun.ref-active{
+  background:rgba(250,204,21,.55)!important;outline:1.5px solid var(--yellow);outline-offset:1px;}
+/* 照応詞クリック時: 正常=水色, エラー=赤 */
+.hl-zenshou.noun-active,.hl-zenshou-err.noun-active{
+  background:rgba(56,217,245,.4)!important;
+  outline:1.5px solid rgba(56,217,245,.9);outline-offset:1px;
+  color:var(--ink)!important;
+}
+.hl-zenshou.noun-active-err,.hl-zenshou-err.noun-active-err{
+  background:rgba(220,60,60,.4)!important;
+  outline:1.5px solid var(--red);outline-offset:1px;
+  color:var(--red)!important;
+}
+.hl-fugo{background:rgba(74,222,128,.1);border-radius:2px;padding:0 1px;
+  border-bottom:1px dashed rgba(74,222,128,.4);}
+.hl-fugo-err{background:rgba(224,85,85,.15);border-radius:2px;padding:0 1px;
+  border-bottom:1px solid rgba(224,85,85,.6);}
+.fugo-num{font-family:var(--mono);font-size:.9em;color:var(--green);margin-left:1px;}
+.hl-fugo-err .fugo-num{color:var(--red)}
+.hl-fugo.hl-active,.hl-fugo-err.hl-active{outline:2px solid var(--green);outline-offset:1px;}
+/* 右パネル */
+.panel{display:flex;flex-direction:column;overflow:hidden}
+.panel-top{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+
+.m3-detail-row{padding:5px 12px;border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;gap:8px;align-items:baseline;font-size:11px;transition:background .1s}
+.m3-detail-row:hover{background:var(--surface2)}
+.m3-detail-row.active{background:var(--bluebg)}
+.m3-detail-claim{font-family:var(--mono);font-size:10px;color:var(--blue);flex-shrink:0;width:24px}
+.m3-detail-word{font-family:var(--mono);font-size:10px;color:var(--cyan);flex-shrink:0;width:28px}
+.m3-detail-noun{color:var(--ink2);flex:1}
+.m3-detail-fc{font-family:var(--mono);font-size:10px;color:var(--green);flex-shrink:0}
+.m3-detail-err{color:var(--red)}
+.tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.tabs::-webkit-scrollbar{height:2px}
+.tab{padding:9px 14px;font-size:11px;font-family:var(--mono);letter-spacing:.04em;cursor:pointer;
+  color:var(--ink3);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.tab:hover{color:var(--ink);background:var(--surface2)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--surface)}
+.tab .cnt{display:inline-block;margin-left:5px;padding:0 4px;border-radius:2px;
+  font-size:9px;background:var(--surface3);color:var(--ink2);}
+.tab .cnt.err{background:rgba(224,85,85,.3);color:var(--red)}
+.tab .cnt.warn{background:rgba(230,184,74,.3);color:var(--gold)}
+.tab-content{display:none;overflow-y:auto;flex:1;min-height:0}
+.tab-content.active{display:flex;flex-direction:column;flex:1;min-height:0}
+@keyframes fugo-flash-anim{0%{background:rgba(100,200,255,.5)}100%{background:transparent}}
+.fugo-flash{animation:fugo-flash-anim 1.2s ease-out}
+.issue-row{padding:11px 14px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .12s;display:flex;flex-direction:column;gap:3px;}
+.issue-row:hover{background:var(--surface2)}
+.issue-row.active{background:var(--surface2)}
+.issue-row[data-level="error"]{border-left-color:var(--red)}
+.issue-row[data-level="warning"]{border-left-color:var(--gold)}
+.issue-row[data-level="style"]{border-left-color:var(--style)}
+.issue-row.active{background:var(--bluebg);border-left:3px solid var(--blue)}
+.issue-row.lv-error:not(.active){border-left:3px solid rgba(224,85,85,.4)}
+.issue-row.lv-warning:not(.active){border-left:3px solid rgba(230,184,74,.3)}
+.issue-row.lv-style:not(.active){border-left:3px solid rgba(176,106,245,.3)}
+.iss-head{display:flex;align-items:center;gap:7px}
+.iss-lv{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:2px;flex-shrink:0;}
+.lv-error .iss-lv{background:var(--redbg);color:var(--red);border:1px solid rgba(224,85,85,.3)}
+.lv-warning .iss-lv{background:var(--goldbg);color:var(--gold);border:1px solid rgba(230,184,74,.3)}
+.lv-style .iss-lv{background:#1e1030;color:var(--style);border:1px solid rgba(176,106,245,.3)}
+.issue-row[data-level="info"]{border-left-color:var(--cyan)}
+.issue-row.lv-info:not(.active){border-left:3px solid rgba(56,217,245,.3)}
+.lv-info .iss-lv{background:rgba(56,217,245,.12);color:var(--cyan);border:1px solid rgba(56,217,245,.3)}
+.iss-claim{font-family:var(--mono);font-size:10px;color:var(--blue);flex-shrink:0}
+.iss-msg{font-size:11px;color:var(--ink2);line-height:1.5}
+.iss-detail{font-family:var(--mono);font-size:10px;color:var(--ink3);padding-top:2px}
+/* M3 前記テーブル */
+.m2-claim-row{cursor:pointer;transition:background .1s}
+.m2-claim-row:hover{background:var(--surface2)}
+.m2-claim-row.selected{background:var(--bluebg);outline:1px solid var(--blue) inset}
+.m23-badge{font-family:var(--mono);font-size:9px;padding:1px 4px;border-radius:2px;
+  background:rgba(56,217,245,.15);color:var(--cyan);border:1px solid rgba(56,217,245,.3);margin-left:4px}
+.m23-badge.err{background:rgba(224,85,85,.15);color:var(--red);border-color:rgba(224,85,85,.3)}
+#m23-top{overflow-y:auto;border-bottom:2px solid var(--border)}
+#m23-bot{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+#m23-bot-title{padding:5px 10px;font-size:10px;font-family:var(--mono);color:var(--ink3);
+  border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface)}
+#m23-bot-body{flex:1;overflow-y:auto}
+.m3-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.m3-table th{background:var(--surface2);color:var(--ink3);padding:6px 10px;
+  text-align:left;font-size:10px;border-bottom:1px solid var(--border);font-weight:400;position:sticky;top:0;z-index:1;}
+.m3-table th:nth-child(1){width:34%}
+.m3-table th:nth-child(2){width:20%}
+.m3-table th:nth-child(3){width:46%}
+.m2-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.m2-table th{background:var(--surface2);color:var(--ink3);padding:6px 10px;
+  text-align:left;font-size:10px;font-weight:600;letter-spacing:.05em;border-bottom:1.5px solid var(--border);}
+.m2-table th:nth-child(1){width:8%}
+.m2-table th:nth-child(2){width:34%}
+.m2-table th:nth-child(3){width:22%}
+.m2-table th:nth-child(4){width:36%}
+.m2-table td{padding:5px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.m2-table tr.mm-warn{background:rgba(250,204,21,.10);}
+.m2-table tr.mm-warn td{color:var(--yellow);}
+.m2-num{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--blue);}
+.m2-kind{font-family:var(--mono);font-size:10px;}
+.m2-kind.ind{color:var(--green);}
+.m2-kind.single{color:var(--ink2);}
+.m2-kind.multi{color:var(--cyan);}
+.m2-kind.mm{color:var(--yellow);font-weight:700;}
+.m2-deps{font-family:var(--mono);font-size:10px;color:var(--ink3);}
+.m3-table td{padding:6px 10px;border-bottom:1px solid var(--border);
+  vertical-align:middle;word-break:break-all;}
+.m3-table tr.m3-row{cursor:pointer;transition:background .12s;}
+.m3-table tr.m3-row:hover{background:var(--surface2)}
+.m3-table tr.m3-row.active{background:var(--bluebg)}
+/* 要素名セル */
+.m3-zenshou{font-family:var(--serif);font-size:12px;color:var(--cyan);}
+.m3-zenshou.err{color:var(--red)}
+/* 請求項セル */
+.m3-claim{font-family:var(--mono);font-size:10px;color:var(--blue);}
+/* ステータスセル */
+.m3-status{font-family:var(--mono);font-size:10px;}
+.m3-ok{color:var(--green)}
+.m3-err-missing{color:var(--red)}      /* 先行詞なし */
+.m3-err-ambig{color:var(--gold)}       /* 先行詞が複数・特定不能 */
+.m3-word{font-size:10px;color:var(--ink3);font-family:var(--mono);}
+/* 統計 */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
+  padding:12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.stat{background:var(--surface2);border:1px solid var(--border);
+  border-radius:3px;padding:8px;text-align:center;}
+.stat.err{border-color:rgba(224,85,85,.4);background:var(--redbg)}
+.stat-v{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--blue);line-height:1}
+.stat.err .stat-v{color:var(--red)}
+.stat-l{font-size:9px;color:var(--ink3);margin-top:2px;letter-spacing:.04em}
+/* 要素テーブル */
+.el-table{width:100%;border-collapse:collapse;font-size:11px}
+.el-table th{background:var(--surface2);color:var(--ink3);padding:6px 10px;
+  text-align:left;font-size:10px;border-bottom:1px solid var(--border);font-weight:400;}
+.el-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--ink2)}
+.el-table tr:hover td{background:var(--surface2)}
+.el-table td:first-child{font-family:var(--mono);color:var(--ink)}
+.fugo-chip{display:inline-block;padding:1px 6px;margin:1px;
+  background:var(--surface3);border-radius:2px;font-family:var(--mono);font-size:10px;color:var(--green);}
+.fugo-chip.err{color:var(--red);background:var(--redbg)}
+.empty{color:var(--ink3);padding:28px;text-align:center;font-size:12px;line-height:2}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.loading-overlay{position:fixed;inset:0;background:rgba(22,22,26,.85);
+  display:none;align-items:center;justify-content:center;z-index:500;}
+.loading-box{background:var(--surface);border:1px solid var(--border2);
+  border-radius:4px;padding:28px 40px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:14px;}
+.spinner{width:32px;height:32px;border:2px solid var(--border2);
+  border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-family:var(--mono);font-size:12px;color:var(--ink2);letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loading">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-msg" id="loading-msg">解析中…</div>
+  </div>
+</div>
+<header>
+  <div class="logo">特許<br>検査</div>
+  <div>
+    <div style="font-family:var(--serif);font-size:15px;letter-spacing:.12em">特許明細書チェッカー</div>
+    <div style="font-size:10px;color:var(--ink3)">Patent Specification Checker — M1〜M6</div>
+  </div>
+  <div class="hbadges">
+    <div class="theme-btns">
+      <button class="theme-btn" data-theme="light" title="ライト" onclick="applyTheme('light')">☀</button>
+      <button class="theme-btn" data-theme="dark" title="ダーク" onclick="applyTheme('dark')">🌙</button>
+    </div>
+    <button id="br-btn" onclick="toggleLineBreak()" title="元の改行を表示/非表示" style="background:var(--surface2);border:1px solid var(--cyan);color:var(--cyan);cursor:pointer;font-size:11px;padding:2px 8px;border-radius:4px;transition:all .15s">改行</button>
+    <div class="hb hb-off" id="zoom-indicator" style="cursor:default;user-select:none" title="Ctrl+スクロールでフォントサイズ変更">🔍 <span id="zoom-pct">100%</span></div>
+    <div class="clip-indicator">
+      <div class="clip-dot" id="clip-dot"></div>
+      <span id="clip-label">クリップボード監視中</span>
+    </div>
+    <button class="hb hb-off" id="debug-btn" title="デバッグログ" onclick="toggleDebugPanel()" style="font-size:10px;padding:2px 6px;cursor:pointer">🐛</button>
+  </div>
+</header>
+<div id="debug-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--surface);border-top:2px solid var(--border);z-index:300;display:none;flex-direction:column;">
+  <div style="display:flex;align-items:center;padding:4px 10px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface2)">
+    <span style="font-size:11px;font-family:var(--mono);color:var(--ink3);flex:1">デバッグログ</span>
+    <button onclick="document.getElementById('debug-log').textContent=''" style="font-size:10px;padding:1px 6px;margin-right:6px">クリア</button>
+    <button onclick="toggleDebugPanel()" style="font-size:10px;padding:1px 6px">✕ 閉じる</button>
+  </div>
+  <div id="debug-log" style="flex:1;overflow-y:auto;padding:6px 10px;font-size:11px;font-family:var(--mono);white-space:pre-wrap;color:var(--ink)"></div>
+</div>
+<div class="main">
+  <div class="viewer" id="viewer">
+    <div class="viewer-empty" id="viewer-empty">
+      <div class="big">📋</div>
+      <p>
+        特許出願書類を <kbd>Ctrl+C</kbd> / <kbd>Ctrl+X</kbd> でコピーすると<br>
+        バックグラウンドから自動検出・解析します<br><br>
+        <span style="color:var(--ink3);font-size:11px">
+          右リストの項目をクリックすると<br>該当ブロックがここに表示されます
+        </span>
+      </p>
+    </div>
+    <div id="block-area" style="display:none">
+      <div class="block-wrap" id="block-wrap"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="stats-row" id="stats-row" style="display:none"></div>
+    <div class="panel-top">
+      <div class="tabs" id="tabs"></div>
+      <div id="tab-contents" style="overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0"></div>
+    </div>
+
+  </div>
+</div>
+<script>
+var G = { data: null, blockMap: {}, activeNounGi: -1, lineBreak: true };
+
+// ── デバッグパネル ──
+var _debugOpen = false;
+function toggleDebugPanel() {
+  _debugOpen = !_debugOpen;
+  var panel = document.getElementById('debug-panel');
+  var btn   = document.getElementById('debug-btn');
+  if (panel) panel.style.display = _debugOpen ? 'flex' : 'none';
+  if (btn)   btn.className = 'hb ' + (_debugOpen ? 'hb-on' : 'hb-off');
+}
+function dbg() {
+  var msg = Array.prototype.slice.call(arguments).map(function(a){
+    return (typeof a === 'object') ? JSON.stringify(a) : String(a);
+  }).join(' ');
+  var log = document.getElementById('debug-log');
+  if (log) {
+    var ts = new Date().toLocaleTimeString('ja-JP');
+    log.textContent += '[' + ts + '] ' + msg + '\\n';
+    log.scrollTop = log.scrollHeight;
+  }
+  console.log(msg);
+}
+
+// ── テーマ切り替え ──
+function applyTheme(theme) {
+  G.theme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-theme') === theme);
+  });
+}
+applyTheme('light');
+
+// ── Ctrl+スクロール：左ビューアのフォントサイズ拡大縮小 ──
+(function() {
+  var root = document.documentElement;
+  var sizes = [10,11,12,13,14,15,16,17,18,20,22,24];
+  var curIdx = sizes.indexOf(14);
+  function applySize(idx) {
+    curIdx = Math.max(0, Math.min(sizes.length-1, idx));
+    root.style.setProperty('--viewer-fs', sizes[curIdx]+'px');
+    var pct = Math.round(sizes[curIdx] / 14 * 100);
+    var el = document.getElementById('zoom-pct');
+    if (el) el.textContent = pct + '%';
+  }
+  function initWheel() {
+    var viewer = document.getElementById('viewer');
+    if (viewer) {
+      viewer.addEventListener('wheel', function(e) {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        applySize(curIdx + (e.deltaY < 0 ? 1 : -1));
+      }, {passive: false});
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWheel);
+  } else {
+    initWheel();
+  }
+})();
+
+
+
+// ── PyWebviewからのクリップボード通知(Pythonスレッドが呼ぶ) ──
+// クリップボード通知 - Python側のevaluate_jsから呼ばれる
+window.onClipboardUpdate = function(text) {
+  if (!text || !text.trim()) return;
+  // pywebview APIがまだ準備できていない場合は少し待ってリトライ
+  if (!window.pywebview || !window.pywebview.api) {
+    setTimeout(function() { window.onClipboardUpdate(text); }, 300);
+    return;
+  }
+  setClipState('busy', '解析中…');
+  showLoading('解析中…');
+  window.pywebview.api.run_analyze(text).then(function(d) {
+    hideLoading();
+    if (!d || d.error) {
+      setClipState('off', 'エラー: ' + ((d && d.error) || '').slice(0,40));
+      return;
+    }
+    G.data = d;
+    G.blockMap = {};
+    (d.blocks || []).forEach(function(b) { G.blockMap[b.id] = b; });
+    renderAll(d);
+    setClipState('on', '解析完了 — ' + new Date().toLocaleTimeString('ja-JP'));
+  }).catch(function(e) {
+    hideLoading();
+    setClipState('off', 'APIエラー');
+    console.error(e);
+  });
+}
+
+function setClipState(state, label) {
+  document.getElementById('clip-dot').className =
+    'clip-dot' + (state==='on'?' active':state==='busy'?' busy':'');
+  document.getElementById('clip-label').textContent = label;
+}
+function showLoading(msg) {
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('loading-msg').textContent = msg||'解析中…';
+}
+function hideLoading() { document.getElementById('loading').style.display = 'none'; }
+
+// ── 描画 ──
+function renderAll(d) {
+  renderStats(d.stats);
+  renderTabs(d);
+  document.getElementById('viewer-empty').style.display = 'none';
+  document.getElementById('block-area').style.display = 'block';
+  // 左ウィンドウを全件表示でリフレッシュ
+  showAllBlocks(d);
+  // M3タブを初期表示
+  activateTab('m23');
+}
+
+// 全ブロック表示（新規データ時・「全件表示」ボタン）
+function showAllBlocks(data) {
+  var d = data || G.data;
+  if (!d) return;
+  var wrap = document.getElementById('block-wrap');
+  var html = '<div class="block-nav"><span style="color:var(--ink3)">本文全体</span></div>';
+  (d.blocks || []).forEach(function(b) {
+    var hasErr = b.issues && b.issues.some(function(i){return i.level==='error';});
+    html += '<div class="block'+(hasErr?' has-error':'')+'" id="view-'+b.id+'">' +
+      '<div class="block-header"><span class="block-label">'+esc(b.label)+'</span>' +
+      (hasErr?'<span class="block-err-badge">ERR</span>':'')+' </div>' +
+      '<div class="block-body" data-raw-html="'+b.html.replace(/"/g,'&quot;')+'">'+b.html+'</div></div>';
+  });
+  wrap.innerHTML = html;
+  applyLineBreakToWrap(wrap);
+  // ビューアをトップに戻す
+  var viewer = document.getElementById('viewer');
+  if (viewer) viewer.scrollTop = 0;
+}
+function setBadge(id, label, on) {
+  var el = document.getElementById(id);
+  el.textContent = label + ': ' + (on?'ON':'OFF');
+  el.className = 'hb ' + (on?'hb-on':'hb-off');
+}
+function renderStats(s) {
+  var row = document.getElementById('stats-row');
+  row.style.display = 'grid';
+  row.style.gridTemplateColumns = 'repeat(6,1fr)';
+  var cards = [
+    {v:s.total_claims,    l:'請求項数'},
+    {v:s['独立'],          l:'独立'},
+    {v:s['マルチクレーム'],l:'マルチ'},
+    {v:s['マルチマルチ'],  l:'MM❌', err:s['マルチマルチ']>0},
+    {v:s.page_lines,      l:'配置行数'},
+    {v:s.total_pages,     l:'推定ページ'},
+  ];
+  row.innerHTML = cards.map(function(c) {
+    return '<div class="stat'+(c.err?' err':'')+'"><div class="stat-v">'+c.v+'</div><div class="stat-l">'+c.l+'</div></div>';
+  }).join('');
+}
+var TAB_DEFS = [
+  {id:'m23', label:'クレーム'},
+  {id:'fugo', label:'符号表'},
+  {id:'m6',  label:'サポート'},
+  {id:'m5',  label:'誤記'},
+];
+function renderTabs(d) {
+  var tabBar = document.getElementById('tabs');
+  var tabCon = document.getElementById('tab-contents');
+  tabBar.innerHTML = ''; tabCon.innerHTML = '';
+  TAB_DEFS.forEach(function(def, idx) {
+    var issues = d.issues[def.id] || [];
+    var errs, warns;
+    if (def.id === 'm23') {
+      var m2e = (d.issues.m2||[]).filter(function(i){return i.level==='error';}).length;
+      var m3e = (d.noun_groups||[]).filter(function(g){return g.error;}).length;
+      errs  = m2e + m3e;
+      warns = (d.issues.m2||[]).filter(function(i){return i.level==='warning';}).length;
+    } else if (def.id === 'fugo') {
+      errs  = (d.issues.m4||[]).filter(function(i){return i.level==='error';}).length;
+      warns = (d.issues.m4||[]).filter(function(i){return i.level==='warning'||i.level==='style';}).length;
+    } else {
+      errs  = issues.filter(function(i){return i.level==='error';}).length;
+      warns = issues.filter(function(i){return i.level==='warning'||i.level==='style';}).length;
+    }
+    var cntCls = errs>0?'cnt err':warns>0?'cnt warn':'cnt';
+    var cntTxt = errs>0?errs+'E':warns>0?warns+'W':'';
+    var tab = document.createElement('div');
+    tab.className = 'tab' + (idx===0?' active':'');
+    tab.id = 'tab-'+def.id;
+    tab.innerHTML = def.label + (cntTxt?'<span class="'+cntCls+'">'+cntTxt+'</span>':'');
+    tab.onclick = (function(tid){return function(){activateTab(tid);};})(def.id);
+    tabBar.appendChild(tab);
+    var con = document.createElement('div');
+    con.className = 'tab-content' + (idx===0?' active':'');
+    con.id = 'tc-'+def.id;
+    if      (def.id === 'm23')  { buildM23Tab(con, d); }
+    else if (def.id === 'fugo') { buildFugoTab(con, d); }
+    else if (def.id === 'm6')   { buildSupportTab(con, d); }
+    else if (def.id === 'm5')   { buildM5Tab(con, d); }
+    else                        { con.innerHTML = buildIssueList(issues, def.id); attachIssueEvents(con, d, def.id); }
+    tabCon.appendChild(con);
+  });
+}
+function activateTab(tid) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  var tab=document.getElementById('tab-'+tid), con=document.getElementById('tc-'+tid);
+  if(tab) tab.classList.add('active');
+  if(con) con.classList.add('active');
+}
+function attachIssueEvents(con, d, mid) {
+  con.querySelectorAll('.issue-row[data-idx]').forEach(function(row) {
+    row.addEventListener('click', function() {
+      var iss = (d.issues[mid]||[])[parseInt(row.dataset.idx)];
+      if(iss) selectIssue(iss, parseInt(row.dataset.idx), mid);
+    });
+  });
+}
+function attachM4Events(con, d) {
+  con.querySelectorAll('.issue-row[data-idx]').forEach(function(row) {
+    row.addEventListener('click', function() {
+      var iss = (d.issues.m4||[])[parseInt(row.dataset.idx)];
+      if (!iss) return;
+      // 行のアクティブ化
+      con.querySelectorAll('.issue-row').forEach(function(r){r.classList.remove('active');});
+      row.classList.add('active');
+      // 段落ハイライト
+      if (iss.para_ids && iss.para_ids.length) {
+        showM4Para(iss, d);
+      } else {
+        selectIssue(iss, parseInt(row.dataset.idx), 'm4');
+      }
+    });
+  });
+}
+
+// ── M3タブ：名詞句グループ ──
+// ── M3タブ：請求項×要素名 表形式 ──
+// ── M23タブ：M2テーブル(上)＋選択請求項の照応詞リスト(下) ──
+// ドラッグリサイザー: tab内の上部div(topDiv)と下部div(botDiv)の間に挿入
+function insertResizer(con, topDiv) {
+  var rz = document.createElement('div');
+  rz.style.cssText = 'flex:0 0 5px;background:var(--border);cursor:row-resize;' +
+    'transition:background .15s;z-index:10;min-height:5px;flex-shrink:0';
+  rz.addEventListener('mouseenter', function(){ rz.style.background='var(--cyan)'; });
+  rz.addEventListener('mouseleave', function(){ if(!rz._drag) rz.style.background='var(--border)'; });
+  rz.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    rz._drag = true;
+    var startY = e.clientY;
+    var startH = topDiv.getBoundingClientRect().height;
+    var conH = con.getBoundingClientRect().height;
+    function onMove(e2) {
+      var dy = e2.clientY - startY;
+      var newH = Math.max(60, Math.min(conH - 80, startH + dy));
+      topDiv.style.maxHeight = newH + 'px';
+      topDiv.style.flex = '0 0 ' + newH + 'px';
+    }
+    function onUp() {
+      rz._drag = false;
+      rz.style.background = 'var(--border)';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+  if (topDiv.nextSibling) {
+    con.insertBefore(rz, topDiv.nextSibling);
+  } else {
+    con.appendChild(rz);
+  }
+}
+
+function buildM23Tab(con, d) {
+  // 上下分割コンテナ
+
+  // ── 上部：M2テーブル ──
+  var topDiv = document.createElement('div');
+  topDiv.id = 'm23-top';
+  topDiv.style.cssText = 'flex:0 0 auto;overflow-y:auto;border-bottom:2px solid var(--border);max-height:50%';
+
+  var list  = d.claim_list || [];
+  var m2html = '<table class="m2-table"><thead><tr>' +
+    '<th>項</th><th>発明の名称</th><th>種別</th><th>従属先</th>' +
+    '</tr></thead><tbody>';
+  list.forEach(function(c) {
+    var isMM = c.kind === 'マルチマルチ';
+    var hasM3 = (d.noun_groups||[]).some(function(g){
+      return g.refs.some(function(r){ return r.claim === c.num; });
+    });
+    var hasM3err = (d.noun_groups||[]).some(function(g){
+      return g.refs.some(function(r){ return r.claim === c.num && r.error; });
+    });
+    var kindCls = 'm2-kind ' + (
+      c.kind === '独立'          ? 'ind'    :
+      c.kind === '単項従属'      ? 'single' :
+      c.kind === 'マルチクレーム' ? 'multi'  : 'mm');
+    var deps = (c.deps && c.deps.length)
+      ? c.deps.map(function(dd){return '<span class="m2-num">'+dd+'</span>';}).join(' ')
+      : '—';
+    var rowCls = (isMM ? 'mm-warn' : '') + (hasM3err ? ' m3-row-err' : hasM3 ? ' m3-row-has' : '');
+    var badge = hasM3err ? '<span class="m23-badge err">!</span>'
+              : hasM3    ? '<span class="m23-badge">照</span>' : '';
+    m2html += '<tr class="m2-claim-row'+( rowCls?' '+rowCls.trim():'')+'" data-num="'+c.num+'">' +
+      '<td><span class="m2-num">'+c.num+'</span></td>' +
+      '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0;font-size:11px;" title="'+esc(c.inv_type||'')+'">'+esc(c.inv_type||'')+'</td>' +
+      '<td><span class="'+kindCls+'">'+esc(c.kind)+(isMM?' ⚠':'')+'</span></td>' +
+      '<td class="m2-deps">'+deps+' '+badge+'</td>' +
+      '</tr>';
+  });
+  m2html += '</tbody></table>';
+  topDiv.innerHTML = m2html;
+
+  // ── 下部：照応詞リスト ──
+  var botDiv = document.createElement('div');
+  botDiv.id = 'm23-bot';
+  botDiv.style.cssText = 'flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0';
+
+  var botHead = document.createElement('div');
+  botHead.style.cssText = 'padding:5px 10px;font-size:10px;font-family:var(--mono);color:var(--ink3);border-bottom:1px solid var(--border);flex-shrink:0';
+  botHead.textContent = '照応詞一覧';
+
+  var botBody = document.createElement('div');
+  botBody.id = 'm23-bot-body';
+  botBody.style.cssText = 'flex:1;overflow-y:auto';
+
+  botDiv.appendChild(botHead);
+  botDiv.appendChild(botBody);
+
+  con.appendChild(topDiv);
+  insertResizer(con, topDiv);
+  con.appendChild(botDiv);
+
+  // 右下：全照応詞を「先行詞請求項番号-照応詞請求項番号」形式で常時表示
+  buildM23BotAll(botBody, d);
+
+  // M2行クリック → 左ビューアに請求項を表示するのみ（右下は変更しない）
+  topDiv.querySelectorAll('tr.m2-claim-row').forEach(function(tr) {
+    tr.addEventListener('click', function() {
+      topDiv.querySelectorAll('tr.m2-claim-row').forEach(function(r){r.classList.remove('selected');});
+      tr.classList.add('selected');
+      var num = parseInt(tr.getAttribute('data-num'));
+      // 左ビューア：その請求項を表示
+      var block = G.blockMap['c-'+num];
+      if (block) {
+        // 全件表示した上で対象請求項にスクロール
+        showAllBlocks();
+        setTimeout(function() {
+          var el = document.getElementById('view-' + block.id);
+          if (el) {
+            el.classList.add('focused');
+            el.scrollIntoView({behavior:'smooth', block:'center'});
+            // 照応詞ハイライトをリセット
+            el.querySelectorAll('.hl-zenshou,.hl-zenshou-err').forEach(function(e){e.classList.remove('noun-active');});
+            el.querySelectorAll('.hl-first-noun').forEach(function(e){e.classList.remove('ref-active');});
+          }
+        }, 80);
+      }
+    });
+  });
+}
+
+function buildM23BotAll(body, d) {
+  // 全照応詞を「先行詞項番-照応詞項番」形式でリストアップ
+  // 表示: 「1-2」= 請求項1で先行詞定義、請求項2で照応詞が出現
+  var groups = d.noun_groups || [];
+  if (!groups.length) {
+    body.innerHTML = '<div class="empty" style="padding:20px">照応詞は見つかりませんでした</div>';
+    return;
+  }
+
+  // 全 ref を (先行詞項番, 照応詞項番, noun, word, error) に展開し重複排除
+  var seen = {};
+  var rows = [];
+  groups.forEach(function(g) {
+    g.refs.forEach(function(r) {
+      // エラー行（先行詞なし）はfcをnullに固定。フォールバックしない
+      var fc = r.error ? null : (r.first_claim != null ? r.first_claim : null);
+      // 同一 (fc, refClaim, noun, word) は1行に集約
+      var key = (fc != null ? fc : '?') + '_' + r.claim + '_' + g.noun + '_' + r.word;
+      if (seen[key]) return;
+      seen[key] = true;
+      rows.push({
+        noun:  g.noun,
+        word:  r.word,
+        refClaim:  r.claim,
+        firstClaim: fc,
+        pos:   r.pos != null ? r.pos : 9999,
+        error: r.error
+      });
+    });
+  });
+
+  // ソート: 照応詞項番 → 請求項内登場位置 → noun
+  rows.sort(function(a, b) {
+    if (a.refClaim !== b.refClaim) return a.refClaim - b.refClaim;
+    if (a.pos !== b.pos) return a.pos - b.pos;
+    return a.noun < b.noun ? -1 : 1;
+  });
+
+  var html = '<table class="m3-table"><thead><tr>' +
+    '<th style="width:22%">先行詞-照応</th>' +
+    '<th style="width:38%">照応詞</th>' +
+    '<th style="width:40%">状態</th>' +
+    '</tr></thead><tbody>';
+
+  rows.forEach(function(row) {
+    var label, statusCls, statusTxt;
+    if (row.error) {
+      label = '?-' + row.refClaim;
+      statusCls = 'm3-err-missing'; statusTxt = '❌ 先行詞なし';
+    } else {
+      label = row.firstClaim + '-' + row.refClaim;
+      statusCls = 'm3-ok'; statusTxt = '✓ 請求項' + row.firstClaim + 'で定義';
+    }
+    var zenshouCls = row.error ? 'm3-zenshou err' : 'm3-zenshou';
+    html += '<tr class="m3-row" data-noun="'+esc(row.noun)+'" data-claim="'+row.refClaim+'">' +
+      '<td style="font-family:var(--mono);font-size:10px;color:var(--ink3)">'+esc(label)+'</td>' +
+      '<td><span class="'+zenshouCls+'">'+esc(row.word + row.noun)+'</span></td>' +
+      '<td><span class="m3-status '+statusCls+'">'+statusTxt+'</span></td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  body.innerHTML = html;
+
+  // 照応詞行クリック → 左ビューアに先行詞＋照応句
+  body.querySelectorAll('tr.m3-row').forEach(function(tr) {
+    tr.addEventListener('click', function() {
+      var noun  = tr.getAttribute('data-noun');
+      var claim = parseInt(tr.getAttribute('data-claim'));
+      var g = (d.noun_groups||[]).find(function(g2){ return g2.noun === noun; });
+      if (!g) return;
+      body.querySelectorAll('tr.m3-row').forEach(function(r){r.classList.remove('active');});
+      tr.classList.add('active');
+      selectM3Row(tr, g, claim, d);
+    });
+  });
+}
+
+
+
+// ── M3行選択：対象請求項表示＋ハイライト ──
+function selectM3Row(tr, g, targetClaim, d) {
+  // 行アクティブ
+  document.querySelectorAll('tr.m3-row').forEach(function(r){r.classList.remove('active');});
+  tr.classList.add('active');
+
+  var wrap = document.getElementById('block-wrap');
+  var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button></div>';
+
+  // クリックされたrefのfirst_claim・error取得
+  var activeFc = null;
+  var activeIsErr = false;
+  if (g.refs) {
+    var activeRef = g.refs.find(function(r){ return r.claim === targetClaim; });
+    if (activeRef) {
+      activeFc = activeRef.error ? null : (activeRef.first_claim != null ? activeRef.first_claim : null);
+      activeIsErr = !!activeRef.error;
+    }
+  }
+
+  // 左ビューア：先行詞(初出)→ 照応句の順
+  // ① 先行詞(初出)— targetClaimと異なる場合のみ上に表示
+  if (activeFc !== null && activeFc !== targetClaim) {
+    var ob = G.blockMap['c-'+activeFc];
+    if (ob) {
+      html += '<div class="block-sep">▼ 先行詞(初出)— 請求項'+activeFc+'</div>';
+      html += makeBlockHtml(ob, 'focused-orig', 'role-orig', '先行詞');
+    }
+  }
+  // ② 照応詞のある請求項
+  var rb = G.blockMap['c-'+targetClaim];
+  if (rb) {
+    var sepLabel = activeIsErr ? '▼ 照応句 — 請求項'+targetClaim+' ⚠ 先行詞なし' : '▼ 照応句 — 請求項'+targetClaim;
+    html += '<div class="block-sep"'+(activeIsErr?' style="color:var(--red)"':'')+'>'+sepLabel+'</div>';
+    html += makeBlockHtml(rb, 'focused', 'role-ref', activeIsErr ? '先行詞なし' : '照応詞あり');
+  }
+
+  wrap.innerHTML = html;
+  applyLineBreakToWrap(wrap);
+  activateNounHighlight(wrap, g.noun, targetClaim, activeIsErr);
+
+  // M23タブ下部の照応詞リストを選択請求項に同期
+  if (document.getElementById('m23-bot-body')) {
+    // M2テーブルの選択状態も同期
+    var topDiv = document.getElementById('m23-top');
+    if (topDiv) {
+      topDiv.querySelectorAll('tr.m2-claim-row').forEach(function(r){r.classList.remove('selected');});
+      var selRow = topDiv.querySelector('tr.m2-claim-row[data-num="'+targetClaim+'"]');
+      if (selRow) selRow.classList.add('selected');
+    }
+    showM23Bot(targetClaim, d);
+    // クリックされた照応詞行もアクティブに
+    var botBody = document.getElementById('m23-bot-body');
+    if (botBody) {
+      botBody.querySelectorAll('tr.m3-row').forEach(function(r){r.classList.remove('active');});
+      var noun = g.noun;
+      botBody.querySelectorAll('tr.m3-row').forEach(function(r){
+        if (r.getAttribute('data-noun') === noun) r.classList.add('active');
+      });
+    }
+  }
+}
+
+// ── M4: 段落ハイライト表示 ──
+function showM4Para(iss, d) {
+  var paraIds = iss.para_ids || [];
+  if (!paraIds.length) return;
+  var wrap = document.getElementById('block-wrap');
+  var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button></div>';
+  var lvColors = {error:'var(--red)', warning:'var(--gold)', style:'var(--style)'};
+  var col = lvColors[iss.level] || 'var(--ink3)';
+  html += '<div class="block-sep" style="color:'+col+'">▼ '+esc(iss.msg.slice(0,60))+'</div>';
+  var shown = {};
+  paraIds.forEach(function(pid) {
+    if (!pid || shown[pid]) return;
+    shown[pid] = true;
+    var b = G.blockMap[pid];
+    if (b) html += makeBlockHtml(b, 'focused', '', '');
+  });
+  wrap.innerHTML = html;
+  applyLineBreakToWrap(wrap);
+  // 該当要素・符号をhl-fugo/hl-fugo-errでハイライト(既にHTMLに埋め込み済み)
+}
+
+// ══════════════════════════════════════════
+// 符号表タブ
+// ══════════════════════════════════════════
+function buildFugoTab(con, d) {
+  var ft = d.fugo_table || [];
+  var m4issues = d.issues.m4 || [];
+
+  // 上部：M4 issue リスト
+  var topDiv = document.createElement('div');
+  topDiv.style.cssText = 'flex:0 0 auto;overflow-y:auto;max-height:35%;border-bottom:2px solid var(--border)';
+  topDiv.innerHTML = m4issues.length
+    ? buildIssueList(m4issues, 'm4')
+    : '<div class="empty">✅ 符号の問題は検出されませんでした</div>';
+  attachM4Events(topDiv, d);
+
+  // 下部：符号表
+  var botDiv = document.createElement('div');
+  botDiv.style.cssText = 'flex:1;overflow-y:auto';
+  var html = '<div style="padding:5px 10px;font-size:10px;font-family:var(--mono);color:var(--ink3);border-bottom:1px solid var(--border);background:var(--surface)">符号一覧</div>';
+  html += '<table class="m2-table" style="table-layout:fixed"><thead><tr>' +
+    '<th style="width:18%">符号</th>' +
+    '<th style="width:52%">要素名</th>' +
+    '<th style="width:30%">出現回数</th>' +
+    '</tr></thead><tbody>';
+  ft.forEach(function(row) {
+    var dup = row.is_dup;
+    var bgStyle = dup ? 'background:rgba(224,85,85,.08);cursor:pointer' : 'cursor:pointer';
+    var nameHtml = row.names.map(function(n, i) {
+      return '<span style="'+(dup && i>0?'color:var(--red);':'')+'">' + esc(n) + '</span>';
+    }).join('<span style="color:var(--ink3);margin:0 3px">/</span>');
+    html += '<tr class="fugo-table-row" style="'+bgStyle+'"' +
+      ' data-fugo="'+esc(row.fugo)+'"' +
+      ' data-names="'+esc(JSON.stringify(row.names))+'">' +
+      '<td style="font-family:var(--mono);color:'+(dup?'var(--red)':'var(--green)')+'">'+esc(row.fugo)+'</td>' +
+      '<td>'+nameHtml+'</td>' +
+      '<td style="font-family:var(--mono);color:var(--ink3);text-align:right;padding-right:14px">'+row.count+'</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  botDiv.innerHTML = html;
+
+  // 符号付き要素表行クリック → 左ビューアに該当段落表示
+  botDiv.querySelectorAll('tr.fugo-table-row').forEach(function(tr) {
+    tr.addEventListener('click', function() {
+      botDiv.querySelectorAll('tr.fugo-table-row').forEach(function(r){ r.classList.remove('active'); });
+      tr.classList.add('active');
+      var fugo  = tr.getAttribute('data-fugo');
+      var names = JSON.parse(tr.getAttribute('data-names') || '[]');
+      showFugoHighlight(fugo, names, d);
+    });
+  });
+
+  // 変数記号テーブル
+  var vt = d.var_table || [];
+  var varDiv = document.createElement('div');
+  varDiv.style.cssText = 'flex:0 0 auto;overflow-y:auto;border-top:2px solid var(--border)';
+  if (vt.length > 0) {
+    var vhtml = '<div style="padding:5px 10px;font-size:10px;font-family:var(--mono);color:var(--ink3);border-bottom:1px solid var(--border);background:var(--surface)">変数記号一覧</div>';
+    vhtml += '<table class="m2-table" style="table-layout:fixed"><thead><tr>' +
+      '<th style="width:22%">変数記号</th>' +
+      '<th style="width:58%">物理量名</th>' +
+      '<th style="width:20%">出現回数</th>' +
+      '</tr></thead><tbody>';
+    vt.forEach(function(row) {
+      var dup = row.is_dup;
+      var bgStyle = dup ? 'background:rgba(224,85,85,.08);cursor:pointer' : 'cursor:pointer';
+      var physHtml = row.physnames.map(function(n, idx) {
+        return '<span style="'+(dup && idx>0?'color:var(--red);':'')+'">' + esc(n) + '</span>';
+      }).join('<span style="color:var(--ink3);margin:0 3px">/</span>');
+      vhtml += '<tr class="var-table-row" style="'+bgStyle+'"' +
+        ' data-vsym="'+esc(row.vsym)+'"' +
+        ' data-physnames="'+esc(JSON.stringify(row.physnames))+'">' +
+        '<td style="font-family:var(--mono);color:'+(dup?'var(--red)':'var(--cyan)')+'">'+esc(row.vsym)+'</td>' +
+        '<td>'+physHtml+'</td>' +
+        '<td style="font-family:var(--mono);color:var(--ink3);text-align:right;padding-right:14px">'+row.count+'</td>' +
+        '</tr>';
+    });
+    vhtml += '</tbody></table>';
+    varDiv.innerHTML = vhtml;
+    // 変数記号行クリック → 左ビューアにハイライト表示
+    varDiv.querySelectorAll('tr.var-table-row').forEach(function(tr) {
+      tr.addEventListener('click', function() {
+        varDiv.querySelectorAll('tr.var-table-row').forEach(function(r){ r.classList.remove('active'); });
+        tr.classList.add('active');
+        var vsym     = tr.getAttribute('data-vsym');
+        var physnames = JSON.parse(tr.getAttribute('data-physnames') || '[]');
+        showVarHighlight(vsym, physnames, d);
+      });
+    });
+  }
+
+  con.appendChild(topDiv);
+  insertResizer(con, topDiv);
+  con.appendChild(botDiv);
+  if (vt.length > 0) con.appendChild(varDiv);
+
+  // 符号の説明照合テーブル
+  var st = d.setsu_table || {};
+  var stKeys = Object.keys(st);
+  if (stKeys.length > 0) {
+    var setsuDiv = document.createElement('div');
+    setsuDiv.style.cssText = 'flex:0 0 auto;overflow-y:auto;border-top:2px solid var(--border)';
+    var shtml = '<div style="padding:5px 12px 3px;font-size:10px;font-family:var(--mono);' +
+      'color:var(--ink3);background:var(--surface)">【符号の説明】照合（' + stKeys.length + '件）</div>';
+    shtml += '<table class="el-table"><thead><tr>' +
+      '<th>符号</th><th>説明の名称</th><th>出現回数</th></tr></thead><tbody>';
+    stKeys.sort().forEach(function(fugo) {
+      var setsuName = st[fugo];
+      // 本文fugo_tableから対応する要素名・出現回数を検索
+      var ftRow = (d.fugo_table || []).find(function(r){ return r.fugo === fugo; });
+      var bodyNames = ftRow ? ftRow.names.join('/') : '';
+      var count = ftRow ? ftRow.count : 0;
+      var mismatch = bodyNames && setsuName && bodyNames.indexOf(setsuName) < 0 &&
+                     setsuName.indexOf(bodyNames) < 0;
+      var rowStyle = mismatch ? 'background:rgba(224,85,85,.07);cursor:pointer' : 'cursor:pointer';
+      shtml += '<tr class="setsu-row" data-fugo="' + esc(fugo) + '" style="' + rowStyle + '">' +
+        '<td style="font-family:var(--mono);color:var(--cyan)">' + esc(fugo) + '</td>' +
+        '<td>' + esc(setsuName) +
+          (mismatch ? '<br><span style="color:var(--red);font-size:10px">本文：' + esc(bodyNames) + '</span>' : '') +
+          (!bodyNames ? '<br><span style="color:var(--ink3);font-size:10px">（本文未使用）</span>' : '') +
+        '</td>' +
+        '<td style="text-align:right;font-family:var(--mono);color:var(--ink3);padding-right:10px">' +
+          (count > 0 ? count : '—') + '</td>' +
+        '</tr>';
+    });
+    shtml += '</tbody></table>';
+    setsuDiv.innerHTML = shtml;
+    // クリック→該当符号の段落にジャンプ
+    setsuDiv.querySelectorAll('tr.setsu-row').forEach(function(tr) {
+      tr.addEventListener('click', function() {
+        var fugo = tr.getAttribute('data-fugo');
+        // 全ブロック表示を確保してからジャンプ（絞り込み表示中でも動作）
+        function jumpToFugo() {
+          var wrap = document.getElementById('block-wrap');
+          if (!wrap) return;
+          // fugo-spanを検索してジャンプ
+          var spans = wrap.querySelectorAll('.hl-fugo[data-fugo],.hl-fugo-err[data-fugo]');
+          for (var s = 0; s < spans.length; s++) {
+            if (spans[s].getAttribute('data-fugo') === fugo) {
+              spans[s].scrollIntoView({behavior:'smooth', block:'center'});
+              spans[s].classList.add('fugo-flash');
+              setTimeout(function(el){ el.classList.remove('fugo-flash'); }, 1200, spans[s]);
+              return;
+            }
+          }
+          // hl-fugoがない場合は段落番号ベースでジャンプ
+          var ftRow = (d.fugo_table || []).find(function(r){ return r.fugo === fugo; });
+          if (ftRow && ftRow.para_ids && ftRow.para_ids.length) {
+            var pid = ftRow.para_ids[0];
+            var el = document.getElementById('view-' + pid);
+            if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+          }
+        }
+        // 全ブロック表示でなければ切り替えてから少し待ってジャンプ
+        var wrapEl = document.getElementById('block-wrap');
+        var hasAllBlocks = wrapEl && wrapEl.querySelectorAll('.block').length > 3;
+        if (!hasAllBlocks) {
+          showAllBlocks();
+          setTimeout(jumpToFugo, 120);
+        } else {
+          jumpToFugo();
+        }
+      });
+    });
+    con.appendChild(setsuDiv);
+  }
+}
+
+// ══════════════════════════════════════════
+// サポートタブ(M6強化版)
+// ══════════════════════════════════════════
+function buildSupportTab(con, d) {
+  var st = d.support_table || [];
+  var m6issues = d.issues.m6 || [];
+
+
+  // 上部：M6 issue(なければ非表示)
+  if (m6issues.length) {
+    var topDiv = document.createElement('div');
+    topDiv.style.cssText = 'flex:0 0 auto;max-height:25%;overflow-y:auto;border-bottom:2px solid var(--border)';
+    topDiv.innerHTML = buildIssueList(m6issues, 'm6');
+    attachIssueEvents(topDiv, d, 'm6');
+    con.appendChild(topDiv);
+  }
+
+  // ツールバー（請求項ハイライト確認ボタン）
+  var toolbar = document.createElement('div');
+  toolbar.style.cssText = 'flex-shrink:0;padding:5px 10px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center';
+  toolbar.innerHTML =
+    '<button onclick="showSupportCoverage(G.data)" style="font-size:11px;padding:3px 8px">請求項で語句確認</button>' +
+    '<span style="font-size:10px;color:var(--ink3)">— チェック対象語句が請求項のどこにあるか確認</span>';
+  con.appendChild(toolbar);
+
+  // テーブルヘッダー
+  var hdr = document.createElement('div');
+  hdr.style.cssText = 'flex-shrink:0;background:var(--surface)';
+  hdr.innerHTML = '<table class="m2-table" style="table-layout:fixed"><thead><tr>' +
+    '<th style="width:28%">語句</th>' +
+    '<th style="width:16%">請求項</th>' +
+    '<th style="width:18%">解決手段</th>' +
+    '<th style="width:19%">実施形態</th>' +
+    '<th style="width:19%">詳細説明</th>' +
+    '</tr></thead></table>';
+  con.appendChild(hdr);
+
+  // テーブル本体(スクロール)
+  var bodyDiv = document.createElement('div');
+  bodyDiv.style.cssText = 'flex:1;overflow-y:auto';
+  var html = '<table class="m2-table" style="table-layout:fixed"><tbody>';
+
+  function cellOk(val) {
+    if (val === null || val === undefined) return '<td style="color:var(--ink3);text-align:center">—</td>';
+    return val
+      ? '<td style="color:var(--green);text-align:center">✓</td>'
+      : '<td style="color:var(--red);text-align:center">✗</td>';
+  }
+
+  st.forEach(function(row, i) {
+    var anyMiss = !row.in_desc ||
+      (row.in_solve === false) || (row.in_impl === false);
+    var rowStyle = anyMiss ? ' style="background:rgba(224,85,85,.06)"' : '';
+    var claimsStr = (row.claims||[]).map(function(n){
+      return '<span class="m2-num">'+n+'</span>';
+    }).join(' ');
+    html += '<tr class="support-row" data-idx="'+i+'"'+rowStyle+'>' +
+      '<td style="font-weight:500">'+esc(row.noun)+'</td>' +
+      '<td>'+claimsStr+'</td>' +
+      cellOk(row.in_solve) +
+      cellOk(row.in_impl) +
+      cellOk(row.in_desc) +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  bodyDiv.innerHTML = html;
+  con.appendChild(bodyDiv);
+
+  // クリックで左ビューア全文＋ハイライト
+  bodyDiv.querySelectorAll('tr.support-row').forEach(function(tr) {
+    tr.addEventListener('click', function() {
+      bodyDiv.querySelectorAll('tr.support-row').forEach(function(r){r.classList.remove('active');});
+      tr.classList.add('active');
+      var idx2 = parseInt(tr.getAttribute('data-idx'));
+      var row = st[idx2];
+      if (!row) return;
+      showSupportHighlight(row.noun, d);
+    });
+  });
+}
+
+function showSupportHighlight(noun, d) {
+  // サポートタブ専用表示:
+  // - 請求項(claim): 選択語句だけをハイライト。前記/符号スパン等を除去してプレーンテキスト表示
+  // - 詳細説明(para): 同様にプレーンテキストで語句ハイライトのみ
+  var wrap = document.getElementById('block-wrap');
+  var blocks = (d.blocks || []);
+  var claimBlocks = blocks.filter(function(b){ return b.type === 'claim' && b.text && b.text.indexOf(noun) >= 0; });
+  var paraBlocks  = blocks.filter(function(b){ return b.type === 'para'  && b.text && b.text.indexOf(noun) >= 0; }).slice(0, 40);
+  var matched = claimBlocks.concat(paraBlocks);
+  if (!matched.length) return;
+  var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button>' +
+    '<span style="color:var(--ink3);font-size:11px;margin-left:8px">「'+esc(noun)+'」を含む段落</span></div>';
+  var escNoun = esc(noun);
+  matched.forEach(function(b) {
+    // b.text（生テキスト）をescapeしてプレーンHTMLを作成
+    // → 前記ハイライト・符号スパン等を一切含まず、選択語句のみにマーク付与
+    var plainHtml = esc(b.text).split('\\n').join('<br>');
+    var hlHtml = plainHtml.split(escNoun).join('<mark class="support-hl">'+escNoun+'</mark>');
+    var blockCls = b.type === 'claim' ? 'block focused' : 'block neighbor';
+    html += '<div class="'+blockCls+'" id="view-'+b.id+'">' +
+      '<div class="block-header"><span class="block-label">'+esc(b.label)+'</span></div>' +
+      '<div class="block-body">'+hlHtml+'</div></div>';
+  });
+  wrap.innerHTML = html;
+}
+function showSupportCoverage(d) {
+  // サポートタブの全語句を請求項テキストにハイライト表示
+  // → チェック対象語句が請求項のどこにあるか、逆に対象外の重要語句を確認
+  if (!d) return;
+  var st = d.support_table || [];
+  var nouns = st.map(function(r){ return r.noun; }).filter(function(n){ return n.length >= 2; });
+  var wrap = document.getElementById('block-wrap');
+  var blocks = (d.blocks || []).filter(function(b){ return b.type === 'claim'; });
+  if (!blocks.length) return;
+
+  var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button>' +
+    '<span style="color:var(--ink3);font-size:11px;margin-left:8px">チェック対象語句（サポートテーブル収録語）をハイライト</span></div>';
+
+  blocks.forEach(function(b) {
+    var plainHtml = esc(b.text).split('\\n').join('<br>');
+    // 全語句を長い順にハイライト（短い語が長い語に含まれる場合の誤ハイライト防止）
+    var sorted = nouns.slice().sort(function(a,b){ return b.length - a.length; });
+    sorted.forEach(function(noun) {
+      var escNoun = esc(noun);
+      // すでにmarkタグ内にある部分はスキップ（二重ハイライト防止）
+      plainHtml = plainHtml.split(escNoun).join('<mark class="support-hl">'+escNoun+'</mark>');
+    });
+    html += '<div class="block focused" id="view-'+b.id+'">' +
+      '<div class="block-header"><span class="block-label">'+esc(b.label)+'</span></div>' +
+      '<div class="block-body">'+plainHtml+'</div></div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function showFugoHighlight(fugo, names, d) {
+  var wrap = document.getElementById('block-wrap');
+  var blocks = (d.blocks || []);
+  var keys = names.map(function(n){ return n + fugo; });
+  // para型優先（詳細説明段落）
+  var matched = blocks.filter(function(b){
+    return b.type === 'para' && b.text && keys.some(function(k){ return b.text.indexOf(k) >= 0; });
+  });
+  if (!matched.length) {
+    matched = blocks.filter(function(b){
+      return b.text && (keys.some(function(k){ return b.text.indexOf(k) >= 0; }) ||
+             b.text.indexOf(fugo) >= 0);
+    });
+  }
+  matched = matched.slice(0, 30);
+  if (!matched.length) return;
+  var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button>' +
+    '<span style="color:var(--ink3);font-size:11px;margin-left:8px">符号「'+esc(fugo)+'」を含む段落</span></div>';
+  matched.forEach(function(b) {
+    // b.html には hl-fugo/hl-fugo-err スパンが埋め込み済み
+    // 1) 対象符号のスパンに hl-active を付与
+    // 2) 対象外の符号スパンはクラスをプレーンテキスト化（ハイライト除去）
+    var bodyHtml = b.html;
+    // まず対象符号に hl-active を付与
+    bodyHtml = bodyHtml.replace(
+      new RegExp('(<span[^>]*data-fugo="'+escReg(fugo)+'"[^>]*)(class="([^"]*)")', 'g'),
+      function(_, pre, cls, clsVal) { return pre + 'class="' + clsVal + ' hl-active"'; }
+    );
+    bodyHtml = bodyHtml.replace(
+      new RegExp('(class="(hl-fugo[^"]*)")([^>]*data-fugo="'+escReg(fugo)+'")', 'g'),
+      function(_, cls, clsVal, rest) { return 'class="' + clsVal + ' hl-active"' + rest; }
+    );
+    // 対象外の hl-fugo/hl-fugo-err スパン（hl-active なし）をプレーンに
+    bodyHtml = bodyHtml.replace(
+      /<span class="hl-fugo(?:-err)?(?!\s*hl-active)[^"]*"[^>]*>([^<]*)<\/span>/g,
+      '$1'
+    );
+    html += '<div class="block focused" id="view-'+b.id+'">' +
+      '<div class="block-header"><span class="block-label">'+esc(b.label)+'</span></div>' +
+      '<div class="block-body">'+bodyHtml+'</div></div>';
+  });
+  wrap.innerHTML = html;
+}
+function showVarHighlight(vsym, physnames, d) {
+  // 変数記号 vsym を含む段落を左ビューアに表示
+  // 物理量名+変数記号(例:「電圧Ｖ」) または 変数記号単体 で検索
+  var wrap = document.getElementById('block-wrap');
+  var blocks = (d.blocks || []);
+  var keys = physnames.map(function(p){ return p + vsym; });
+  keys.push(vsym);  // 変数記号単体でも検索
+  var matched = blocks.filter(function(b) {
+    return b.type === 'para' && b.text &&
+      keys.some(function(k){ return b.text.indexOf(k) >= 0; });
+  });
+  if (!matched.length) {
+    matched = blocks.filter(function(b) {
+      return b.text && keys.some(function(k){ return b.text.indexOf(k) >= 0; });
+    });
+  }
+  matched = matched.slice(0, 30);
+  if (!matched.length) return;
+  var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button>' +
+    '<span style="color:var(--ink3);font-size:11px;margin-left:8px">変数記号「'+esc(vsym)+'」を含む段落</span></div>';
+  matched.forEach(function(b) {
+    // テキスト内の vsym 出現箇所を <mark> でハイライト
+    var bodyHtml = b.html;
+    // physnames+vsym および vsym 単体を順にハイライト
+    var allKeys = physnames.map(function(p){ return p + vsym; });
+    allKeys.push(vsym);
+    allKeys.sort(function(a,b){ return b.length - a.length; });  // 長い順
+    allKeys.forEach(function(k) {
+      bodyHtml = bodyHtml.split(esc(k)).join(
+        '<mark style="background:rgba(100,200,255,.35);border-radius:2px">'+esc(k)+'</mark>'
+      );
+    });
+    html += '<div class="block focused" id="view-'+b.id+'">' +
+      '<div class="block-header"><span class="block-label">'+esc(b.label)+'</span></div>' +
+      '<div class="block-body" data-raw-html="'+b.html.replace(/"/g,'&quot;')+'">'+bodyHtml+'</div></div>';
+  });
+  wrap.innerHTML = html;
+}
+function escReg(s){
+  var sp=['\\\\','.','*','+','?','[',']','^','$','{','}','(',')','|'];
+  sp.forEach(function(c){s=s.split(c).join('\\\\'+c);});
+  return s;
+}
+
+
+// ══════════════════════════════════════════
+// 誤記タブ（旧:名称タブ）
+// ══════════════════════════════════════════
+function buildM5Tab(con, d) {
+  var m5issues = d.issues.m5 || [];
+  var title = d.title || '';
+  var invTypes = d.title_inv_types || [];
+
+  var topDiv = document.createElement('div');
+  topDiv.style.cssText = 'padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;font-size:12px';
+  topDiv.innerHTML = '<div style="color:var(--ink3);font-size:10px;font-family:var(--mono);margin-bottom:6px">発明の名称</div>' +
+    '<div style="font-weight:500">' + esc(title || '（未取得）') + '</div>' +
+    (invTypes.length ? '<div style="font-size:10px;color:var(--ink3);margin-top:4px">独立請求項の発明種類：' +
+      invTypes.map(function(t){ return '<span style="background:var(--surface2);border-radius:3px;padding:1px 5px;margin:0 2px">'+esc(t)+'</span>'; }).join('') +
+      '</div>' : '');
+  con.appendChild(topDiv);
+  insertResizer(con, topDiv);
+
+  var issDiv = document.createElement('div');
+  issDiv.style.cssText = 'flex:1;overflow-y:auto';
+  issDiv.innerHTML = m5issues.length
+    ? buildIssueList(m5issues, 'm5')
+    : '<div class="empty" style="padding:24px">✅ 発明の名称に問題は検出されませんでした</div>';
+  attachIssueEvents(issDiv, d, 'm5');
+  con.appendChild(issDiv);
+}
+
+function makeBlockHtml(b, blockCls, roleCls, roleLabel) {
+  var hasErr = b.issues && b.issues.some(function(i){return i.level==='error';});
+  return '<div class="block '+blockCls+(hasErr?' has-error':'')+'" id="view-'+b.id+'">' +
+    '<div class="block-header">' +
+      '<span class="block-label">'+esc(b.label)+'</span>' +
+      '<span class="block-role '+roleCls+'">'+roleLabel+'</span>' +
+      (hasErr?'<span class="block-err-badge">ERR</span>':'') +
+    '</div>' +
+    '<div class="block-body" data-raw-html="'+b.html.replace(/"/g,'&quot;')+'">'+b.html+'</div>' +
+    '</div>';
+}
+
+function activateNounHighlight(wrap, noun, targetClaim, isError) {
+  // ① 全アクティブクラスをリセット
+  wrap.querySelectorAll('.hl-zenshou,.hl-zenshou-err').forEach(function(el) {
+    el.classList.remove('noun-active', 'noun-active-err');
+  });
+  wrap.querySelectorAll('.hl-first-noun,.hl-noun').forEach(function(el) {
+    el.classList.remove('ref-active');
+  });
+
+  // ② 照応詞スパン（data-noun=noun かつ data-claim=targetClaim）を強調
+  // isError=true  → 赤（noun-active-err）
+  // isError=false → 水色（noun-active）
+  var activeCls = isError ? 'noun-active-err' : 'noun-active';
+  wrap.querySelectorAll('.hl-zenshou,.hl-zenshou-err').forEach(function(el) {
+    var elNoun  = el.getAttribute('data-noun');
+    var elClaim = parseInt(el.getAttribute('data-claim') || '0');
+    if (elNoun === noun && elClaim === targetClaim) {
+      el.classList.add(activeCls);
+    }
+  });
+
+  // ③ 先行詞スパン（hl-first-noun）を黄色強調（isErrorでない場合のみ）
+  // data-noun が noun そのもの、または noun を末尾に含む（「所定の閾値」→「閾値」）
+  if (!isError) {
+    wrap.querySelectorAll('.hl-first-noun').forEach(function(el) {
+      var dn = el.getAttribute('data-noun') || '';
+      if (dn === noun || dn.endsWith('\u306e' + noun)) {
+        el.classList.add('ref-active');
+      }
+    });
+  }
+}
+
+function applyLineBreakToWrap(wrap) {
+  // G.lineBreak に応じて <br> の表示/非表示を切り替える
+  (wrap || document.getElementById('block-wrap')).querySelectorAll('.block-body[data-raw-html]').forEach(function(div) {
+    div.innerHTML = applyLineBreak(div.getAttribute('data-raw-html'));
+  });
+}
+function toggleLineBreak() {
+  G.lineBreak = !G.lineBreak;
+  var btn = document.getElementById('br-btn');
+  if (btn) {
+    btn.style.color = G.lineBreak ? 'var(--cyan)' : 'var(--ink3)';
+    btn.style.borderColor = G.lineBreak ? 'var(--cyan)' : 'var(--border)';
+    btn.title = G.lineBreak ? '元の改行を表示中(クリックで1行表示)' : '1行表示中(クリックで改行表示)';
+  }
+  // 現在左ビューアに表示されている全 block-body を再レンダリング
+  var wrap = document.getElementById('block-wrap');
+  if (wrap) {
+    wrap.querySelectorAll('.block-body[data-raw-html]').forEach(function(div) {
+      var raw = div.getAttribute('data-raw-html');
+      div.innerHTML = applyLineBreak(raw);  // applyLineBreak内でG.lineBreakを参照
+    });
+  }
+}
+// lineBreak=false のとき <br> を除去して1行表示
+function applyLineBreak(html) {
+  // lineBreak=true: 元のHTML(<br>含む)をそのまま返す
+  // lineBreak=false: <br>を空白に置換して1行化
+  return G.lineBreak ? html : html.replace(/<br\s*\/?>/gi, ' ');
+}
+// block-body に data-raw-html を記録しつつ innerHTML をセット
+function setBlockBodyHtml(div, html) {
+  div.setAttribute('data-raw-html', html);
+  div.innerHTML = applyLineBreak(html);
+}
+function showAllClaims() {
+  showAllBlocks();
+}
+
+// ── 他タブissueクリック ──
+function selectIssue(iss, rowIdx, mid) {
+  document.querySelectorAll('.issue-row').forEach(function(r){r.classList.remove('active');});
+  var row = document.querySelector('.issue-row[data-idx="'+rowIdx+'"][data-mid="'+mid+'"]');
+  if(row) { row.classList.add('active'); row.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+
+  var wrap = document.getElementById('block-wrap');
+  var blocks = G.data ? G.data.blocks : [];
+
+  // para_ids がある場合（M4など）は showM4Para に委譲
+  if (iss.para_ids && iss.para_ids.length) {
+    showM4Para(iss, G.data);
+    return;
+  }
+
+  // iss.claim がある場合：該当ブロックにフォーカス
+  var focusId = iss.claim ? 'c-'+iss.claim : null;
+  // para_id が直接ある場合
+  if (!focusId && iss.para_id) focusId = iss.para_id;
+  var focusBlock = focusId ? G.blockMap[focusId] : null;
+
+  if (!focusBlock) {
+    // フォーカス対象なし: 全件表示に戻す
+    showAllBlocks();
+    return;
+  }
+
+  if (focusBlock.section === 'claims') {
+    // 請求項ブロック: 前後の請求項を含む全件表示で該当位置にスクロール
+    showAllBlocks();
+    setTimeout(function(){
+      var el = document.getElementById('view-'+focusId);
+      if (el) { el.classList.add('focused'); el.scrollIntoView({behavior:'smooth', block:'center'}); }
+    }, 80);
+    return;
+  }
+
+  // 段落ブロック: 前後2件＋全件表示ボタン
+  var sameSection = blocks.filter(function(b){return b.section===focusBlock.section;});
+  var fi = sameSection.findIndex(function(b){return b.id===focusId;});
+  var start = Math.max(0, fi-2), end2 = Math.min(sameSection.length-1, fi+2);
+  var lvColors = {error:'var(--red)', warning:'var(--gold)', style:'var(--style)'};
+  var col = lvColors[iss.level] || 'var(--ink3)';
+  var html2 = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button></div>';
+  html2 += '<div class="block-sep" style="color:'+col+'">▼ '+esc((iss.msg||'').slice(0,60))+'</div>';
+  for (var i = start; i <= end2; i++) {
+    var b = sameSection[i], isFocused = b.id === focusId;
+    var hasErr2 = b.issues && b.issues.some(function(x){return x.level==='error';});
+    html2 += '<div class="block'+(isFocused?' focused':' neighbor')+(hasErr2?' has-error':'')+'" id="view-'+b.id+'">' +
+      '<div class="block-header"><span class="block-label">'+esc(b.label)+'</span>'+(hasErr2?'<span class="block-err-badge">ERR</span>':'')+' </div>' +
+      '<div class="block-body" data-raw-html="'+b.html.replace(/"/g,'&quot;')+'">'+b.html+'</div></div>';
+  }
+  wrap.innerHTML = html2;
+  applyLineBreakToWrap(wrap);
+  setTimeout(function(){
+    var el = document.getElementById('view-'+focusId);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
+}
+
+function buildIssueList(issues, mid) {
+  if(!issues||!issues.length) return '<div class="empty">✅ 問題は検出されませんでした</div>';
+  return issues.map(function(iss,i){
+    var lv=iss.level||'warning';
+    var claim=iss.claim?'<span class="iss-claim">請求項'+iss.claim+'</span>':'';
+    return '<div class="issue-row lv-'+lv+'" data-idx="'+i+'" data-mid="'+mid+'" data-level="'+lv+'">' +
+      '<div class="iss-head"><span class="iss-lv">'+lvLabel(lv)+'</span>'+claim+'</div>' +
+      '<div class="iss-msg">'+esc(iss.msg)+'</div>' +
+      (iss.detail?'<div class="iss-detail">'+esc(iss.detail)+'</div>':'') +
+      '</div>';
+  }).join('');
+}
+function buildM4Content(d) {
+  var iss = buildIssueList(d.issues.m4, 'm4');
+  if(!d.element_table||!d.element_table.length) return iss;
+  var rows = d.element_table.map(function(e) {
+    var chips = e.fugos.map(function(f){
+      var isErr=(d.issues.m4||[]).some(function(i){return i.level==='error'&&i.msg&&i.msg.includes('「'+f+'」');});
+      return '<span class="fugo-chip'+(isErr?' err':'')+'">'+esc(f)+'</span>';
+    }).join('');
+    return '<tr><td>'+esc(e.name)+'</td><td>'+chips+'</td></tr>';
+  }).join('');
+  return iss+'<div style="padding:8px 10px;font-size:10px;color:var(--ink3);border-top:1px solid var(--border)">要素名↔符号 対応表</div>' +
+    '<table class="el-table"><thead><tr><th>要素名</th><th>符号</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function lvLabel(lv){return{error:'ERR',warning:'WARN',style:'STYLE',ok:'OK',info:'INFO'}[lv]||lv;}
+function esc(s){
+  if(!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
