@@ -1779,7 +1779,21 @@ def analyze(text):
     m5_issues = struct_issues + para_issues + abstract_issues + midashi_issues + kuten_issues + jis_issues + m5_issues
     m6_issues, support_table = check_support(claims, sections)
 
-    all_issues = m2_issues + m3_issues + m4_issues + m5_issues + m6_issues
+    # M7: 係り受け曖昧性チェック（遅延インポートで依存を分離）
+    try:
+        from .m7_ambiguity import check_ambiguity
+        m7_issues = check_ambiguity(claims)
+    except Exception:
+        m7_issues = []
+
+    # M8: 記録項目チェック（遅延インポートで依存を分離）
+    try:
+        from .m8_docfields import check_docfields
+        m8_issues = check_docfields(text)
+    except Exception:
+        m8_issues = []
+
+    all_issues = m2_issues + m3_issues + m4_issues + m5_issues + m6_issues + m7_issues + m8_issues
 
     noun_groups = build_noun_groups(claims, dep_map, ref_hits, m3_issues)
 
@@ -1812,6 +1826,8 @@ def analyze(text):
             "m4": m4_issues,
             "m5": m5_issues,
             "m6": m6_issues,
+            "m7": m7_issues,
+            "m8": m8_issues,
             "all": all_issues,
         },
         "element_table":    element_table,

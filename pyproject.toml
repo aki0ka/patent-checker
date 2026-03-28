@@ -27,8 +27,8 @@ dependencies = [
 
 [project.optional-dependencies]
 gui = ["pywebview>=5.0"]
-mcp = ["fastmcp>=0.4"]
-all = ["pywebview>=5.0", "fastmcp>=0.4"]
+mcp = ["fastmcp>=0.4", "pytoony>=0.1.2"]
+all = ["pywebview>=5.0", "fastmcp>=0.4", "pytoony>=0.1.2"]
 
 [project.scripts]
 patent-checker = "patent_checker.cli:main"
