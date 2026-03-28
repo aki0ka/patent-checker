@@ -4,6 +4,7 @@
 #   "mcp[cli]>=1.0",
 #   "fugashi>=1.3",
 #   "unidic-lite>=1.0",
+#   "pytoony>=0.1.2",
 # ]
 # ///
 """
@@ -26,16 +27,29 @@ Claude Desktop の設定例 (claude_desktop_config.json):
 import sys, os, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+try:
+    from pytoony import json2toon
+    def _dump(obj):
+        return json2toon(json.dumps(obj, ensure_ascii=False))
+except ImportError:
+    def _dump(obj):
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+
 from mcp.server.fastmcp import FastMCP
 from patent_checker.analyzer import analyze
 from patent_checker.preprocessor import normalize, DocFormat
+from patent_checker.parser import parse_claims, split_sections
+from patent_checker.m7_ambiguity import check_ambiguity
+from patent_checker.m8_docfields import check_docfields
+from patent_checker.m9_gansho import check_gansho
 
 mcp = FastMCP("patent-checker")
 
 _LEVEL_ORDER = {'error': 0, 'warning': 1, 'style': 2, 'info': 3, 'ok': 4}
 _MS_LABELS = {
     'm2': 'M2従属関係', 'm3': 'M3照応詞',
-    'm4': 'M4符号',    'm5': 'M5誤記', 'm6': 'M6サポート',
+    'm4': 'M4符号',    'm5': 'M5誤記',  'm6': 'M6サポート',
+    'm7': 'M7曖昧性',  'm8': 'M8記録項目',
 }
 
 def _filter_issues(issues, level):
@@ -90,7 +104,7 @@ def patent_check_summary(text: str, source_format: str = "auto") -> str:
     source_fmt = fmt_map.get(source_format, DocFormat.UNKNOWN)
     norm_doc = normalize(text, source_format=source_fmt)
     result = analyze(norm_doc.text)
-    return json.dumps(_make_summary(result), ensure_ascii=False, indent=2)
+    return _dump(_make_summary(result))
 
 
 @mcp.tool()
@@ -124,7 +138,7 @@ def patent_check_issues(text: str, level: str = "error", milestone: str = "all",
     elif milestone in ('m2', 'm3', 'm4', 'm5', 'm6'):
         mids = [milestone]
     else:
-        return json.dumps({'error': f'不明なマイルストーン: {milestone}'}, ensure_ascii=False)
+        return _dump({'error': f'不明なマイルストーン: {milestone}'})
 
     all_issues = []
     for mid in mids:
@@ -138,7 +152,7 @@ def patent_check_issues(text: str, level: str = "error", milestone: str = "all",
                 'claim':     iss.get('claim'),
             })
 
-    return json.dumps({
+    return _dump({
         'summary':    summary,
         'issues':     all_issues,
         'claim_list': [
@@ -170,7 +184,7 @@ def patent_check_m3(text: str, source_format: str = "auto") -> str:
     norm_doc = normalize(text, source_format=source_fmt)
     result = analyze(norm_doc.text)
     errors = _filter_issues(result['issues']['m3'], 'error')
-    return json.dumps({
+    return _dump({
         'errors': errors,
         'noun_groups': [
             {
@@ -210,11 +224,113 @@ def patent_check_m4(text: str, source_format: str = "auto") -> str:
     norm_doc = normalize(text, source_format=source_fmt)
     result = analyze(norm_doc.text)
     issues = result['issues']['m4']
-    return json.dumps({
+    return _dump({
         'errors':     _filter_issues(issues, 'error'),
         'warnings':   [i for i in issues if i.get('level') == 'warning'],
         'fugo_table': result['fugo_table'],
         'var_table':  result['var_table'],
+    }, ensure_ascii=False, indent=2)
+
+
+@mcp.tool()
+def patent_check_m7(text: str, source_format: str = "auto") -> str:
+    """係り受け曖昧性チェック（M7）の結果を返す。
+    請求項の「前記AまたはBのC」「連用形の連続」等の曖昧パターンを検出する。
+    作文支援：AIが請求項を書いたあとに呼び出し、曖昧な箇所を修正する用途に適する。
+
+    Args:
+        text: 特許明細書テキスト（請求項部分を含む）
+        source_format: "jplatpat" / "filing" / "auto" (default: auto)
+
+    Returns:
+        issues - 曖昧性警告リスト（claim/check/level/msg）
+        summary - 警告件数サマリー
+    """
+    fmt_map = {'jplatpat': DocFormat.JPLATPAT, 'filing': DocFormat.FILING, 'auto': DocFormat.UNKNOWN}
+    norm_doc = normalize(text, source_format=fmt_map.get(source_format, DocFormat.UNKNOWN))
+    sections = split_sections(norm_doc.text)
+    claims = parse_claims(sections.get('claims', ''))
+    issues = check_ambiguity(claims)
+
+    by_check: dict[str, int] = {}
+    for iss in issues:
+        by_check[iss['check']] = by_check.get(iss['check'], 0) + 1
+
+    return _dump({
+        'summary': {
+            'total':    len(issues),
+            'warning':  sum(1 for i in issues if i.get('level') == 'warning'),
+            'info':     sum(1 for i in issues if i.get('level') == 'info'),
+            'by_check': by_check,
+        },
+        'issues': issues,
+    }, ensure_ascii=False, indent=2)
+
+
+@mcp.tool()
+def patent_check_m8(text: str, source_format: str = "auto") -> str:
+    """記録項目チェック（M8）の結果を返す。
+    特許法施行規則様式第29に基づき、明細書の記録項目の必須性・順序・
+    下位構造・段落番号規則を検査する。
+    作文支援：AIが明細書を生成したあとに呼び出し、書式違反を修正する用途に適する。
+
+    Args:
+        text: 特許明細書テキスト全文
+        source_format: "jplatpat" / "filing" / "auto" (default: auto)
+
+    Returns:
+        issues  - 書式違反リスト（check/level/msg）
+        summary - エラー・警告件数サマリー
+    """
+    fmt_map = {'jplatpat': DocFormat.JPLATPAT, 'filing': DocFormat.FILING, 'auto': DocFormat.UNKNOWN}
+    norm_doc = normalize(text, source_format=fmt_map.get(source_format, DocFormat.UNKNOWN))
+    issues = check_docfields(norm_doc.text)
+
+    return _dump({
+        'summary': {
+            'total':   len(issues),
+            'error':   sum(1 for i in issues if i.get('level') == 'error'),
+            'warning': sum(1 for i in issues if i.get('level') == 'warning'),
+        },
+        'issues': issues,
+    }, ensure_ascii=False, indent=2)
+
+
+@mcp.tool()
+def patent_check_m9(text: str) -> str:
+    """特許願（願書）記録項目チェック（M9）の結果を返す。
+    特許法施行規則様式第26に基づき、願書の必須項目・形式・下位構造を検査する。
+    作文支援：AIが願書を生成したあとに呼び出し、記載不備を修正する用途に適する。
+
+    対象チェック:
+      GA1  必須項目の存在（書類名・あて先・発明者・特許出願人・提出物件の目録）
+      GA2  【書類名】が「特許願」か
+      GA3  【あて先】が「特許庁長官殿」か
+      GA4  【発明者】ごとに住所・氏名があるか
+      GA5  【特許出願人】の識別番号/住所/氏名の条件必須
+      GA6  識別番号が9桁か
+      GA7  【代理人】の識別番号・氏名の確認
+      GA8  【整理番号】の形式（大文字英数字/ハイフン、10字以下）
+      GA9  【国際特許分類】のIPC記号フォーマット
+      GA10 【提出物件の目録】に明細書・特許請求の範囲・要約書があるか
+      GA11 【手数料の表示】の支払手段と納付金額の整合性
+      GA12 【持分】の形式（○／○、最大3桁/3桁）
+
+    Args:
+        text: 特許願テキスト（願書単体でも出願書類一式でも可。願書部分を自動抽出）
+
+    Returns:
+        issues  - 不備リスト（check/level/msg）
+        summary - エラー・警告件数サマリー
+    """
+    issues = check_gansho(text)
+    return _dump({
+        'summary': {
+            'total':   len(issues),
+            'error':   sum(1 for i in issues if i.get('level') == 'error'),
+            'warning': sum(1 for i in issues if i.get('level') == 'warning'),
+        },
+        'issues': issues,
     }, ensure_ascii=False, indent=2)
 
 
