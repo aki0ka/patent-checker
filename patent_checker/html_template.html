@@ -53,11 +53,8 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
 .theme-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .hb-on{background:rgba(74,222,128,.15);color:var(--green);border-color:rgba(74,222,128,.3)}
 .hb-off{background:var(--surface2);color:var(--ink3);border-color:var(--border)}
-.clip-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);
-  padding:4px 10px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);}
-.clip-dot{width:7px;height:7px;border-radius:50%;background:var(--ink3);transition:background .3s,box-shadow .3s;}
-.clip-dot.active{background:var(--green);box-shadow:0 0 6px var(--green)}
-.clip-dot.busy{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+#drop-zone.drag-over{border-color:var(--blue);background:var(--bluebg);color:var(--blue);}
+#input-textarea:focus{border-color:var(--blue);}
 .main{position:fixed;top:var(--hdr);left:0;right:0;bottom:0;
   display:grid;grid-template-columns:1fr 380px;background:var(--bg);}
 .viewer{overflow-y:auto;border-right:1px solid var(--border);scroll-behavior:smooth;}
@@ -270,7 +267,7 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
   <div class="logo">特許<br>検査</div>
   <div>
     <div style="font-family:var(--serif);font-size:15px;letter-spacing:.12em">特許明細書チェッカー</div>
-    <div style="font-size:10px;color:var(--ink3)">Patent Specification Checker — M1〜M6</div>
+    <div style="font-size:10px;color:var(--ink3)">Patent Specification Checker — M2〜M9</div>
   </div>
   <div class="hbadges">
     <div class="theme-btns">
@@ -279,10 +276,9 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
     </div>
     <button id="br-btn" onclick="toggleLineBreak()" title="元の改行を表示/非表示" style="background:var(--surface2);border:1px solid var(--cyan);color:var(--cyan);cursor:pointer;font-size:11px;padding:2px 8px;border-radius:4px;transition:all .15s">改行</button>
     <div class="hb hb-off" id="zoom-indicator" style="cursor:default;user-select:none" title="Ctrl+スクロールでフォントサイズ変更">🔍 <span id="zoom-pct">100%</span></div>
-    <div class="clip-indicator">
-      <div class="clip-dot" id="clip-dot"></div>
-      <span id="clip-label">クリップボード監視中</span>
-    </div>
+    <button class="hb hb-off" id="ontop-btn" title="常に前面表示" onclick="toggleOnTop()" style="font-size:10px;padding:2px 8px;cursor:pointer">📌 前面固定</button>
+    <button class="hb hb-off" id="copy-btn" title="結果をMarkdownでコピー" onclick="copyResultsMarkdown()" style="font-size:10px;padding:2px 8px;cursor:pointer;display:none">📋 コピー</button>
+    <button class="hb hb-off" id="newinput-btn" title="新しい文書を入力" onclick="showInputPanel()" style="font-size:10px;padding:2px 8px;cursor:pointer;display:none">＋ 新規入力</button>
     <button class="hb hb-off" id="debug-btn" title="デバッグログ" onclick="toggleDebugPanel()" style="font-size:10px;padding:2px 6px;cursor:pointer">🐛</button>
   </div>
 </header>
@@ -296,15 +292,38 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
 </div>
 <div class="main">
   <div class="viewer" id="viewer">
-    <div class="viewer-empty" id="viewer-empty">
-      <div class="big">📋</div>
-      <p>
-        特許出願書類を <kbd>Ctrl+C</kbd> / <kbd>Ctrl+X</kbd> でコピーすると<br>
-        バックグラウンドから自動検出・解析します<br><br>
-        <span style="color:var(--ink3);font-size:11px">
-          右リストの項目をクリックすると<br>該当ブロックがここに表示されます
-        </span>
-      </p>
+    <div class="viewer-empty" id="viewer-empty" style="height:100%;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:24px;gap:16px;">
+      <!-- ドロップゾーン -->
+      <div id="drop-zone" style="
+        border:2px dashed var(--border2);border-radius:6px;
+        padding:28px 24px;text-align:center;cursor:pointer;
+        color:var(--ink3);font-size:13px;line-height:2;
+        transition:border-color .2s,background .2s;flex-shrink:0;
+      ">
+        <div style="font-size:32px;margin-bottom:8px">📂</div>
+        <div>ファイルをここにドロップ</div>
+        <div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>
+        <div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>
+      </div>
+      <!-- テキストエリア -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0">
+        <div style="font-size:11px;color:var(--ink3)">または、テキストを直接貼り付け</div>
+        <textarea id="input-textarea" placeholder="【書類名】特許明細書&#10;【発明の名称】…&#10;&#10;ここにテキストを貼り付けて「チェック実行」を押してください" style="
+          flex:1;width:100%;resize:none;
+          background:var(--surface);color:var(--ink);
+          border:1px solid var(--border);border-radius:4px;
+          padding:12px;font-size:13px;font-family:var(--sans);
+          line-height:1.7;outline:none;min-height:180px;
+        "></textarea>
+        <button onclick="runAnalyzeFromInput()" style="
+          background:var(--blue);color:#fff;border:none;border-radius:4px;
+          padding:10px 0;font-size:13px;font-family:var(--sans);
+          cursor:pointer;width:100%;letter-spacing:.04em;
+          transition:opacity .15s;
+        " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          チェック実行
+        </button>
+      </div>
     </div>
     <div id="block-area" style="display:none">
       <div class="block-wrap" id="block-wrap"></div>
@@ -385,40 +404,180 @@ applyTheme('light');
 
 
 
-// ── PyWebviewからのクリップボード通知(Pythonスレッドが呼ぶ) ──
-// クリップボード通知 - Python側のevaluate_jsから呼ばれる
-window.onClipboardUpdate = function(text) {
-  if (!text || !text.trim()) return;
-  // pywebview APIがまだ準備できていない場合は少し待ってリトライ
-  if (!window.pywebview || !window.pywebview.api) {
-    setTimeout(function() { window.onClipboardUpdate(text); }, 300);
+// ── 入力パネル表示・非表示 ──
+function showInputPanel() {
+  document.getElementById('viewer-empty').style.display = 'flex';
+  document.getElementById('block-area').style.display = 'none';
+  document.getElementById('copy-btn').style.display = 'none';
+  document.getElementById('newinput-btn').style.display = 'none';
+  document.getElementById('stats-row').style.display = 'none';
+  G.data = null;
+}
+
+// ── 設定をPythonから受け取る ──
+window.applyConfig = function(cfg) {
+  if (!cfg) return;
+  if (cfg.theme) applyTheme(cfg.theme);
+  G.alwaysOnTop = !!cfg.always_on_top;
+  var btn = document.getElementById('ontop-btn');
+  if (btn) btn.className = 'hb ' + (G.alwaysOnTop ? 'hb-on' : 'hb-off');
+};
+
+// ── 常に前面表示トグル ──
+function toggleOnTop() {
+  G.alwaysOnTop = !G.alwaysOnTop;
+  var btn = document.getElementById('ontop-btn');
+  btn.className = 'hb ' + (G.alwaysOnTop ? 'hb-on' : 'hb-off');
+  if (window.pywebview && window.pywebview.api) {
+    window.pywebview.api.set_always_on_top(G.alwaysOnTop);
+  }
+}
+
+// ── テキストから解析実行 ──
+function runAnalyzeFromText(text) {
+  if (!text || !text.trim()) {
+    alert('テキストが入力されていません');
     return;
   }
-  setClipState('busy', '解析中…');
+  if (!window.pywebview || !window.pywebview.api) {
+    setTimeout(function() { runAnalyzeFromText(text); }, 300);
+    return;
+  }
   showLoading('解析中…');
   window.pywebview.api.run_analyze(text).then(function(d) {
     hideLoading();
     if (!d || d.error) {
-      setClipState('off', 'エラー: ' + ((d && d.error) || '').slice(0,40));
+      alert('エラー: ' + ((d && d.error) || '不明なエラー'));
       return;
     }
     G.data = d;
     G.blockMap = {};
     (d.blocks || []).forEach(function(b) { G.blockMap[b.id] = b; });
     renderAll(d);
-    setClipState('on', '解析完了 — ' + new Date().toLocaleTimeString('ja-JP'));
+    document.getElementById('copy-btn').style.display = '';
+    document.getElementById('newinput-btn').style.display = '';
   }).catch(function(e) {
     hideLoading();
-    setClipState('off', 'APIエラー');
+    alert('APIエラー: ' + e);
     console.error(e);
   });
 }
 
-function setClipState(state, label) {
-  document.getElementById('clip-dot').className =
-    'clip-dot' + (state==='on'?' active':state==='busy'?' busy':'');
-  document.getElementById('clip-label').textContent = label;
+// ── テキストエリアから解析 ──
+function runAnalyzeFromInput() {
+  var text = document.getElementById('input-textarea').value;
+  runAnalyzeFromText(text);
 }
+
+// ── ドラッグ＆ドロップ ──
+(function() {
+  var zone = document.getElementById('drop-zone');
+  if (!zone) return;
+
+  zone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', function() {
+    zone.classList.remove('drag-over');
+  });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    var errEl = document.getElementById('drop-error');
+    errEl.style.display = 'none';
+
+    var files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+    var file = files[0];
+    // pywebviewはfile.pathでローカルパスを取得できる
+    var path = file.path || (file.name ? null : null);
+    if (!path) {
+      errEl.textContent = 'ファイルパスを取得できませんでした';
+      errEl.style.display = '';
+      return;
+    }
+    if (!window.pywebview || !window.pywebview.api) {
+      errEl.textContent = 'APIの初期化を待っています…';
+      errEl.style.display = '';
+      return;
+    }
+    zone.textContent = '読み込み中…';
+    window.pywebview.api.read_file(path).then(function(result) {
+      // ゾーンを元に戻す
+      zone.innerHTML = '<div style="font-size:32px;margin-bottom:8px">📂</div>' +
+        '<div>ファイルをここにドロップ</div>' +
+        '<div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>' +
+        '<div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>';
+      if (result && result.error) {
+        var e2 = document.getElementById('drop-error');
+        e2.textContent = result.error;
+        e2.style.display = '';
+        return;
+      }
+      if (result && result.text) {
+        document.getElementById('input-textarea').value = result.text;
+        runAnalyzeFromText(result.text);
+      }
+    }).catch(function(err) {
+      zone.innerHTML = '<div style="font-size:32px;margin-bottom:8px">📂</div>' +
+        '<div>ファイルをここにドロップ</div>' +
+        '<div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>' +
+        '<div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>';
+      var e2 = document.getElementById('drop-error');
+      if (e2) { e2.textContent = String(err); e2.style.display = ''; }
+    });
+  });
+})();
+
+// ── 結果をMarkdownでコピー ──
+function copyResultsMarkdown() {
+  if (!G.data) return;
+  var d = G.data;
+  var lines = [];
+  lines.push('# 特許明細書チェック結果');
+  lines.push('');
+  if (d.title) lines.push('**発明の名称**: ' + d.title);
+  var s = d.stats || {};
+  if (s.total_claims) lines.push('**請求項数**: ' + s.total_claims);
+  lines.push('');
+
+  var mids = ['m2','m3','m4','m5','m6','m7','m8'];
+  var labels = {m2:'M2 従属関係',m3:'M3 前記・当該',m4:'M4 符号',
+                m5:'M5 構造',m6:'M6 サポート要件',m7:'M7 係り受け曖昧性',m8:'M8 記録項目'};
+  mids.forEach(function(mid) {
+    var issues = (d.issues || {})[mid] || [];
+    if (!issues.length) return;
+    lines.push('## ' + (labels[mid] || mid));
+    issues.forEach(function(iss) {
+      var lv = iss.level === 'error' ? '🔴' : iss.level === 'warning' ? '🟡' : '🔵';
+      var loc = iss.claim ? ('請求項' + iss.claim) : (iss.para_id || '');
+      lines.push('- ' + lv + (loc ? ' [' + loc + '] ' : ' ') + (iss.msg || ''));
+    });
+    lines.push('');
+  });
+
+  var md = lines.join('\n');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(md).then(function() {
+      var btn = document.getElementById('copy-btn');
+      var orig = btn.textContent;
+      btn.textContent = '✓ コピーしました';
+      setTimeout(function() { btn.textContent = orig; }, 2000);
+    });
+  } else {
+    // フォールバック: テキストエリアを使ってコピー
+    var ta = document.createElement('textarea');
+    ta.value = md;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+}
+
 function showLoading(msg) {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('loading-msg').textContent = msg||'解析中…';
@@ -431,6 +590,7 @@ function renderAll(d) {
   renderTabs(d);
   document.getElementById('viewer-empty').style.display = 'none';
   document.getElementById('block-area').style.display = 'block';
+  document.getElementById('stats-row').style.display = '';
   // 左ウィンドウを全件表示でリフレッシュ
   showAllBlocks(d);
   // M3タブを初期表示
