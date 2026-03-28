@@ -1,0 +1,107 @@
+name: Build Executables
+
+on:
+  push:
+    tags:
+      - "v*"          # v0.1.0 のようなタグをpushしたときにビルド
+  workflow_dispatch:   # 手動実行も可能
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            artifact: PatentChecker-mac
+            ext: ""
+          - os: windows-latest
+            artifact: PatentChecker-win
+            ext: ".exe"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 依存ライブラリのインストール
+        run: |
+          pip install pyinstaller
+          pip install fugashi unidic-lite pywebview pyperclip fastmcp
+
+      - name: PyInstaller でビルド
+        run: |
+          pyinstaller \
+            --name PatentChecker \
+            --noconsole \
+            --add-data "patent_checker/html_template.html:patent_checker" \
+            --collect-data unidic_lite \
+            --hidden-import fugashi \
+            --hidden-import pyperclip \
+            --hidden-import webview \
+            main.py
+        shell: bash
+
+      # Mac: .app をzip圧縮
+      - name: Mac アーカイブ作成
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd dist
+          zip -r ../${{ matrix.artifact }}.zip PatentChecker.app
+
+      # Windows: フォルダをzip圧縮
+      - name: Windows アーカイブ作成
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd dist
+          Compress-Archive -Path PatentChecker -DestinationPath ../${{ matrix.artifact }}.zip
+        shell: pwsh
+
+      - name: アーティファクトをアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.zip
+          retention-days: 30
+
+  # タグpush時のみ GitHub Release を作成
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Mac アーティファクトをダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          name: PatentChecker-mac
+
+      - name: Windows アーティファクトをダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          name: PatentChecker-win
+
+      - name: GitHub Release を作成
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            PatentChecker-mac.zip
+            PatentChecker-win.zip
+          body: |
+            ## 特許明細書チェッカー ${{ github.ref_name }}
+
+            ### ダウンロード
+            - **Mac**: PatentChecker-mac.zip を展開して PatentChecker.app を起動
+            - **Windows**: PatentChecker-win.zip を展開して PatentChecker.exe を起動
+
+            ### インストール不要
+            Python等の事前インストールは不要です。
+          draft: true   # まずドラフトで作成（確認してから公開）
