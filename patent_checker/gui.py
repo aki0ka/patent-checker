@@ -45,6 +45,39 @@ class Api:
         """ファイルパスからテキストを抽出する"""
         return read_file(path)
 
+    def read_file_b64(self, filename: str, b64_content: str) -> dict:
+        """base64エンコードされたファイル内容をデコードしてテキスト抽出する。
+        D&Dでfile.pathが取得できない環境向け（pywebview制限の回避策）。
+        """
+        import base64, io, os
+        try:
+            data = base64.b64decode(b64_content)
+            ext = os.path.splitext(filename)[1].lower()
+            if ext == '.docx':
+                import docx as _docx
+                doc = _docx.Document(io.BytesIO(data))
+                lines = []
+                for para in doc.paragraphs:
+                    if para.text.strip():
+                        lines.append(para.text)
+                return {'text': '\n'.join(lines)}
+            elif ext == '.pdf':
+                import pdfplumber
+                pages = []
+                with pdfplumber.open(io.BytesIO(data)) as pdf:
+                    for page in pdf.pages:
+                        t = page.extract_text()
+                        if t:
+                            pages.append(t)
+                if not pages:
+                    return {'error': 'テキストを抽出できませんでした（スキャンPDFは非対応）'}
+                return {'text': '\n'.join(pages)}
+            else:
+                return {'error': f'非対応の形式: {ext}'}
+        except Exception as e:
+            import traceback
+            return {'error': str(e), 'trace': traceback.format_exc()}
+
     # --- 設定 ---
     def get_config(self) -> dict:
         """現在の設定を返す"""
