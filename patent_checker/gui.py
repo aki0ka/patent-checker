@@ -162,14 +162,19 @@ def main():
 
     api = Api()
 
+    # None や型崩れに備えて明示的に int/bool へ変換する
+    win_w = int(cfg.get('window_width') or 1440)
+    win_h = int(cfg.get('window_height') or 900)
+    on_top = bool(cfg.get('always_on_top') or False)
+
     window = webview.create_window(
         title='特許明細書チェッカー',
         url=url,
         js_api=api,
-        width=cfg.get('window_width', 1440),
-        height=cfg.get('window_height', 900),
+        width=win_w,
+        height=win_h,
         min_size=(900, 600),
-        on_top=cfg.get('always_on_top', False),
+        on_top=on_top,
     )
 
     def on_loaded():
@@ -183,10 +188,13 @@ def main():
 
     webview.start(debug=False)
 
-    # 終了時にウィンドウサイズを保存
+    # 終了時にウィンドウサイズを保存（None チェック: pywebviewが None を返す場合がある）
     try:
-        _cfg.set_value('window_width', window.width)
-        _cfg.set_value('window_height', window.height)
+        w = window.width
+        h = window.height
+        if isinstance(w, int) and isinstance(h, int) and w > 0 and h > 0:
+            _cfg.set_value('window_width', w)
+            _cfg.set_value('window_height', h)
     except Exception:
         pass
 

@@ -26,10 +26,22 @@ def load() -> dict:
         if os.path.exists(_CONFIG_FILE):
             with open(_CONFIG_FILE, 'r', encoding='utf-8') as f:
                 saved = json.load(f)
-            # 既知キーのみ採用
+            # 既知キーのみ採用（Noneや型不一致はデフォルト値で上書き）
             for k in _DEFAULTS:
-                if k in saved:
-                    config[k] = saved[k]
+                if k in saved and saved[k] is not None:
+                    # 数値項目は int/float に強制変換して型崩れを防ぐ
+                    default_val = _DEFAULTS[k]
+                    try:
+                        if isinstance(default_val, bool):
+                            config[k] = bool(saved[k])
+                        elif isinstance(default_val, int):
+                            config[k] = int(saved[k])
+                        elif isinstance(default_val, float):
+                            config[k] = float(saved[k])
+                        else:
+                            config[k] = saved[k]
+                    except (ValueError, TypeError):
+                        pass  # 変換失敗はデフォルト値を維持
     except Exception:
         pass  # 読めなければデフォルトで続行
     return config
