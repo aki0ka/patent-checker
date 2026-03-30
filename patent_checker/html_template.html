@@ -495,36 +495,88 @@ function runAnalyzeFromInput() {
     var files = e.dataTransfer.files;
     if (!files || files.length === 0) return;
     var file = files[0];
-    // pywebviewではfile.pathでローカルパスを取得できる環境とできない環境がある
-    var path = file.path || null;
+
     if (!window.pywebview || !window.pywebview.api) {
       errEl.textContent = 'APIの初期化を待っています…';
       errEl.style.display = '';
       return;
     }
-    if (!path) {
-      // pathが取得できない場合：ファイルを選択ボタンに誘導
-      errEl.textContent = 'D&Dでパスを取得できませんでした。「ファイルを選択…」ボタンをお使いください。';
-      errEl.style.display = '';
+
+    // .txt はそのままテキスト読み込み（文字コード自動検出）
+    var ext = (file.name || '').split('.').pop().toLowerCase();
+    if (ext === 'txt') {
+      zone.textContent = '読み込み中…';
+      // Shift-JIS / UTF-8 を試みる
+      var trySJIS = function() {
+        var r2 = new FileReader();
+        r2.onload = function(ev) {
+          _resetDropZone();
+          var text = ev.target.result;
+          document.getElementById('input-textarea').value = text;
+          runAnalyzeFromText(text);
+        };
+        r2.onerror = function() {
+          _resetDropZone();
+          var e2 = document.getElementById('drop-error');
+          if (e2) { e2.textContent = '文字コードを判別できませんでした'; e2.style.display = ''; }
+        };
+        r2.readAsText(file, 'Shift_JIS');
+      };
+      var r = new FileReader();
+      r.onload = function(ev) {
+        var text = ev.target.result;
+        // 文字化けチェック（置換文字が多い場合Shift-JISで再試行）
+        var bad = (text.match(/\ufffd/g) || []).length;
+        if (bad > 5) { trySJIS(); return; }
+        _resetDropZone();
+        document.getElementById('input-textarea').value = text;
+        runAnalyzeFromText(text);
+      };
+      r.onerror = function() { trySJIS(); };
+      r.readAsText(file, 'UTF-8');
       return;
     }
-    zone.textContent = '読み込み中…';
-    window.pywebview.api.read_file(path).then(function(result) {
-      _resetDropZone();
-      if (result && result.error) {
+
+    // .docx / .pdf はバイナリをbase64に変換してPython側でテキスト抽出
+    if (ext === 'docx' || ext === 'pdf') {
+      zone.textContent = '読み込み中…';
+      var rb = new FileReader();
+      rb.onload = function(ev) {
+        // ArrayBuffer → base64
+        var ab = ev.target.result;
+        var bytes = new Uint8Array(ab);
+        var binary = '';
+        for (var i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+        var b64 = btoa(binary);
+        window.pywebview.api.read_file_b64(file.name, b64).then(function(result) {
+          _resetDropZone();
+          if (result && result.error) {
+            var e2 = document.getElementById('drop-error');
+            if (e2) { e2.textContent = result.error; e2.style.display = ''; }
+            return;
+          }
+          if (result && result.text) {
+            document.getElementById('input-textarea').value = result.text;
+            runAnalyzeFromText(result.text);
+          }
+        }).catch(function(err) {
+          _resetDropZone();
+          var e2 = document.getElementById('drop-error');
+          if (e2) { e2.textContent = String(err); e2.style.display = ''; }
+        });
+      };
+      rb.onerror = function() {
+        _resetDropZone();
         var e2 = document.getElementById('drop-error');
-        if (e2) { e2.textContent = result.error; e2.style.display = ''; }
-        return;
-      }
-      if (result && result.text) {
-        document.getElementById('input-textarea').value = result.text;
-        runAnalyzeFromText(result.text);
-      }
-    }).catch(function(err) {
-      _resetDropZone();
-      var e2 = document.getElementById('drop-error');
-      if (e2) { e2.textContent = String(err); e2.style.display = ''; }
-    });
+        if (e2) { e2.textContent = 'ファイルの読み込みに失敗しました'; e2.style.display = ''; }
+      };
+      rb.readAsArrayBuffer(file);
+      return;
+    }
+
+    // 非対応拡張子
+    errEl.textContent = '対応していない形式です（.txt / .docx / .pdf のみ）';
+    errEl.style.display = '';
   });
 })();
 
