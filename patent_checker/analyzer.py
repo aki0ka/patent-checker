@@ -174,6 +174,10 @@ FUGO_EXCLUDE_LIST = {
     '特許', '請求項',
     # 手順参照語（ステップＳ→変数記号誤検出防止）
     'ステップ',
+    # 数量・変化語（「数１」「化１」等の誤検出防止）
+    '数', '化', '乃至',
+    # 日付・年号（「平成３年」「昭和２０年」「令和５年」等）
+    '年', '月', '日', '平成', '昭和', '令和',
 }
 
 
@@ -217,6 +221,12 @@ def _is_fugo_exclude(name, toks=None):
     if name.endswith('例'):
         return True
     if name.endswith('形態'):
+        return True
+    # 国際特許分類（Ａ３１Ｂ７／０２等）
+    if name.startswith('国際特許分類'):
+        return True
+    # 全角大文字4文字以上の技術規格略称（ＩＥＥＥ, ＣＤＭＡ等）を除外
+    if len(name) >= 4 and all(_is_zenkaku_upper(c) for c in name):
         return True
     # 公報番号パターン
     if _is_koho_name(name) or _is_koho_name_part(name):
@@ -279,6 +289,9 @@ def classify_fugo(fugo):
         while alpha_len < len(fugo) and _is_zenkaku_alpha(fugo[alpha_len]):
             alpha_len += 1
         if alpha_len >= 2:
+            # 全角大文字のみ（Ｗｉ-Ｆｉ等の小文字混在ケースを除外）
+            if not all(_is_zenkaku_upper(fugo[k]) for k in range(alpha_len)):
+                return None
             # 残りが全角数字列
             rest = fugo[alpha_len:]
             if rest and all(_is_zenkaku_digit(c) for c in rest):
@@ -308,6 +321,10 @@ def _collect_fugo_suffix(tokens, start_idx):
         fugo_parts.append(tokens[j]['surf'])
         j += 1
 
+    # 小数点（全角ピリオド）が続く場合は数値表現（電圧１．０Ｖ等）として符号ではない
+    if j < n and tokens[j]['surf'] in ('．', '.'):
+        return [], j
+
     # ハイフン付きサフィックス: 全角数詞の後に「－」＋数詞/名詞
     # 例: １００３－１, １００３－ｎ, １００１－Ａ
     if (j + 1 < n
@@ -324,7 +341,14 @@ def _collect_fugo_suffix(tokens, start_idx):
 
     # サフィックス（全角英字1〜2文字、ハイフンなし）
     elif j < n and _is_alpha_fugo_tok(tokens[j]):
-        if j + 1 < n and _is_noun_tok(tokens[j+1]) and tokens[j+1]['pos1'] != '数詞':
+        next_tok = tokens[j + 1] if j + 1 < n else None
+        next_surf = next_tok['surf'] if next_tok else ''
+        # 「以外」「以上」「以下」「など」等の後置語は次の要素名ではないのでサフィックスを収集する
+        _alpha_allow_next = {'以外', '以上', '以下', '以内', 'など', '等', 'を', 'に', 'の', 'は', 'が', 'も', 'で', 'と', 'へ', 'より'}
+        if (next_tok is not None
+                and _is_noun_tok(next_tok)
+                and next_tok['pos1'] != '数詞'
+                and next_surf not in _alpha_allow_next):
             # 次が名詞の場合はスキップ（要素名扱い）
             pass
         else:
@@ -973,6 +997,8 @@ _HEADING_TYPE2 = {
 _HEADING_TYPE2_NOCHECK = {
     '図面の簡単な説明',
     '符号の説明',
+    '要約',
+    '要約書',
 }
 
 # TYPE3: 右側不要・配下に段落番号不要（次に決まった見出しが来る）
@@ -1162,9 +1188,20 @@ def check_para_nums(text):
     issues = []
 
     # 全段落番号を行番号付きで抽出
+    # 要約・要約書セクションは別途番号体系を持つため除外する
+    _abstract_start = re.compile(r'^【(?:要約書?|ABSTRACT)】', re.IGNORECASE)
+    _abstract_end = re.compile(r'^【(?:発明の詳細な説明|特許請求の範囲|図面の簡単な説明)】')
+    in_abstract = False
     entries = []
     for i, line in enumerate(text.splitlines(), 1):
-        m = re.match(r'^【(\d{4,5})】', line.strip())
+        stripped = line.strip()
+        if _abstract_start.match(stripped):
+            in_abstract = True
+        elif in_abstract and _abstract_end.match(stripped):
+            in_abstract = False
+        if in_abstract:
+            continue
+        m = re.match(r'^【(\d{4,5})】', stripped)
         if m:
             entries.append((i, int(m.group(1))))
 
@@ -1239,6 +1276,7 @@ def check_kuten(sections):
         # 段落ブロックを構築: 【XXXX】で区切られた段落内の末尾行を確認
         para_start = None
         para_lines = []
+        in_fugo_section = False  # 符号の説明セクション内は句点不要
 
         def flush_para(plines, start_lineno):
             """段落末尾の句点チェック。段落全体を1文として扱う。"""
@@ -1265,17 +1303,38 @@ def check_kuten(sections):
             }
 
         para_pat = re.compile(r'^【(\d{4,5})】')
+        _fugo_heading = re.compile(r'^【符号の説明】')
+        _next_heading = re.compile(r'^【[^０-９0-9][^】]*】')  # 次の見出し（段落番号以外）
         for i, line in enumerate(lines, 1):
-            if para_pat.match(line.strip()):
+            stripped = line.strip()
+            # 符号の説明セクションの開始を検出
+            if _fugo_heading.match(stripped):
                 if para_lines:
+                    if not in_fugo_section:
+                        iss = flush_para(para_lines, para_start)
+                        if iss:
+                            issues.append(iss)
+                    para_lines = []
+                in_fugo_section = True
+                para_start = None
+                continue
+            # 符号の説明の後に別の見出しが来たら通常モードに戻る
+            if in_fugo_section and _next_heading.match(stripped):
+                in_fugo_section = False
+            if para_pat.match(stripped):
+                if para_lines and not in_fugo_section:
                     iss = flush_para(para_lines, para_start)
                     if iss:
                         issues.append(iss)
-                para_start = i
-                para_lines = [line]
-            elif para_start is not None:
+                if not in_fugo_section:
+                    para_start = i
+                    para_lines = [line]
+                else:
+                    para_start = None
+                    para_lines = []
+            elif para_start is not None and not in_fugo_section:
                 para_lines.append(line)
-        if para_lines:
+        if para_lines and not in_fugo_section:
             iss = flush_para(para_lines, para_start)
             if iss:
                 issues.append(iss)
@@ -1673,17 +1732,21 @@ def check_support(claims, sections):
             "in_impl":  in_impl,
         })
 
-    # issueは「詳細説明全体にない」ものだけ
+    # issueは「発明を実施するための形態に見当たらない」ものを報告
+    # impl_textが空の場合は詳細説明全体(desc)で代替
+    _primary_text = impl_text if impl_text else desc
     for num in sorted(claims.keys()):
         body = claims[num]
         nouns = extract_nouns_for_support(body)
         missing = sorted([n for n in nouns
-                          if len(n) >= 2 and n not in desc])
+                          if len(n) >= 2 and n not in _primary_text])
         if missing:
+            sec_label = ('「発明を実施するための形態」'
+                         if impl_text else '「発明の詳細な説明」')
             issues.append({
                 "milestone": "M6", "level": "warning",
                 "claim": num,
-                "msg": f"請求項{num}：発明の詳細な説明に見当たらない語句があります",
+                "msg": f"請求項{num}：{sec_label}に見当たらない語句があります",
                 "detail": "未記載の可能性：" + "、".join(missing[:12]) +
                           ("…" if len(missing) > 12 else "")
             })

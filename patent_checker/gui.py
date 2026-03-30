@@ -53,13 +53,42 @@ class Api:
     def set_always_on_top(self, enabled: bool) -> dict:
         """常に前面表示を切り替える"""
         try:
+            _cfg.set_value('always_on_top', bool(enabled))
             windows = webview.windows
             if windows:
-                windows[0].on_top = bool(enabled)
-            _cfg.set_value('always_on_top', bool(enabled))
+                import threading
+                def _apply():
+                    try:
+                        windows[0].on_top = bool(enabled)
+                    except Exception:
+                        pass
+                threading.Thread(target=_apply, daemon=True).start()
             return {'ok': True}
         except Exception as e:
             return {'error': str(e)}
+
+    def open_file_dialog(self) -> dict:
+        """ネイティブファイルダイアログを開きファイルを読み込む"""
+        try:
+            windows = webview.windows
+            if not windows:
+                return {'error': 'ウィンドウが見つかりません'}
+            result = windows[0].create_file_dialog(
+                webview.OPEN_DIALOG,
+                allow_multiple=False,
+                file_types=(
+                    'テキストファイル (*.txt)',
+                    'Word文書 (*.docx)',
+                    'PDFファイル (*.pdf)',
+                    '全ファイル (*.*)',
+                ),
+            )
+            if not result or len(result) == 0:
+                return {'cancelled': True}
+            return read_file(result[0])
+        except Exception as e:
+            import traceback
+            return {'error': str(e), 'trace': traceback.format_exc()}
 
     def save_setting(self, key: str, value) -> dict:
         """任意の設定値を保存する"""

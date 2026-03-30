@@ -296,13 +296,18 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
       <!-- ドロップゾーン -->
       <div id="drop-zone" style="
         border:2px dashed var(--border2);border-radius:6px;
-        padding:28px 24px;text-align:center;cursor:pointer;
+        padding:20px 24px;text-align:center;cursor:pointer;
         color:var(--ink3);font-size:13px;line-height:2;
         transition:border-color .2s,background .2s;flex-shrink:0;
       ">
-        <div style="font-size:32px;margin-bottom:8px">📂</div>
+        <div style="font-size:32px;margin-bottom:4px">📂</div>
         <div>ファイルをここにドロップ</div>
         <div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>
+        <button onclick="openFileDialog()" style="
+          margin-top:8px;background:var(--surface);color:var(--ink);
+          border:1px solid var(--border2);border-radius:4px;
+          padding:5px 14px;font-size:12px;cursor:pointer;
+        ">ファイルを選択…</button>
         <div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>
       </div>
       <!-- テキストエリア -->
@@ -490,29 +495,25 @@ function runAnalyzeFromInput() {
     var files = e.dataTransfer.files;
     if (!files || files.length === 0) return;
     var file = files[0];
-    // pywebviewはfile.pathでローカルパスを取得できる
-    var path = file.path || (file.name ? null : null);
-    if (!path) {
-      errEl.textContent = 'ファイルパスを取得できませんでした';
-      errEl.style.display = '';
-      return;
-    }
+    // pywebviewではfile.pathでローカルパスを取得できる環境とできない環境がある
+    var path = file.path || null;
     if (!window.pywebview || !window.pywebview.api) {
       errEl.textContent = 'APIの初期化を待っています…';
       errEl.style.display = '';
       return;
     }
+    if (!path) {
+      // pathが取得できない場合：ファイルを選択ボタンに誘導
+      errEl.textContent = 'D&Dでパスを取得できませんでした。「ファイルを選択…」ボタンをお使いください。';
+      errEl.style.display = '';
+      return;
+    }
     zone.textContent = '読み込み中…';
     window.pywebview.api.read_file(path).then(function(result) {
-      // ゾーンを元に戻す
-      zone.innerHTML = '<div style="font-size:32px;margin-bottom:8px">📂</div>' +
-        '<div>ファイルをここにドロップ</div>' +
-        '<div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>' +
-        '<div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>';
+      _resetDropZone();
       if (result && result.error) {
         var e2 = document.getElementById('drop-error');
-        e2.textContent = result.error;
-        e2.style.display = '';
+        if (e2) { e2.textContent = result.error; e2.style.display = ''; }
         return;
       }
       if (result && result.text) {
@@ -520,15 +521,43 @@ function runAnalyzeFromInput() {
         runAnalyzeFromText(result.text);
       }
     }).catch(function(err) {
-      zone.innerHTML = '<div style="font-size:32px;margin-bottom:8px">📂</div>' +
-        '<div>ファイルをここにドロップ</div>' +
-        '<div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>' +
-        '<div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>';
+      _resetDropZone();
       var e2 = document.getElementById('drop-error');
       if (e2) { e2.textContent = String(err); e2.style.display = ''; }
     });
   });
 })();
+
+function _resetDropZone() {
+  var zone = document.getElementById('drop-zone');
+  if (!zone) return;
+  zone.innerHTML = '<div style="font-size:32px;margin-bottom:4px">📂</div>' +
+    '<div>ファイルをここにドロップ</div>' +
+    '<div style="font-size:11px;color:var(--ink3)">.txt &nbsp;/&nbsp; .docx &nbsp;/&nbsp; .pdf（テキストPDFのみ）</div>' +
+    '<button onclick="openFileDialog()" style="margin-top:8px;background:var(--surface);color:var(--ink);border:1px solid var(--border2);border-radius:4px;padding:5px 14px;font-size:12px;cursor:pointer;">ファイルを選択…</button>' +
+    '<div id="drop-error" style="color:var(--red);font-size:11px;margin-top:6px;display:none"></div>';
+}
+
+// ── ネイティブファイルダイアログで開く ──
+function openFileDialog() {
+  if (!window.pywebview || !window.pywebview.api) {
+    alert('APIの初期化を待っています…');
+    return;
+  }
+  window.pywebview.api.open_file_dialog().then(function(result) {
+    if (!result || result.cancelled) return;
+    if (result.error) {
+      alert('エラー: ' + result.error);
+      return;
+    }
+    if (result.text) {
+      document.getElementById('input-textarea').value = result.text;
+      runAnalyzeFromText(result.text);
+    }
+  }).catch(function(err) {
+    alert('ファイル読み込みエラー: ' + String(err));
+  });
+}
 
 // ── 結果をMarkdownでコピー ──
 function copyResultsMarkdown() {
@@ -989,7 +1018,7 @@ function showM4Para(iss, d) {
   if (!paraIds.length) return;
   var wrap = document.getElementById('block-wrap');
   var html = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button></div>';
-  var lvColors = {error:'var(--red)', warning:'var(--gold)', style:'var(--style)'};
+  var lvColors = {error:'var(--red)', warning:'var(--gold)', info:'var(--blue)', style:'var(--ink3)'};
   var col = lvColors[iss.level] || 'var(--ink3)';
   html += '<div class="block-sep" style="color:'+col+'">▼ '+esc(iss.msg.slice(0,60))+'</div>';
   var shown = {};
@@ -1546,7 +1575,7 @@ function selectIssue(iss, rowIdx, mid) {
   var sameSection = blocks.filter(function(b){return b.section===focusBlock.section;});
   var fi = sameSection.findIndex(function(b){return b.id===focusId;});
   var start = Math.max(0, fi-2), end2 = Math.min(sameSection.length-1, fi+2);
-  var lvColors = {error:'var(--red)', warning:'var(--gold)', style:'var(--style)'};
+  var lvColors = {error:'var(--red)', warning:'var(--gold)', info:'var(--blue)', style:'var(--ink3)'};
   var col = lvColors[iss.level] || 'var(--ink3)';
   var html2 = '<div class="block-nav"><button onclick="showAllBlocks()">全体表示</button></div>';
   html2 += '<div class="block-sep" style="color:'+col+'">▼ '+esc((iss.msg||'').slice(0,60))+'</div>';
