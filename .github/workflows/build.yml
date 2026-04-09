@@ -12,10 +12,10 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            artifact: PatentChecker-mac
+            artifact: MeisaiChecker-mac
             ext: ""
           - os: windows-latest
-            artifact: PatentChecker-win
+            artifact: MeisaiChecker-win
             ext: ".exe"
 
     runs-on: ${{ matrix.os }}
@@ -37,7 +37,7 @@ jobs:
       - name: PyInstaller でビルド
         run: |
           pyinstaller \
-            --name PatentChecker \
+            --name MeisaiChecker \
             --noconsole \
             --add-data "patent_checker/html_template.html:patent_checker" \
             --collect-data unidic_lite \
@@ -52,14 +52,14 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           cd dist
-          zip -r ../${{ matrix.artifact }}.zip PatentChecker.app
+          zip -r ../${{ matrix.artifact }}.zip MeisaiChecker.app
 
       # Windows: フォルダをzip圧縮
       - name: Windows アーカイブ作成
         if: matrix.os == 'windows-latest'
         run: |
           cd dist
-          Compress-Archive -Path PatentChecker -DestinationPath ../${{ matrix.artifact }}.zip
+          Compress-Archive -Path MeisaiChecker -DestinationPath ../${{ matrix.artifact }}.zip
         shell: pwsh
 
       - name: アーティファクトをアップロード
@@ -82,25 +82,25 @@ jobs:
       - name: Mac アーティファクトをダウンロード
         uses: actions/download-artifact@v4
         with:
-          name: PatentChecker-mac
+          name: MeisaiChecker-mac
 
       - name: Windows アーティファクトをダウンロード
         uses: actions/download-artifact@v4
         with:
-          name: PatentChecker-win
+          name: MeisaiChecker-win
 
       - name: GitHub Release を作成
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            PatentChecker-mac.zip
-            PatentChecker-win.zip
+            MeisaiChecker-mac.zip
+            MeisaiChecker-win.zip
           body: |
-            ## 特許明細書チェッカー ${{ github.ref_name }}
+            ## meisai-checker ${{ github.ref_name }}
 
             ### ダウンロード
-            - **Mac**: PatentChecker-mac.zip を展開して PatentChecker.app を起動
-            - **Windows**: PatentChecker-win.zip を展開して PatentChecker.exe を起動
+            - **Mac**: MeisaiChecker-mac.zip を展開して MeisaiChecker.app を起動
+            - **Windows**: MeisaiChecker-win.zip を展開して MeisaiChecker.exe を起動
 
             ### インストール不要
             Python等の事前インストールは不要です。
