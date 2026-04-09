@@ -361,9 +361,7 @@ def main():
             if sec in ('all', 'support', 'm6') and args.verbose:
                 print(f"\n=== サポート要件 ({len(result['support_table'])}件) ===")
                 for row in result['support_table']:
-                    flags = ('解決手段:' + ('✓' if row['in_solve'] else '✗') + ' ' +
-                             '実施形態:' + ('✓' if row['in_impl'] else '✗') + ' ' +
-                             '詳細説明:' + ('✓' if row['in_desc'] else '✗'))
+                    flags = '実施形態:' + ('✓' if row['in_impl'] else '✗')
                     claims_str = ','.join(map(str, row['claims']))
                     print(f"  請求項{claims_str:8s} {row['noun']:20s} {flags}")
 

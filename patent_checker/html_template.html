@@ -1282,11 +1282,9 @@ function buildSupportTab(con, d) {
   var hdr = document.createElement('div');
   hdr.style.cssText = 'flex-shrink:0;background:var(--surface)';
   hdr.innerHTML = '<table class="m2-table" style="table-layout:fixed"><thead><tr>' +
-    '<th style="width:28%">語句</th>' +
-    '<th style="width:16%">請求項</th>' +
-    '<th style="width:18%">解決手段</th>' +
-    '<th style="width:19%">実施形態</th>' +
-    '<th style="width:19%">詳細説明</th>' +
+    '<th style="width:40%">語句</th>' +
+    '<th style="width:30%">請求項</th>' +
+    '<th style="width:30%">実施形態</th>' +
     '</tr></thead></table>';
   con.appendChild(hdr);
 
@@ -1303,8 +1301,7 @@ function buildSupportTab(con, d) {
   }
 
   st.forEach(function(row, i) {
-    var anyMiss = !row.in_desc ||
-      (row.in_solve === false) || (row.in_impl === false);
+    var anyMiss = (row.in_impl === false);
     var rowStyle = anyMiss ? ' style="background:rgba(224,85,85,.06)"' : '';
     var claimsStr = (row.claims||[]).map(function(n){
       return '<span class="m2-num">'+n+'</span>';
@@ -1312,9 +1309,7 @@ function buildSupportTab(con, d) {
     html += '<tr class="support-row" data-idx="'+i+'"'+rowStyle+'>' +
       '<td style="font-weight:500">'+esc(row.noun)+'</td>' +
       '<td>'+claimsStr+'</td>' +
-      cellOk(row.in_solve) +
       cellOk(row.in_impl) +
-      cellOk(row.in_desc) +
       '</tr>';
   });
   html += '</tbody></table>';

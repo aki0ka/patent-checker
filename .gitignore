@@ -46,3 +46,7 @@ htmlcov/
 # 環境変数
 .env
 .env.local
+
+# テスト用ファイル
+特許公報.zip
+特許公報/

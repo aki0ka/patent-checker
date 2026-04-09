@@ -973,10 +973,16 @@ def check_jis(sections):
 # 記録項目・段落番号・句点チェック
 # ══════════════════════════════════════════════════════════
 
-# TYPE1: 右側に記述が必要（段落番号チェック対象外）
+# TYPE1: 右側に記述が必要、または段落番号を置かないセクション
 _HEADING_TYPE1 = {
+    # 願書セクション（段落番号なし）
     '書類名', '発明の名称', '整理番号', '提出日', 'あて先',
     '国際特許分類', '住所又は居所', '氏名又は名称', '識別番号', '予納台帳番号',
+    '納付金額', '電話番号', 'ファクシミリ番号',
+    # 願書セクション（配下に子見出しのみ、段落番号なし）
+    '発明者', '特許出願人', '代理人', '弁理士',
+    '手数料の表示', '提出物件の目録', '物件名',
+    '選択図',
 }
 
 # TYPE2: 右側不要・配下に段落番号が必要
@@ -1028,7 +1034,11 @@ def _heading_type(label):
         return 4
     if re.match(r'^(特許文献|非特許文献)[０-９0-9]+$', label):
         return 1  # 右側に文献情報を記述
-    return 2  # その他（不明な見出し）→ TYPE2として扱う
+    if re.match(r'^図[０-９0-9]+$', label):
+        return 1  # 【図１】等は右側に説明文
+    if re.match(r'^請求項[０-９0-9]+$', label):
+        return 1  # 請求項は段落番号なし
+    return 1  # 未知の見出し → 誤検出回避のためチェックスキップ
 
 
 _MEISHO_ITEMS = [
@@ -1067,9 +1077,10 @@ def check_structure(text):
     lines = text.splitlines()
 
     # 明細書本文の開始行を特定
+    # 出願形式: 【書類名】　明細書 / J-PlatPat: 【発明の詳細な説明】
     start_line = 0
     for i, line in enumerate(lines):
-        if re.search(r'【発明の詳細な説明】|【特許請求の範囲】', line):
+        if re.search(r'【書類名】\s*明細書|【発明の詳細な説明】|【特許請求の範囲】', line):
             start_line = i
             break
     lines = lines[start_line:]
@@ -1677,35 +1688,63 @@ def extract_nouns_for_support(text):
     return set(keep)
 
 
-def _extract_section_text(desc, *headers):
-    """descriptionから指定見出しのセクションテキストを結合して返す"""
-    result = []
-    for header in headers:
-        m = re.search(r'【' + re.escape(header) + r'】([\s\S]*?)(?=【[^０-９\d]|$)', desc)
-        if m:
-            result.append(m.group(1))
-    return ''.join(result)
+# サポート要件チェック(M6)の監視対象スコープ終端。
+# 「発明を実施するための形態」+「実施例」以降でこれらが現れたら打ち切る。
+_IMPL_SCOPE_END = re.compile(
+    r'【(?:産業上の利用可能性|符号の説明|発明の効果|受託番号|'
+    r'書類名|特許請求の範囲|図面の簡単な説明)】')
+
+
+def _extract_impl_scope(desc):
+    """サポート要件用: 「発明を実施するための形態」から「実施例」末尾までを抽出。
+
+    開始: 【発明を実施するための形態】(旧様式: 実施例, 実施の形態 等)
+    終了: 【産業上の利用可能性】【符号の説明】【発明の効果】【書類名】等の手前
+    """
+    # 開始位置を探す
+    start_pat = re.compile(
+        r'【(?:発明を実施するための形態|発明を実施するための最良の形態|'
+        r'実施例|実施の形態|実施形態)(?:[０-９\d]*)】')
+    m_start = start_pat.search(desc)
+    if not m_start:
+        return ''
+    start = m_start.start()
+
+    # 終了位置を探す
+    m_end = _IMPL_SCOPE_END.search(desc, m_start.end())
+    end = m_end.start() if m_end else len(desc)
+
+    return desc[start:end]
 
 
 def check_support(claims, sections):
-    """M6: サポート要件チェック。請求項の語句が詳細説明に記載されているか確認。"""
+    """M6: サポート要件チェック（36条6項1号）。
+
+    スコープ:
+      「発明を実施するための形態」〜「実施例」末尾のみ。
+      課題を解決するための手段・発明の効果・産業上の利用可能性・
+      符号の説明等は対象外。
+    """
     issues = []
     desc = sections.get("description", "")
     if not desc:
         issues.append({
             "milestone": "M6", "level": "warning",
-            "msg": "発明の詳細な説明が見つかりません"
+            "msg": "明細書が見つかりません"
         })
         return issues, []
 
-    # セクション別テキスト
-    solve_text = _extract_section_text(desc,
-        '課題を解決するための手段', '発明が解決しようとする課題')
-    impl_text  = _extract_section_text(desc,
-        '発明を実施するための形態', '発明を実施するための最良の形態',
-        '実施例', '実施の形態', '実施形態')
+    impl_text = _extract_impl_scope(desc)
 
-    # support_table: [{noun, claims:[num...], in_solve:bool, in_impl:bool}]
+    if not impl_text:
+        issues.append({
+            "milestone": "M6", "level": "warning",
+            "msg": "「発明を実施するための形態」セクションが見つかりません。"
+                   "サポート要件チェックをスキップします"
+        })
+        return issues, []
+
+    # support_table: [{noun, claims:[num...], in_impl:bool}]
     support_table = []
     noun_to_claims = {}  # noun → [claim_num, ...]
 
@@ -1719,36 +1758,29 @@ def check_support(claims, sections):
                 if num not in noun_to_claims[n]:
                     noun_to_claims[n].append(num)
 
-    # キャッシュした noun_to_claims を使用して support_table を構築
+    # support_table を構築
     for noun in sorted(noun_to_claims.keys()):
-        in_desc  = noun in desc
-        in_solve = noun in solve_text if solve_text else None
-        in_impl  = noun in impl_text  if impl_text  else None
+        in_impl = noun in impl_text
         support_table.append({
             "noun":     noun,
             "claims":   noun_to_claims[noun],
-            "in_desc":  in_desc,
-            "in_solve": in_solve,
             "in_impl":  in_impl,
         })
 
-    # issueは「発明を実施するための形態に見当たらない」ものを報告
-    # impl_textが空の場合は詳細説明全体(desc)で代替
-    _primary_text = impl_text if impl_text else desc
+    # issueは「発明を実施するための形態」に見当たらないものだけを報告
     for num in sorted(claims.keys()):
         body = claims[num]
         nouns = extract_nouns_for_support(body)
         missing = sorted([n for n in nouns
-                          if len(n) >= 2 and n not in _primary_text])
+                          if len(n) >= 2 and n not in impl_text])
         if missing:
-            sec_label = ('「発明を実施するための形態」'
-                         if impl_text else '「発明の詳細な説明」')
             issues.append({
                 "milestone": "M6", "level": "warning",
                 "claim": num,
-                "msg": f"請求項{num}：{sec_label}に見当たらない語句があります",
-                "detail": "未記載の可能性：" + "、".join(missing[:12]) +
-                          ("…" if len(missing) > 12 else "")
+                "msg": f"請求項{num}：実施形態に未記載の語句: "
+                       + "、".join(missing[:12])
+                       + ("…" if len(missing) > 12 else ""),
+                "missing_nouns": missing,
             })
     return issues, support_table
 

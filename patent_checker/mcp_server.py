@@ -143,14 +143,18 @@ def patent_check_issues(text: str, level: str = "error", milestone: str = "all",
     all_issues = []
     for mid in mids:
         for iss in _filter_issues(result['issues'][mid], level):
-            all_issues.append({
+            entry = {
                 'milestone': mid,
-                'label':     _MS_LABELS[mid],
                 'level':     iss.get('level'),
-                'msg':       iss.get('msg'),
-                'detail':    iss.get('detail', ''),
                 'claim':     iss.get('claim'),
-            })
+                'msg':       iss.get('msg'),
+            }
+            # 構造化データがあればそれを優先、なければ detail を付与
+            if iss.get('missing_nouns'):
+                entry['missing_nouns'] = iss['missing_nouns']
+            elif iss.get('detail'):
+                entry['detail'] = iss['detail']
+            all_issues.append(entry)
 
     return _dump({
         'summary':    summary,
