@@ -15,41 +15,22 @@
 | M8: 明細書記録項目 | 様式第29に基づく必須項目・順序・段落番号の整合性 |
 | M9: 特許願記録項目 | 様式第26に基づく願書の必須記載事項・書式 |
 
-## インストール
+## はじめかた
 
-Python 3.10以上が必要です。pipx を使うと依存ライブラリが隔離環境に入るので安全です。
+Python 3.10以上が必要です。
 
-```bash
-# pipx がなければ先にインストール
-pip install pipx
-python -m pipx ensurepath   # PATHを通す（ターミナル再起動が必要）
+1. [ZIPをダウンロード](https://github.com/aki0ka/meisai-checker/archive/refs/heads/main.zip) して展開
+2. **Windows**: `start.bat` をダブルクリック / **Mac**: `start.command` をダブルクリック
 
-# GUI付きでインストール（推奨）
-pipx install "meisai-checker[gui] @ git+https://github.com/aki0ka/meisai-checker.git"
+初回のみ自動でセットアップが走ります（venv作成＋依存インストール）。2回目以降は即起動します。
 
-# CLIのみ（最小構成）
-pipx install "meisai-checker @ git+https://github.com/aki0ka/meisai-checker.git"
-
-# MCPサーバー付き（Claude Desktopと連携）
-pipx install "meisai-checker[mcp] @ git+https://github.com/aki0ka/meisai-checker.git"
-
-# すべて
-pipx install "meisai-checker[all] @ git+https://github.com/aki0ka/meisai-checker.git"
-```
-
-インストール後は `meisai-checker` コマンドが使えます。アップデートは `pipx upgrade meisai-checker` で行えます。
-
-<details>
-<summary>pip で直接インストールする場合</summary>
-
-```bash
-pip install "meisai-checker[gui] @ git+https://github.com/aki0ka/meisai-checker.git"
-```
-</details>
+> **プライバシー**: このツールはすべてローカルで動作します。入力テキストがネットワークに送信されることはありません。ソースコードはすべて手元にあるので確認できます。
 
 ## 使い方
 
 ### GUI（デスクトップアプリ）
+
+`start.bat` / `start.command` で起動、または:
 
 ```bash
 meisai-checker
@@ -81,13 +62,15 @@ meisai-checker --html 明細書.txt
 
 ### Claude（MCP）と連携
 
-`pipx install "meisai-checker[mcp] @ git+https://github.com/aki0ka/meisai-checker.git"` の後、Claude Desktopの設定ファイルに追加します。
+Claude Desktopの設定ファイルに追加します。`/path/to/meisai-checker` は展開したフォルダのパスに置き換えてください。
 
 ```json
 {
   "mcpServers": {
     "meisai-checker": {
-      "command": "meisai-checker-mcp"
+      "command": "/path/to/meisai-checker/.venv/bin/python",
+      "args": ["-m", "patent_checker.mcp_server"],
+      "cwd": "/path/to/meisai-checker"
     }
   }
 }
