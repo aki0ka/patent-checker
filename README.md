@@ -52,10 +52,8 @@ pip install "meisai-checker[gui] @ git+https://github.com/aki0ka/meisai-checker.
 ### GUI（デスクトップアプリ）
 
 ```bash
-python -m patent_checker
+meisai-checker
 ```
-
-または `meisai-checker` コマンド、もしくはダウンロードした `.app` / `.exe` をダブルクリック。
 
 **入力方法**
 
@@ -83,14 +81,13 @@ meisai-checker --html 明細書.txt
 
 ### Claude（MCP）と連携
 
-`pip install "meisai-checker[mcp]"` の後、Claude Desktopの設定ファイルに追加します。
+`pipx install "meisai-checker[mcp] @ git+https://github.com/aki0ka/meisai-checker.git"` の後、Claude Desktopの設定ファイルに追加します。
 
 ```json
 {
   "mcpServers": {
     "meisai-checker": {
-      "command": "python3",
-      "args": ["-m", "patent_checker.mcp_server"]
+      "command": "meisai-checker-mcp"
     }
   }
 }
