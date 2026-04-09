@@ -16,7 +16,7 @@
 Claude Desktop の設定例 (claude_desktop_config.json):
   {
     "mcpServers": {
-      "patent-checker": {
+      "meisai-checker": {
         "command": "uv",
         "args": ["run", "/path/to/mcp_server.py"]
       }
@@ -43,7 +43,7 @@ from patent_checker.m7_ambiguity import check_ambiguity
 from patent_checker.m8_docfields import check_docfields
 from patent_checker.m9_gansho import check_gansho
 
-mcp = FastMCP("patent-checker")
+mcp = FastMCP("meisai-checker")
 
 _LEVEL_ORDER = {'error': 0, 'warning': 1, 'style': 2, 'info': 3, 'ok': 4}
 _MS_LABELS = {

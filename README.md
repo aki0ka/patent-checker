@@ -1,4 +1,4 @@
-# 特許明細書チェッカー
+# meisai-checker — 特許明細書チェッカー
 
 特許明細書・特許願の方式要件を自動チェックするツールです。特許事務所・企業知財部での出願前確認作業を支援します。
 
@@ -19,10 +19,10 @@
 
 GitHubリリースページからOSに合った実行ファイルをダウンロードしてダブルクリックするだけで動きます。
 
-- **Mac**: `PatentChecker-mac.zip`
-- **Windows**: `PatentChecker-win.zip`
+- **Mac**: `MeisaiChecker-mac.zip`
+- **Windows**: `MeisaiChecker-win.zip`
 
-→ [Releases](https://github.com/aki0ka/patent-checker/releases)
+→ [最新版をダウンロード](https://github.com/aki0ka/meisai-checker/releases/latest)　|　[過去のバージョン](https://github.com/aki0ka/meisai-checker/releases)
 
 ## Pythonでインストール
 
@@ -30,16 +30,16 @@ Python 3.10以上が必要です。
 
 ```bash
 # CLIのみ（最小構成）
-pip install patent-checker
+pip install meisai-checker
 
 # GUIアプリ付き（.docx / .pdf の読み込みを含む）
-pip install "patent-checker[gui]"
+pip install "meisai-checker[gui]"
 
 # MCPサーバー付き（Claude Desktopと連携）
-pip install "patent-checker[mcp]"
+pip install "meisai-checker[mcp]"
 
 # すべて
-pip install "patent-checker[all]"
+pip install "meisai-checker[all]"
 ```
 
 ## 使い方
@@ -50,7 +50,7 @@ pip install "patent-checker[all]"
 python -m patent_checker
 ```
 
-または `patent-checker` コマンド、もしくはダウンロードした `.app` / `.exe` をダブルクリック。
+または `meisai-checker` コマンド、もしくはダウンロードした `.app` / `.exe` をダブルクリック。
 
 **入力方法**
 
@@ -67,23 +67,23 @@ python -m patent_checker
 
 ```bash
 # テキストファイルを解析
-patent-checker 明細書.txt
+meisai-checker 明細書.txt
 
 # JSON形式で出力
-patent-checker --json 明細書.txt
+meisai-checker --json 明細書.txt
 
 # HTMLレポートをブラウザで開く
-patent-checker --html 明細書.txt
+meisai-checker --html 明細書.txt
 ```
 
 ### Claude（MCP）と連携
 
-`pip install "patent-checker[mcp]"` の後、Claude Desktopの設定ファイルに追加します。
+`pip install "meisai-checker[mcp]"` の後、Claude Desktopの設定ファイルに追加します。
 
 ```json
 {
   "mcpServers": {
-    "patent-checker": {
+    "meisai-checker": {
       "command": "python3",
       "args": ["-m", "patent_checker.mcp_server"]
     }
@@ -112,11 +112,11 @@ MCPサーバーの出力はTOON形式（JSON比で約30%トークン削減）を
 ## 開発
 
 ```bash
-git clone https://github.com/aki0ka/patent-checker
-cd patent-checker
+git clone https://github.com/aki0ka/meisai-checker
+cd meisai-checker
 pip install -e ".[all]"
 python main.py        # GUI起動
-patent-checker --help # CLIヘルプ
+meisai-checker --help # CLIヘルプ
 ```
 
 ## ライセンス

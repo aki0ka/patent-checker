@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 特許明細書チェッカー - 設定管理モジュール
-~/.patent-checker/config.json に設定を保存・読み込みする
+~/.meisai-checker/config.json に設定を保存・読み込みする
 """
 
 from __future__ import annotations
 import os
 import json
 
-_CONFIG_DIR = os.path.join(os.path.expanduser('~'), '.patent-checker')
+_CONFIG_DIR = os.path.join(os.path.expanduser('~'), '.meisai-checker')
 _CONFIG_FILE = os.path.join(_CONFIG_DIR, 'config.json')
 
 _DEFAULTS: dict = {
