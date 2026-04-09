@@ -15,32 +15,36 @@
 | M8: 明細書記録項目 | 様式第29に基づく必須項目・順序・段落番号の整合性 |
 | M9: 特許願記録項目 | 様式第26に基づく願書の必須記載事項・書式 |
 
-## ダウンロード（インストール不要）
+## インストール
 
-GitHubリリースページからOSに合った実行ファイルをダウンロードしてダブルクリックするだけで動きます。
-
-- **Mac**: `MeisaiChecker-mac.zip`
-- **Windows**: `MeisaiChecker-win.zip`
-
-→ [最新版をダウンロード](https://github.com/aki0ka/meisai-checker/releases/latest)　|　[過去のバージョン](https://github.com/aki0ka/meisai-checker/releases)
-
-## Pythonでインストール
-
-Python 3.10以上が必要です。
+Python 3.10以上が必要です。pipx を使うと依存ライブラリが隔離環境に入るので安全です。
 
 ```bash
-# CLIのみ（最小構成）
-pip install meisai-checker
+# pipx がなければ先にインストール
+pip install pipx
 
-# GUIアプリ付き（.docx / .pdf の読み込みを含む）
-pip install "meisai-checker[gui]"
+# GUI付きでインストール（推奨）
+pipx install "meisai-checker[gui] @ git+https://github.com/aki0ka/meisai-checker.git"
+
+# CLIのみ（最小構成）
+pipx install "meisai-checker @ git+https://github.com/aki0ka/meisai-checker.git"
 
 # MCPサーバー付き（Claude Desktopと連携）
-pip install "meisai-checker[mcp]"
+pipx install "meisai-checker[mcp] @ git+https://github.com/aki0ka/meisai-checker.git"
 
 # すべて
-pip install "meisai-checker[all]"
+pipx install "meisai-checker[all] @ git+https://github.com/aki0ka/meisai-checker.git"
 ```
+
+インストール後は `meisai-checker` コマンドが使えます。アップデートは `pipx upgrade meisai-checker` で行えます。
+
+<details>
+<summary>pip で直接インストールする場合</summary>
+
+```bash
+pip install "meisai-checker[gui] @ git+https://github.com/aki0ka/meisai-checker.git"
+```
+</details>
 
 ## 使い方
 
