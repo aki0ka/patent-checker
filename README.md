@@ -21,8 +21,36 @@
 
 Python 3.10以上が必要です。
 
+### Windows
+
 1. [ZIPをダウンロード](https://github.com/aki0ka/meisai-checker/archive/refs/heads/main.zip) して展開
-2. **Windows**: `start.bat` をダブルクリック / **Mac**: `start.command` をダブルクリック
+2. `start.bat` をダブルクリック
+
+### Mac
+
+ターミナルで以下を実行してください（`git` が必要です。未インストールの場合は初回実行時にXcodeコマンドラインツールのインストールを促されます）:
+
+```bash
+git clone https://github.com/aki0ka/meisai-checker.git
+cd meisai-checker
+./start.command
+```
+
+2回目以降は `cd meisai-checker && ./start.command` で起動します。
+
+> **なぜZIPではなくgit cloneか**: macOSはインターネットからダウンロードしたスクリプトを安全のためブロックします（Gatekeeper）。git clone した場合はこの制限がかからないため、追加の設定なしで実行できます。
+
+<details>
+<summary>どうしてもZIPで使いたい場合</summary>
+
+ZIPをダウンロードして展開した後、ターミナルで隔離属性を削除してから実行してください:
+
+```bash
+xattr -cr ~/Downloads/meisai-checker-main
+cd ~/Downloads/meisai-checker-main
+./start.command
+```
+</details>
 
 初回のみ自動でセットアップが走ります（venv作成＋依存インストール）。2回目以降は即起動します。
 
