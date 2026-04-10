@@ -19,7 +19,10 @@
 
 ## はじめかた
 
-Python 3.10以上が必要です。
+**Python 3.10以上が必要です。** 起動スクリプトが自動で検出します。
+
+- **Mac**: Python 3.10以上が入っていない場合は `brew install python@3.12` または [python.org](https://www.python.org/downloads/) からインストール（macOS標準の`python3`はXcode付属の3.9で古いので注意）
+- **Windows**: [python.org](https://www.python.org/downloads/) からインストール（「Add Python to PATH」にチェック）
 
 ### Windows
 
