@@ -94,6 +94,10 @@ MCPサーバーの出力はTOON形式（JSON比で約30%トークン削減）を
 - **Word (.docx)**: GUI/CLIでファイルを直接読み込み（全段落を順に結合）
 - **PDF (.pdf)**: テキストレイヤー付きPDFのみ対応（スキャンPDFは非対応）
 
+## フィードバック・改善提案
+
+バグ報告・機能要望・チェックルールの改善提案を歓迎します。[GitHub Issues](https://github.com/aki0ka/meisai-checker/issues) までお気軽にどうぞ。実際の特許実務に基づくご意見は特に歓迎です。
+
 ## 開発
 
 ```bash
