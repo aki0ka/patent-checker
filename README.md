@@ -69,7 +69,7 @@ Claude Desktopの設定ファイルに追加します。`/path/to/meisai-checker
   "mcpServers": {
     "meisai-checker": {
       "command": "/path/to/meisai-checker/.venv/bin/python",
-      "args": ["-m", "patent_checker.mcp_server"],
+      "args": ["-m", "meisai_checker.mcp_server"],
       "cwd": "/path/to/meisai-checker"
     }
   }

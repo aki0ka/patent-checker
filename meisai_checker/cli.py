@@ -164,29 +164,29 @@ def _generate_html_report(result):
 def main():
     """CLI メインエントリポイント"""
     parser = argparse.ArgumentParser(
-        prog='patent_checker',
+        prog='meisai_checker',
         description='特許明細書方式チェッカー',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""使用例:
   ファイル解析（サマリー表示）:
-    python -m patent_checker.cli -f 明細書.txt
+    python -m meisai_checker.cli -f 明細書.txt
 
   詳細出力（全issues）:
-    python -m patent_checker.cli -f 明細書.txt -v
+    python -m meisai_checker.cli -f 明細書.txt -v
 
   エラーのみ表示:
-    python -m patent_checker.cli -f 明細書.txt --level error
+    python -m meisai_checker.cli -f 明細書.txt --level error
 
   JSON出力（LLM・エージェント連携用）:
-    python -m patent_checker.cli -f 明細書.txt --json
-    python -m patent_checker.cli -f 明細書.txt --json --level error
-    python -m patent_checker.cli -f 明細書.txt --json --section m3
+    python -m meisai_checker.cli -f 明細書.txt --json
+    python -m meisai_checker.cli -f 明細書.txt --json --level error
+    python -m meisai_checker.cli -f 明細書.txt --json --section m3
 
   テキスト直接入力:
-    python -m patent_checker.cli -t "【発明の名称】..."
+    python -m meisai_checker.cli -t "【発明の名称】..."
 
   HTML形式レポート生成（ブラウザで表示）:
-    python -m patent_checker.cli -f 明細書.txt --html
+    python -m meisai_checker.cli -f 明細書.txt --html
         """,
     )
 

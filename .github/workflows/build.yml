@@ -39,7 +39,7 @@ jobs:
           pyinstaller \
             --name MeisaiChecker \
             --noconsole \
-            --add-data "patent_checker/html_template.html:patent_checker" \
+            --add-data "meisai_checker/html_template.html:meisai_checker" \
             --collect-data unidic_lite \
             --hidden-import fugashi \
             --hidden-import pyperclip \

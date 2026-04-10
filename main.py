@@ -6,8 +6,8 @@
 import sys
 
 if len(sys.argv) > 1:
-    from patent_checker.cli import main
+    from meisai_checker.cli import main
 else:
-    from patent_checker.gui import main
+    from meisai_checker.gui import main
 
 main()
