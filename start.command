@@ -1,10 +1,17 @@
 #!/bin/bash
+set -e
 cd "$(dirname "$0")"
 
-if [ ! -f .venv/bin/python ]; then
-    echo "[1/2] 初回セットアップ中..."
-    python3 -m venv .venv
-    .venv/bin/pip install --quiet -e ".[gui]"
+SENTINEL=".venv/.installed"
+
+if [ ! -f "$SENTINEL" ]; then
+    echo "[1/2] 初回セットアップ中... (数分かかることがあります)"
+    if [ ! -f .venv/bin/python ]; then
+        python3 -m venv .venv
+    fi
+    .venv/bin/pip install --upgrade pip
+    .venv/bin/pip install -e ".[gui]"
+    touch "$SENTINEL"
     echo "セットアップ完了"
 fi
 
