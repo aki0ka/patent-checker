@@ -19,43 +19,44 @@
 
 ## はじめかた
 
-**Python 3.10以上が必要です。** 起動スクリプトが自動で検出します。
+このツールは **デスクトップの1つのフォルダ内だけ** に全てを保存します。フォルダをゴミ箱に入れれば完全に消えるので、気軽に試せます。
 
-- **Mac**: Python 3.10以上が入っていない場合は `brew install python@3.12` または [python.org](https://www.python.org/downloads/) からインストール（macOS標準の`python3`はXcode付属の3.9で古いので注意）
-- **Windows**: [python.org](https://www.python.org/downloads/) からインストール（「Add Python to PATH」にチェック）
+**事前に Python 3.10以上が必要です** (一度入れれば今後他のツールでも使えます):
 
-### Windows
-
-1. [ZIPをダウンロード](https://github.com/aki0ka/meisai-checker/archive/refs/heads/main.zip) して展開
-2. `start.bat` をダブルクリック
+- **Mac**: [python.org](https://www.python.org/downloads/) からダウンロード (macOS標準の`python3`はXcode付属の3.9で古いので、別途インストールが必要です)
+- **Windows**: [python.org](https://www.python.org/downloads/) からダウンロード (インストール時に「Add Python to PATH」のチェックを忘れずに)
 
 ### Mac
 
-ターミナルで以下を実行してください（`git` が必要です。未インストールの場合は初回実行時にXcodeコマンドラインツールのインストールを促されます）:
+**試す** (ターミナルに以下をコピー＆ペーストしてEnter):
 
 ```bash
-git clone https://github.com/aki0ka/meisai-checker.git
-cd meisai-checker
-./start.command
+git clone https://github.com/aki0ka/meisai-checker.git ~/Desktop/meisai-checker && cd ~/Desktop/meisai-checker && ./start.command
 ```
 
-2回目以降は `cd meisai-checker && ./start.command` で起動します。
+初回は依存ライブラリのセットアップに数分かかります。完了後GUIが自動で起動します。
 
-> **なぜZIPではなくgit cloneか**: macOSはインターネットからダウンロードしたスクリプトを安全のためブロックします（Gatekeeper）。git clone した場合はこの制限がかからないため、追加の設定なしで実行できます。
-
-<details>
-<summary>どうしてもZIPで使いたい場合</summary>
-
-ZIPをダウンロードして展開した後、ターミナルで隔離属性を削除してから実行してください:
+**2回目以降**:
 
 ```bash
-xattr -cr ~/Downloads/meisai-checker-main
-cd ~/Downloads/meisai-checker-main
-./start.command
+cd ~/Desktop/meisai-checker && ./start.command
 ```
-</details>
 
-初回のみ自動でセットアップが走ります（venv作成＋依存インストール）。2回目以降は即起動します。
+**完全に消す**: デスクトップの `meisai-checker` フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
+
+### Windows
+
+**試す**:
+
+1. [ZIPをダウンロード](https://github.com/aki0ka/meisai-checker/archive/refs/heads/main.zip)
+2. デスクトップに展開 (フォルダ名 `meisai-checker-main`)
+3. フォルダ内の `start.bat` をダブルクリック
+
+初回は依存ライブラリのセットアップに数分かかります。完了後GUIが自動で起動します。
+
+**2回目以降**: 同じ `start.bat` をダブルクリック
+
+**完全に消す**: `meisai-checker-main` フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
 
 ## 使い方
 
