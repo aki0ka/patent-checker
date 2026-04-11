@@ -267,7 +267,7 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
   <div class="logo">特許<br>検査</div>
   <div>
     <div style="font-family:var(--serif);font-size:15px;letter-spacing:.12em">特許明細書チェッカー</div>
-    <div style="font-size:10px;color:var(--ink3)">Patent Specification Checker — M2〜M9</div>
+    <div style="font-size:10px;color:var(--ink3)">Patent Specification Checker — M2〜M9 &nbsp;<span id="version-label"></span></div>
   </div>
   <div class="hbadges">
     <div class="theme-btns">
@@ -426,6 +426,8 @@ window.applyConfig = function(cfg) {
   G.alwaysOnTop = !!cfg.always_on_top;
   var btn = document.getElementById('ontop-btn');
   if (btn) btn.className = 'hb ' + (G.alwaysOnTop ? 'hb-on' : 'hb-off');
+  var vl = document.getElementById('version-label');
+  if (vl && cfg.version) vl.textContent = 'v' + cfg.version;
 };
 
 // ── 常に前面表示トグル ──

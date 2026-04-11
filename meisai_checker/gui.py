@@ -180,8 +180,11 @@ def main():
     def on_loaded():
         """ロード完了時: 設定をJSに渡す"""
         import time
+        from meisai_checker import __version__
         time.sleep(0.3)
-        cfg_json = json.dumps(_cfg.load(), ensure_ascii=False)
+        cfg = _cfg.load()
+        cfg['version'] = __version__
+        cfg_json = json.dumps(cfg, ensure_ascii=False)
         window.evaluate_js(f'window.applyConfig && window.applyConfig({cfg_json})')
 
     window.events.loaded += on_loaded
