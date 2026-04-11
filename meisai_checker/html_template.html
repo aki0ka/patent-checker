@@ -625,9 +625,10 @@ function copyResultsMarkdown() {
   if (s.total_claims) lines.push('**請求項数**: ' + s.total_claims);
   lines.push('');
 
-  var mids = ['m2','m3','m4','m5','m6','m7','m8'];
+  var mids = ['m2','m3','m4','m5','m6','m7','m8','tc','g1'];
   var labels = {m2:'M2 従属関係',m3:'M3 前記・当該',m4:'M4 符号',
-                m5:'M5 構造',m6:'M6 サポート要件',m7:'M7 係り受け曖昧性',m8:'M8 記録項目'};
+                m5:'M5 構造',m6:'M6 サポート要件',m7:'M7 係り受け曖昧性',m8:'M8 記録項目',
+                tc:'TC 文章形式',g1:'G1 助詞'};
   mids.forEach(function(mid) {
     var issues = (d.issues || {})[mid] || [];
     if (!issues.length) return;
