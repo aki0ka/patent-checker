@@ -126,6 +126,26 @@ MCPサーバーの出力はTOON形式（JSON比で約30%トークン削減）を
 - **Word (.docx)**: GUI/CLIでファイルを直接読み込み（全段落を順に結合）
 - **PDF (.pdf)**: テキストレイヤー付きPDFのみ対応（スキャンPDFは非対応）
 
+## トラブルシューティング
+
+### Mac: `You have not agreed to the Xcode and Apple SDKs license` と表示される
+
+macOS のアップデートや Xcode の再インストール後に表示されることがあります。ターミナルで以下を実行して同意してください:
+
+```bash
+sudo xcodebuild -license accept
+```
+
+パスワードを求められたら Mac のログインパスワードを入力します。完了後、もう一度 `./start.command` または `python main.py` を実行してください。
+
+### `python3: command not found` / `python: command not found` と表示される
+
+Python がインストールされていないか、パスが通っていません。[python.org](https://www.python.org/downloads/) から Python 3.10 以上をインストールしてください。
+
+### MeCab（形態素解析）が動かない
+
+`pip install fugashi unidic-lite` を実行してください。MeCab が動かない場合、M3（前記チェック）・M4（符号チェック）・M6（サポート要件）・M7（曖昧性）が実行されませんが、それ以外のチェックは動作します。
+
 ## フィードバック・改善提案
 
 バグ報告・機能要望・チェックルールの改善提案を歓迎します。[GitHub Issues](https://github.com/aki0ka/meisai-checker/issues) までお気軽にどうぞ。実際の特許実務に基づくご意見は特に歓迎です。
