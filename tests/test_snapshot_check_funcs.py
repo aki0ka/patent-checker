@@ -13,6 +13,10 @@ from pathlib import Path
 import pytest
 
 from meisai_checker import analyzer
+from meisai_checker.textcheck.brackets import check_brackets
+from meisai_checker.textcheck.repetition import check_repetition
+from meisai_checker.textcheck.style import check_style
+from meisai_checker.textcheck.length import check_length
 from meisai_checker.file_reader import read_file
 from meisai_checker.parser import (
     classify_claims,
@@ -78,6 +82,15 @@ CHECK_CASES = [
      ))),
     ("check_support",
      lambda t, sec, cl, dm, kd: list(analyzer.check_support(cl, sec))),
+    # Phase 2: Layer 2 textcheck
+    ("check_brackets",
+     lambda t, sec, cl, dm, kd: check_brackets(sec)),
+    ("check_repetition",
+     lambda t, sec, cl, dm, kd: check_repetition(sec)),
+    ("check_style",
+     lambda t, sec, cl, dm, kd: check_style(sec)),
+    ("check_length",
+     lambda t, sec, cl, dm, kd: check_length(sec)),
 ]
 
 

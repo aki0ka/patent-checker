@@ -51,6 +51,10 @@ from .patent.fugo import (  # noqa: F401
     _is_zenkaku_alpha, _is_half_digit, _is_katakana_lead,
 )
 from .blocks import build_blocks, _highlight_claim, _highlight_para  # noqa: F401
+from .textcheck.brackets import check_brackets
+from .textcheck.repetition import check_repetition
+from .textcheck.style import check_style
+from .textcheck.length import check_length
 
 
 # ══════════════════════════════════════════════════════════
@@ -156,7 +160,13 @@ def analyze(text):
     except Exception:
         m8_issues = []
 
-    all_issues = m2_issues + m3_issues + m4_issues + m5_issues + m6_issues + m7_issues + m8_issues
+    # TC: 文章形式チェック（Layer 2: MeCab不要、正規表現のみ）
+    tc_issues = (check_brackets(sections) +
+                 check_repetition(sections) +
+                 check_style(sections) +
+                 check_length(sections))
+
+    all_issues = m2_issues + m3_issues + m4_issues + m5_issues + m6_issues + m7_issues + m8_issues + tc_issues
 
     noun_groups = build_noun_groups(claims, dep_map, ref_hits, m3_issues)
 
@@ -191,6 +201,7 @@ def analyze(text):
             "m6": m6_issues,
             "m7": m7_issues,
             "m8": m8_issues,
+            "tc": tc_issues,
             "all": all_issues,
         },
         "element_table":    element_table,
