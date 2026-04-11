@@ -1,0 +1,1495 @@
+{
+  "blocks_count": 34,
+  "claim_list": [
+    {
+      "deps": [],
+      "inv_type": "磁場計測装置",
+      "is_error": false,
+      "kind": "独立",
+      "num": 1,
+      "preview": "第１光源からの光を透過させて、直線偏光の第１偏光面を磁場の強度に応じて回転させる第１媒体と、 第２光源からの光を透過させて、直線偏光の第２偏光面を磁場の強度に応"
+    },
+    {
+      "deps": [
+        1
+      ],
+      "inv_type": "磁場計測装置",
+      "is_error": false,
+      "kind": "単項従属",
+      "num": 2,
+      "preview": "前記第１媒体の数は、複数であり、 前記第３検出部の数は、前記第１媒体の数よりも少ない ことを特徴とする請求項１に記載の磁場計測装置。"
+    },
+    {
+      "deps": [
+        2
+      ],
+      "inv_type": "磁場計測装置",
+      "is_error": false,
+      "kind": "単項従属",
+      "num": 3,
+      "preview": "前記第１光源からの光は、分岐して複数の前記第１媒体をそれぞれ透過し、 前記第３検出部は、分岐する前の前記光の光路に対応して設けられる ことを特徴とする請求項２に"
+    },
+    {
+      "deps": [
+        2,
+        3
+      ],
+      "inv_type": "磁場計測装置",
+      "is_error": false,
+      "kind": "マルチクレーム",
+      "num": 4,
+      "preview": "前記計測部は、前記差を計測対象から生じる磁場として計測し、 前記第１媒体は、前記第２媒体よりも前記計測対象の近くに配置され、 前記第２媒体の数は、前記第１媒体の"
+    },
+    {
+      "deps": [
+        2,
+        3,
+        4
+      ],
+      "inv_type": "磁場計測装置",
+      "is_error": true,
+      "kind": "マルチマルチ",
+      "num": 5,
+      "preview": "前記第２媒体の数は、複数であり、 前記第４検出部の数は、前記第２媒体の数よりも少ない ことを特徴とする請求項２から４のいずれか１項に記載の磁場計測装置。"
+    },
+    {
+      "deps": [
+        5
+      ],
+      "inv_type": "磁場計測装置",
+      "is_error": false,
+      "kind": "単項従属",
+      "num": 6,
+      "preview": "前記第２光源からの光は、分岐して複数の前記第２媒体をそれぞれ透過し、 前記第４検出部は、分岐する前の前記光の光路に対応して設けられる ことを特徴とする請求項５に"
+    }
+  ],
+  "element_table": [
+    {
+      "fugos": [
+        "１",
+        "１１",
+        "１２",
+        "１３",
+        "２"
+      ],
+      "name": "ガスセル"
+    },
+    {
+      "fugos": [
+        "１",
+        "２"
+      ],
+      "name": "光学ノイズＮ"
+    },
+    {
+      "fugos": [
+        "５１",
+        "５２"
+      ],
+      "name": "光源"
+    },
+    {
+      "fugos": [
+        "９"
+      ],
+      "name": "磁場測定装置"
+    },
+    {
+      "fugos": [
+        "９"
+      ],
+      "name": "磁場計測装置"
+    },
+    {
+      "fugos": [
+        "１",
+        "２"
+      ],
+      "name": "磁気Ｍ"
+    },
+    {
+      "fugos": [
+        "４１",
+        "４１１"
+      ],
+      "name": "第１検出部"
+    },
+    {
+      "fugos": [
+        "４２"
+      ],
+      "name": "第２検出部"
+    },
+    {
+      "fugos": [
+        "４３"
+      ],
+      "name": "第３検出部"
+    },
+    {
+      "fugos": [
+        "４４"
+      ],
+      "name": "第４検出部"
+    },
+    {
+      "fugos": [
+        "３"
+      ],
+      "name": "計測対象"
+    },
+    {
+      "fugos": [
+        "６"
+      ],
+      "name": "計測部"
+    }
+  ],
+  "fugo_table": [
+    {
+      "count": 43,
+      "fugo": "１",
+      "is_dup": true,
+      "names": [
+        "ガスセル",
+        "光学ノイズＮ",
+        "磁気Ｍ"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "１１",
+      "is_dup": false,
+      "names": [
+        "ガスセル"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "１２",
+      "is_dup": false,
+      "names": [
+        "ガスセル"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "１３",
+      "is_dup": false,
+      "names": [
+        "ガスセル"
+      ]
+    },
+    {
+      "count": 39,
+      "fugo": "２",
+      "is_dup": true,
+      "names": [
+        "ガスセル",
+        "光学ノイズＮ",
+        "磁気Ｍ"
+      ]
+    },
+    {
+      "count": 23,
+      "fugo": "３",
+      "is_dup": false,
+      "names": [
+        "計測対象"
+      ]
+    },
+    {
+      "count": 8,
+      "fugo": "４１",
+      "is_dup": false,
+      "names": [
+        "第１検出部"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "４１１",
+      "is_dup": false,
+      "names": [
+        "第１検出部"
+      ]
+    },
+    {
+      "count": 7,
+      "fugo": "４２",
+      "is_dup": false,
+      "names": [
+        "第２検出部"
+      ]
+    },
+    {
+      "count": 11,
+      "fugo": "４３",
+      "is_dup": false,
+      "names": [
+        "第３検出部"
+      ]
+    },
+    {
+      "count": 10,
+      "fugo": "４４",
+      "is_dup": false,
+      "names": [
+        "第４検出部"
+      ]
+    },
+    {
+      "count": 4,
+      "fugo": "５１",
+      "is_dup": false,
+      "names": [
+        "光源"
+      ]
+    },
+    {
+      "count": 4,
+      "fugo": "５２",
+      "is_dup": false,
+      "names": [
+        "光源"
+      ]
+    },
+    {
+      "count": 9,
+      "fugo": "６",
+      "is_dup": false,
+      "names": [
+        "計測部"
+      ]
+    },
+    {
+      "count": 12,
+      "fugo": "９",
+      "is_dup": true,
+      "names": [
+        "磁場測定装置",
+        "磁場計測装置"
+      ]
+    }
+  ],
+  "issues": {
+    "all": [
+      {
+        "check": "FC1",
+        "level": "error",
+        "msg": "【書類名】が存在しません（必須項目）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【図面の簡単な説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【技術分野】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明が解決しようとする課題】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明を実施するための形態】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【符号の説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【背景技術】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【課題を解決するための手段】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC3",
+        "level": "error",
+        "msg": "【氏名又は名称】が2回記録されています。同一項目の重複は禁止です。"
+      },
+      {
+        "check": "FC3",
+        "level": "error",
+        "msg": "【識別番号】が2回記録されています。同一項目の重複は禁止です。"
+      },
+      {
+        "check": "FC6",
+        "level": "error",
+        "msg": "【図○】の番号が連続していません（1の次が1）。"
+      },
+      {
+        "check": "FC6",
+        "level": "error",
+        "msg": "【図○】の番号が連続していません（2の次が2）。"
+      },
+      {
+        "check": "ambiguity_or_no",
+        "claim": 4,
+        "level": "warning",
+        "msg": "請求項4：「ことを特徴とする請求項２または３に記載の磁場計測装置」は「(ことを特徴とする請求項２または３に記載)の磁場計測装置」と「ことを特徴とする請求項２または(３に記載の磁場計測装置)」の2通りに解釈できます。括弧や語順の変更で意図を明確にしてください。"
+      },
+      {
+        "claim": 3,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "複数の第１媒体"
+        ],
+        "msg": "請求項3：実施形態に未記載の語句: 複数の第１媒体"
+      },
+      {
+        "claim": 5,
+        "level": "error",
+        "msg": "請求項5：マルチマルチクレームです。請求項[4]はマルチクレームです。令和4年4月以降の出願は禁止（特施規24条の3第5号）"
+      },
+      {
+        "claim": 6,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "複数の第２媒体"
+        ],
+        "msg": "請求項6：実施形態に未記載の語句: 複数の第２媒体"
+      },
+      {
+        "detail": "offset [1663, 6457]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「９」に複数の要素名が対応しています：磁場計測装置・磁場測定装置（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００９",
+          "p-００２９"
+        ]
+      },
+      {
+        "detail": "offset [1707, 1729, 5166, 5173, 5183]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「ガスセル」に複数の符号が対応しています：１・１１・１２・１３・２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-０００９",
+          "p-０００９",
+          "p-００２４",
+          "p-００２４",
+          "p-００２４"
+        ]
+      },
+      {
+        "detail": "offset [1707, 4022, 4121]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「１」に複数の要素名が対応しています：ガスセル・光学ノイズＮ・磁気Ｍ（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００９",
+          "p-００１９",
+          "p-００２０"
+        ]
+      },
+      {
+        "detail": "offset [1729, 4032, 4201]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「２」に複数の要素名が対応しています：ガスセル・光学ノイズＮ・磁気Ｍ（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００９",
+          "p-００１９",
+          "p-００２０"
+        ]
+      },
+      {
+        "detail": "offset [1820, 1825]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「光源」に複数の符号が対応しています：５１・５２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００１０",
+          "p-００１０"
+        ]
+      },
+      {
+        "detail": "offset [4022, 4032]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「光学ノイズＮ」に複数の符号が対応しています：１・２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００１９",
+          "p-００１９"
+        ]
+      },
+      {
+        "detail": "offset [4121, 4201]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「磁気Ｍ」に複数の符号が対応しています：１・２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００２０",
+          "p-００２０"
+        ]
+      },
+      {
+        "detail": "発明種類：磁場計測装置",
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "発明の名称「磁場計測装置」は独立請求項の発明種類をすべて含んでいます"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【非特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "要約文字数：383字（400字以内）"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１１」（ガスセル）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１２」（ガスセル）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１３」（ガスセル）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「４１１」（第１検出部）が【符号の説明】にありません"
+      }
+    ],
+    "m2": [
+      {
+        "claim": 5,
+        "level": "error",
+        "msg": "請求項5：マルチマルチクレームです。請求項[4]はマルチクレームです。令和4年4月以降の出願は禁止（特施規24条の3第5号）"
+      }
+    ],
+    "m3": [],
+    "m4": [
+      {
+        "detail": "offset [1663, 6457]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「９」に複数の要素名が対応しています：磁場計測装置・磁場測定装置（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００９",
+          "p-００２９"
+        ]
+      },
+      {
+        "detail": "offset [1707, 1729, 5166, 5173, 5183]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「ガスセル」に複数の符号が対応しています：１・１１・１２・１３・２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-０００９",
+          "p-０００９",
+          "p-００２４",
+          "p-００２４",
+          "p-００２４"
+        ]
+      },
+      {
+        "detail": "offset [1707, 4022, 4121]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「１」に複数の要素名が対応しています：ガスセル・光学ノイズＮ・磁気Ｍ（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００９",
+          "p-００１９",
+          "p-００２０"
+        ]
+      },
+      {
+        "detail": "offset [1729, 4032, 4201]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「２」に複数の要素名が対応しています：ガスセル・光学ノイズＮ・磁気Ｍ（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００９",
+          "p-００１９",
+          "p-００２０"
+        ]
+      },
+      {
+        "detail": "offset [1820, 1825]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「光源」に複数の符号が対応しています：５１・５２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００１０",
+          "p-００１０"
+        ]
+      },
+      {
+        "detail": "offset [4022, 4032]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「光学ノイズＮ」に複数の符号が対応しています：１・２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００１９",
+          "p-００１９"
+        ]
+      },
+      {
+        "detail": "offset [4121, 4201]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「磁気Ｍ」に複数の符号が対応しています：１・２（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００２０",
+          "p-００２０"
+        ]
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１１」（ガスセル）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１２」（ガスセル）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１３」（ガスセル）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「４１１」（第１検出部）が【符号の説明】にありません"
+      }
+    ],
+    "m5": [
+      {
+        "detail": "発明種類：磁場計測装置",
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "発明の名称「磁場計測装置」は独立請求項の発明種類をすべて含んでいます"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【非特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "要約文字数：383字（400字以内）"
+      }
+    ],
+    "m6": [
+      {
+        "claim": 3,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "複数の第１媒体"
+        ],
+        "msg": "請求項3：実施形態に未記載の語句: 複数の第１媒体"
+      },
+      {
+        "claim": 6,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "複数の第２媒体"
+        ],
+        "msg": "請求項6：実施形態に未記載の語句: 複数の第２媒体"
+      }
+    ],
+    "m7": [
+      {
+        "check": "ambiguity_or_no",
+        "claim": 4,
+        "level": "warning",
+        "msg": "請求項4：「ことを特徴とする請求項２または３に記載の磁場計測装置」は「(ことを特徴とする請求項２または３に記載)の磁場計測装置」と「ことを特徴とする請求項２または(３に記載の磁場計測装置)」の2通りに解釈できます。括弧や語順の変更で意図を明確にしてください。"
+      }
+    ],
+    "m8": [
+      {
+        "check": "FC1",
+        "level": "error",
+        "msg": "【書類名】が存在しません（必須項目）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【図面の簡単な説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【技術分野】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明が解決しようとする課題】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明を実施するための形態】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【符号の説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【背景技術】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【課題を解決するための手段】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC3",
+        "level": "error",
+        "msg": "【氏名又は名称】が2回記録されています。同一項目の重複は禁止です。"
+      },
+      {
+        "check": "FC3",
+        "level": "error",
+        "msg": "【識別番号】が2回記録されています。同一項目の重複は禁止です。"
+      },
+      {
+        "check": "FC6",
+        "level": "error",
+        "msg": "【図○】の番号が連続していません（1の次が1）。"
+      },
+      {
+        "check": "FC6",
+        "level": "error",
+        "msg": "【図○】の番号が連続していません（2の次が2）。"
+      }
+    ]
+  },
+  "noun_groups": [
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "光学ノイズ",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 371,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "直線偏光",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 109,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 149,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 201,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 251,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第１偏光面",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 116,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第１光源",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 192,
+          "word": "前記"
+        },
+        {
+          "claim": 3,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第１媒体",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 98,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 178,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 415,
+          "word": "前記"
+        },
+        {
+          "claim": 2,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        },
+        {
+          "claim": 2,
+          "error": false,
+          "first_claim": 1,
+          "pos": 30,
+          "word": "前記"
+        },
+        {
+          "claim": 3,
+          "error": false,
+          "first_claim": 1,
+          "pos": 19,
+          "word": "前記"
+        },
+        {
+          "claim": 4,
+          "error": false,
+          "first_claim": 1,
+          "pos": 32,
+          "word": "前記"
+        },
+        {
+          "claim": 4,
+          "error": false,
+          "first_claim": 1,
+          "pos": 77,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第１検出部",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 295,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 388,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第２偏光面",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 156,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第２光源",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 242,
+          "word": "前記"
+        },
+        {
+          "claim": 6,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第２媒体",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 138,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 228,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 428,
+          "word": "前記"
+        },
+        {
+          "claim": 4,
+          "error": false,
+          "first_claim": 1,
+          "pos": 40,
+          "word": "前記"
+        },
+        {
+          "claim": 4,
+          "error": false,
+          "first_claim": 1,
+          "pos": 67,
+          "word": "前記"
+        },
+        {
+          "claim": 5,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        },
+        {
+          "claim": 5,
+          "error": false,
+          "first_claim": 1,
+          "pos": 30,
+          "word": "前記"
+        },
+        {
+          "claim": 6,
+          "error": false,
+          "first_claim": 1,
+          "pos": 19,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第２検出部",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 344,
+          "word": "前記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 398,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第３検出部",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 278,
+          "word": "前記"
+        },
+        {
+          "claim": 2,
+          "error": false,
+          "first_claim": 1,
+          "pos": 19,
+          "word": "前記"
+        },
+        {
+          "claim": 3,
+          "error": false,
+          "first_claim": 1,
+          "pos": 37,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "第４検出部",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 327,
+          "word": "前記"
+        },
+        {
+          "claim": 5,
+          "error": false,
+          "first_claim": 1,
+          "pos": 19,
+          "word": "前記"
+        },
+        {
+          "claim": 6,
+          "error": false,
+          "first_claim": 1,
+          "pos": 37,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 4,
+      "noun": "計測対象",
+      "refs": [
+        {
+          "claim": 4,
+          "error": false,
+          "first_claim": 4,
+          "pos": 49,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "計測部",
+      "refs": [
+        {
+          "claim": 4,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        }
+      ]
+    }
+  ],
+  "ref_hits": [
+    {
+      "claim": 1,
+      "context": "させる第２媒体と、   前記第１媒体を透過した前記直線偏光の",
+      "noun": "第１媒体",
+      "pos": 98,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": " 前記第１媒体を透過した前記直線偏光の前記第１偏光面を検出す",
+      "noun": "直線偏光",
+      "pos": 109,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "を透過した前記直線偏光の前記第１偏光面を検出する第１検出部と、",
+      "noun": "第１偏光面",
+      "pos": 116,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "する第１検出部と、   前記第２媒体を透過した前記直線偏光の",
+      "noun": "第２媒体",
+      "pos": 138,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": " 前記第２媒体を透過した前記直線偏光の前記第２偏光面を検出す",
+      "noun": "直線偏光",
+      "pos": 149,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "を透過した前記直線偏光の前記第２偏光面を検出する第２検出部と、",
+      "noun": "第２偏光面",
+      "pos": 156,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "する第２検出部と、   前記第１媒体を透過していない前記第１",
+      "noun": "第１媒体",
+      "pos": 178,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "第１媒体を透過していない前記第１光源からの前記直線偏光の第３",
+      "noun": "第１光源",
+      "pos": 192,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "いない前記第１光源からの前記直線偏光の第３偏光面を検出する第",
+      "noun": "直線偏光",
+      "pos": 201,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "する第３検出部と、   前記第２媒体を透過していない前記第２",
+      "noun": "第２媒体",
+      "pos": 228,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "第２媒体を透過していない前記第２光源からの前記直線偏光の第４",
+      "noun": "第２光源",
+      "pos": 242,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "いない前記第２光源からの前記直線偏光の第４偏光面を検出する第",
+      "noun": "直線偏光",
+      "pos": 251,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "する第４検出部と、   前記第３検出部の検出結果を用いて、前記",
+      "noun": "第３検出部",
+      "pos": 278,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "出部の検出結果を用いて、前記第１検出部の検出結果から光学ノイズ",
+      "noun": "第１検出部",
+      "pos": 295,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "除去するとともに、   前記第４検出部の検出結果を用いて、前記",
+      "noun": "第４検出部",
+      "pos": 327,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "出部の検出結果を用いて、前記第２検出部の検出結果から光学ノイズ",
+      "noun": "第２検出部",
+      "pos": 344,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "学ノイズを除去し、   前記光学ノイズがそれぞれ除去された前記",
+      "noun": "光学ノイズ",
+      "pos": 371,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "イズがそれぞれ除去された前記第１検出部および前記第２検出部の検",
+      "noun": "第１検出部",
+      "pos": 388,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "れた前記第１検出部および前記第２検出部の検出結果を用いて、前記",
+      "noun": "第２検出部",
+      "pos": 398,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "出部の検出結果を用いて、前記第１媒体における磁場と前記第２媒",
+      "noun": "第１媒体",
+      "pos": 415,
+      "word": "前記"
+    },
+    {
+      "claim": 1,
+      "context": "記第１媒体における磁場と前記第２媒体における磁場との差を計測",
+      "noun": "第２媒体",
+      "pos": 428,
+      "word": "前記"
+    },
+    {
+      "claim": 2,
+      "context": "前記第１媒体の数は、複数であり、  ",
+      "noun": "第１媒体",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 2,
+      "context": "数は、複数であり、   前記第３検出部の数は、前記第１媒体の数",
+      "noun": "第３検出部",
+      "pos": 19,
+      "word": "前記"
+    },
+    {
+      "claim": 2,
+      "context": " 前記第３検出部の数は、前記第１媒体の数よりも少ない   こ",
+      "noun": "第１媒体",
+      "pos": 30,
+      "word": "前記"
+    },
+    {
+      "claim": 3,
+      "context": "前記第１光源からの光は、分岐して複数",
+      "noun": "第１光源",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 3,
+      "context": "らの光は、分岐して複数の前記第１媒体をそれぞれ透過し、   ",
+      "noun": "第１媒体",
+      "pos": 19,
+      "word": "前記"
+    },
+    {
+      "claim": 3,
+      "context": "をそれぞれ透過し、   前記第３検出部は、分岐する前の前記光の",
+      "noun": "第３検出部",
+      "pos": 37,
+      "word": "前記"
+    },
+    {
+      "claim": 4,
+      "context": "前記計測部は、前記差を計測対象から",
+      "noun": "計測部",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 4,
+      "context": "磁場として計測し、   前記第１媒体は、前記第２媒体よりも前",
+      "noun": "第１媒体",
+      "pos": 32,
+      "word": "前記"
+    },
+    {
+      "claim": 4,
+      "context": "、   前記第１媒体は、前記第２媒体よりも前記計測対象の近く",
+      "noun": "第２媒体",
+      "pos": 40,
+      "word": "前記"
+    },
+    {
+      "claim": 4,
+      "context": "体は、前記第２媒体よりも前記計測対象の近くに配置され、   ",
+      "noun": "計測対象",
+      "pos": 49,
+      "word": "前記"
+    },
+    {
+      "claim": 4,
+      "context": "の近くに配置され、   前記第２媒体の数は、前記第１媒体の数",
+      "noun": "第２媒体",
+      "pos": 67,
+      "word": "前記"
+    },
+    {
+      "claim": 4,
+      "context": "  前記第２媒体の数は、前記第１媒体の数よりも少ない   こ",
+      "noun": "第１媒体",
+      "pos": 77,
+      "word": "前記"
+    },
+    {
+      "claim": 5,
+      "context": "前記第２媒体の数は、複数であり、  ",
+      "noun": "第２媒体",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 5,
+      "context": "数は、複数であり、   前記第４検出部の数は、前記第２媒体の数",
+      "noun": "第４検出部",
+      "pos": 19,
+      "word": "前記"
+    },
+    {
+      "claim": 5,
+      "context": " 前記第４検出部の数は、前記第２媒体の数よりも少ない   こ",
+      "noun": "第２媒体",
+      "pos": 30,
+      "word": "前記"
+    },
+    {
+      "claim": 6,
+      "context": "前記第２光源からの光は、分岐して複数",
+      "noun": "第２光源",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 6,
+      "context": "らの光は、分岐して複数の前記第２媒体をそれぞれ透過し、   ",
+      "noun": "第２媒体",
+      "pos": 19,
+      "word": "前記"
+    },
+    {
+      "claim": 6,
+      "context": "をそれぞれ透過し、   前記第４検出部は、分岐する前の前記光の",
+      "noun": "第４検出部",
+      "pos": 37,
+      "word": "前記"
+    }
+  ],
+  "setsu_table": {
+    "１": "ガスセル",
+    "２": "ガスセル",
+    "３": "計測対象",
+    "４１": "第",
+    "４２": "第",
+    "４３": "第",
+    "４４": "第",
+    "５１": "光源",
+    "５２": "光源",
+    "６": "計測部",
+    "９": "磁場計測装置。"
+  },
+  "stats": {
+    "page_lines": 324,
+    "total_chars": 8658,
+    "total_claims": 6,
+    "total_lines": 177,
+    "total_pages": 7,
+    "total_paras": 30,
+    "マルチクレーム": 1,
+    "マルチマルチ": 1,
+    "単項従属": 3,
+    "独立": 1
+  },
+  "support_table": [
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "光学ノイズ"
+    },
+    {
+      "claims": [
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "光路"
+    },
+    {
+      "claims": [
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "分岐"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "回転"
+    },
+    {
+      "claims": [
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "対応"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "強度"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "検出結果"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "直線偏光"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "in_impl": true,
+      "noun": "磁場計測装置"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": false,
+      "noun": "複数の第１媒体"
+    },
+    {
+      "claims": [
+        6
+      ],
+      "in_impl": false,
+      "noun": "複数の第２媒体"
+    },
+    {
+      "claims": [
+        4
+      ],
+      "in_impl": true,
+      "noun": "計測対象"
+    },
+    {
+      "claims": [
+        1,
+        4
+      ],
+      "in_impl": true,
+      "noun": "計測部"
+    },
+    {
+      "claims": [
+        1,
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "透過"
+    },
+    {
+      "claims": [
+        4
+      ],
+      "in_impl": true,
+      "noun": "配置"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "除去"
+    }
+  ],
+  "title": "磁場計測装置",
+  "title_inv_types": [
+    "磁場計測装置"
+  ],
+  "var_table": []
+}

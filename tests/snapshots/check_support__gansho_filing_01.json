@@ -1,0 +1,170 @@
+[
+  [
+    {
+      "claim": 1,
+      "level": "warning",
+      "milestone": "M6",
+      "missing_nouns": [
+        "センサ列方向軸",
+        "レンズ",
+        "上部",
+        "主走査",
+        "光路面",
+        "入力手段",
+        "反射散乱光",
+        "垂直",
+        "平行",
+        "平面",
+        "手送り移動",
+        "書面イメージ",
+        "直行",
+        "被覆側端部",
+        "装着",
+        "設定"
+      ],
+      "msg": "請求項1：実施形態に未記載の語句: センサ列方向軸、レンズ、上部、主走査、光路面、入力手段、反射散乱光、垂直、平行、平面、手送り移動、書面イメージ…"
+    }
+  ],
+  [
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "センサ列方向軸"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "ハウジング"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "ハンドスキャナ"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "レンズ"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "上部"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "主走査"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "傾斜"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "光路面"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "入力手段"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "反射散乱光"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "受光面"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "垂直"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "平行"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "平面"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "手送り移動"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "書面イメージ"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "直行"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "被覆側端部"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "装着"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "設定"
+    }
+  ]
+]

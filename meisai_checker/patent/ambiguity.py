@@ -18,7 +18,7 @@ fugashi の品詞情報 + 正規表現により、特許請求項で頻出する
 
 import re
 from typing import Any
-from .tokenizer import _tokenize
+from ..tokenizer import _tokenize
 
 # ──────────────────────────────────────────────
 # 定数

@@ -1,0 +1,929 @@
+{
+  "blocks_count": 30,
+  "claim_list": [
+    {
+      "deps": [],
+      "inv_type": "煙感知システム",
+      "is_error": false,
+      "kind": "独立",
+      "num": 1,
+      "preview": "監視空間に敷設されたサンプリング管と、該サンプリング管を介してサンプリングエアを導入する検煙部と、該検煙部の煙検出レベルを判別する制御部とを備えた煙感知器を複数"
+    },
+    {
+      "deps": [
+        1
+      ],
+      "inv_type": "煙感知システム",
+      "is_error": false,
+      "kind": "単項従属",
+      "num": 2,
+      "preview": "前記サンプリング管は、直筒状に形成され、その両端にそれぞれ煙感知器が設置されていることを特徴とする請求項１記載の煙感知システム。"
+    },
+    {
+      "deps": [
+        1
+      ],
+      "inv_type": "煙感知システム",
+      "is_error": false,
+      "kind": "単項従属",
+      "num": 3,
+      "preview": "前記サンプリング管は、ループ状に形成され、前記煙感知器は、前記サンプリング管に互いに所定間隔をおいて２台以上設置されていることを特徴とする請求項１記載の煙感知シ"
+    }
+  ],
+  "element_table": [
+    {
+      "fugos": [
+        "１",
+        "１Ｌ"
+      ],
+      "name": "サンプリング管"
+    },
+    {
+      "fugos": [
+        "４"
+      ],
+      "name": "入口"
+    },
+    {
+      "fugos": [
+        "１Ｓ"
+      ],
+      "name": "分岐管"
+    },
+    {
+      "fugos": [
+        "２"
+      ],
+      "name": "分岐部Ｃ"
+    },
+    {
+      "fugos": [
+        "１２"
+      ],
+      "name": "受光素子"
+    },
+    {
+      "fugos": [
+        "２１"
+      ],
+      "name": "暗箱"
+    },
+    {
+      "fugos": [
+        "２５Ｂ"
+      ],
+      "name": "検出部"
+    },
+    {
+      "fugos": [
+        "１１"
+      ],
+      "name": "発光素子"
+    },
+    {
+      "fugos": [
+        "３２",
+        "３４"
+      ],
+      "name": "監視空間"
+    },
+    {
+      "fugos": [
+        "２２"
+      ],
+      "name": "遮光部"
+    }
+  ],
+  "fugo_table": [
+    {
+      "count": 12,
+      "fugo": "１",
+      "is_dup": false,
+      "names": [
+        "サンプリング管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１１",
+      "is_dup": false,
+      "names": [
+        "発光素子"
+      ]
+    },
+    {
+      "count": 3,
+      "fugo": "１２",
+      "is_dup": false,
+      "names": [
+        "受光素子"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１Ｌ",
+      "is_dup": false,
+      "names": [
+        "サンプリング管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１Ｓ",
+      "is_dup": false,
+      "names": [
+        "分岐管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "２",
+      "is_dup": false,
+      "names": [
+        "分岐部Ｃ"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "２１",
+      "is_dup": false,
+      "names": [
+        "暗箱"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "２２",
+      "is_dup": false,
+      "names": [
+        "遮光部"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "２５Ｂ",
+      "is_dup": false,
+      "names": [
+        "検出部"
+      ]
+    },
+    {
+      "count": 3,
+      "fugo": "３２",
+      "is_dup": false,
+      "names": [
+        "監視空間"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "３４",
+      "is_dup": false,
+      "names": [
+        "監視空間"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "４",
+      "is_dup": false,
+      "names": [
+        "入口"
+      ]
+    }
+  ],
+  "issues": {
+    "all": [
+      {
+        "check": "FC1",
+        "level": "error",
+        "msg": "【書類名】が存在しません（必須項目）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【図面の簡単な説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【技術分野】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明が解決しようとする課題】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明の効果】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【符号の説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【課題を解決するための手段】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "claim": 1,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "吸引量",
+          "増加",
+          "導入",
+          "敷設",
+          "煙感知システム",
+          "煙検出レベル",
+          "複数設置"
+        ],
+        "msg": "請求項1：実施形態に未記載の語句: 吸引量、増加、導入、敷設、煙感知システム、煙検出レベル、複数設置"
+      },
+      {
+        "claim": 2,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "両端",
+          "煙感知システム",
+          "設置"
+        ],
+        "msg": "請求項2：実施形態に未記載の語句: 両端、煙感知システム、設置"
+      },
+      {
+        "claim": 3,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "互い",
+          "煙感知システム",
+          "設置"
+        ],
+        "msg": "請求項3：実施形態に未記載の語句: 互い、煙感知システム、設置"
+      },
+      {
+        "detail": "",
+        "level": "info",
+        "milestone": "M4",
+        "msg": "変数記号「Ｃ」に複数の物理量名が対応しています：中間位置・分岐点（意味の衝突の可能性）",
+        "para_ids": [
+          "p-００１４",
+          "p-００２７"
+        ]
+      },
+      {
+        "detail": "offset [1216, 1295]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「監視空間」に複数の符号が対応しています：３２・３４（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００１１",
+          "p-００１１"
+        ]
+      },
+      {
+        "detail": "文書全体 行1付近：﻿特開2012-074044",
+        "level": "warning",
+        "milestone": "M5",
+        "msg": "JIS外文字「﻿」 (U+FEFF)が使用されています（Shift_JIS変換不可）"
+      },
+      {
+        "detail": "発明種類：煙感知システム",
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "発明の名称「煙感知システム」は独立請求項の発明種類をすべて含んでいます"
+      },
+      {
+        "level": "info",
+        "milestone": "M4",
+        "msg": "【符号の説明】の「２５Ａ　検煙部」が明細書本文で使用されていません"
+      },
+      {
+        "level": "info",
+        "milestone": "M4",
+        "msg": "【符号の説明】の「３６　火源」が明細書本文で使用されていません"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "【発明を実施するための最良の形態】（旧式）が使用されています。2011年以降の出願では【発明を実施するための形態】が標準です。"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【非特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "要約文字数：231字（400字以内）"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１１」（発光素子）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１２」（受光素子）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１Ｓ」（分岐管）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２」（分岐部Ｃ）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２１」（暗箱）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２２」（遮光部）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２５Ｂ」の名称が不一致：本文「検出部」⇔説明「検煙部」"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「３４」の名称が不一致：本文「監視空間」⇔説明「吸引口」"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「４」（入口）が【符号の説明】にありません"
+      }
+    ],
+    "m2": [],
+    "m3": [],
+    "m4": [
+      {
+        "detail": "",
+        "level": "info",
+        "milestone": "M4",
+        "msg": "変数記号「Ｃ」に複数の物理量名が対応しています：中間位置・分岐点（意味の衝突の可能性）",
+        "para_ids": [
+          "p-００１４",
+          "p-００２７"
+        ]
+      },
+      {
+        "detail": "offset [1216, 1295]",
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "要素名「監視空間」に複数の符号が対応しています：３２・３４（意図的な場合もありますが確認を推奨）",
+        "para_ids": [
+          "p-００１１",
+          "p-００１１"
+        ]
+      },
+      {
+        "level": "info",
+        "milestone": "M4",
+        "msg": "【符号の説明】の「２５Ａ　検煙部」が明細書本文で使用されていません"
+      },
+      {
+        "level": "info",
+        "milestone": "M4",
+        "msg": "【符号の説明】の「３６　火源」が明細書本文で使用されていません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１１」（発光素子）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１２」（受光素子）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１Ｓ」（分岐管）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２」（分岐部Ｃ）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２１」（暗箱）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２２」（遮光部）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２５Ｂ」の名称が不一致：本文「検出部」⇔説明「検煙部」"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「３４」の名称が不一致：本文「監視空間」⇔説明「吸引口」"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「４」（入口）が【符号の説明】にありません"
+      }
+    ],
+    "m5": [
+      {
+        "detail": "文書全体 行1付近：﻿特開2012-074044",
+        "level": "warning",
+        "milestone": "M5",
+        "msg": "JIS外文字「﻿」 (U+FEFF)が使用されています（Shift_JIS変換不可）"
+      },
+      {
+        "detail": "発明種類：煙感知システム",
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "発明の名称「煙感知システム」は独立請求項の発明種類をすべて含んでいます"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "【発明を実施するための最良の形態】（旧式）が使用されています。2011年以降の出願では【発明を実施するための形態】が標準です。"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【非特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "要約文字数：231字（400字以内）"
+      }
+    ],
+    "m6": [
+      {
+        "claim": 1,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "吸引量",
+          "増加",
+          "導入",
+          "敷設",
+          "煙感知システム",
+          "煙検出レベル",
+          "複数設置"
+        ],
+        "msg": "請求項1：実施形態に未記載の語句: 吸引量、増加、導入、敷設、煙感知システム、煙検出レベル、複数設置"
+      },
+      {
+        "claim": 2,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "両端",
+          "煙感知システム",
+          "設置"
+        ],
+        "msg": "請求項2：実施形態に未記載の語句: 両端、煙感知システム、設置"
+      },
+      {
+        "claim": 3,
+        "level": "warning",
+        "milestone": "M6",
+        "missing_nouns": [
+          "互い",
+          "煙感知システム",
+          "設置"
+        ],
+        "msg": "請求項3：実施形態に未記載の語句: 互い、煙感知システム、設置"
+      }
+    ],
+    "m7": [],
+    "m8": [
+      {
+        "check": "FC1",
+        "level": "error",
+        "msg": "【書類名】が存在しません（必須項目）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【図面の簡単な説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【技術分野】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明が解決しようとする課題】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明の効果】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【符号の説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【課題を解決するための手段】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      }
+    ]
+  },
+  "noun_groups": [
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "サンプリング管",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 19,
+          "word": "該"
+        },
+        {
+          "claim": 2,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        },
+        {
+          "claim": 3,
+          "error": false,
+          "first_claim": 1,
+          "pos": 0,
+          "word": "前記"
+        },
+        {
+          "claim": 3,
+          "error": false,
+          "first_claim": 1,
+          "pos": 29,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "受信装置",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 129,
+          "word": "前記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "検煙部",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 49,
+          "word": "該"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "煙感知器",
+      "refs": [
+        {
+          "claim": 3,
+          "error": false,
+          "first_claim": 1,
+          "pos": 21,
+          "word": "前記"
+        }
+      ]
+    }
+  ],
+  "ref_hits": [
+    {
+      "claim": 1,
+      "context": "されたサンプリング管と、該サンプリング管を介してサンプリングエア",
+      "noun": "サンプリング管",
+      "pos": 19,
+      "word": "該"
+    },
+    {
+      "claim": 1,
+      "context": "エアを導入する検煙部と、該検煙部の煙検出レベルを判別する",
+      "noun": "検煙部",
+      "pos": 49,
+      "word": "該"
+    },
+    {
+      "claim": 1,
+      "context": "感知器が故障判別すると、前記受信装置は他の煙感知器のサンプリ",
+      "noun": "受信装置",
+      "pos": 129,
+      "word": "前記"
+    },
+    {
+      "claim": 2,
+      "context": "前記サンプリング管は、直筒状に形成され、そ",
+      "noun": "サンプリング管",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 3,
+      "context": "前記サンプリング管は、ループ状に形成され、",
+      "noun": "サンプリング管",
+      "pos": 0,
+      "word": "前記"
+    },
+    {
+      "claim": 3,
+      "context": "は、ループ状に形成され、前記煙感知器は、前記サンプリング管に",
+      "noun": "煙感知器",
+      "pos": 21,
+      "word": "前記"
+    },
+    {
+      "claim": 3,
+      "context": "成され、前記煙感知器は、前記サンプリング管に互いに所定間隔をおいて",
+      "noun": "サンプリング管",
+      "pos": 29,
+      "word": "前記"
+    }
+  ],
+  "setsu_table": {
+    "１": "サンプリング管",
+    "１Ｌ": "サンプリング管",
+    "２５Ａ": "検煙部",
+    "２５Ｂ": "検煙部",
+    "３２": "監視空間",
+    "３４": "吸引口",
+    "３６": "火源"
+  },
+  "stats": {
+    "page_lines": 240,
+    "total_chars": 5275,
+    "total_claims": 3,
+    "total_lines": 162,
+    "total_pages": 5,
+    "total_paras": 29,
+    "マルチクレーム": 0,
+    "マルチマルチ": 0,
+    "単項従属": 2,
+    "独立": 1
+  },
+  "support_table": [
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "サンプリングエア"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3
+      ],
+      "in_impl": true,
+      "noun": "サンプリング管"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": true,
+      "noun": "ループ状"
+    },
+    {
+      "claims": [
+        2
+      ],
+      "in_impl": false,
+      "noun": "両端"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": false,
+      "noun": "互い"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "制御部"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "受信装置"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "吸引量"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "増加"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "導入"
+    },
+    {
+      "claims": [
+        2,
+        3
+      ],
+      "in_impl": true,
+      "noun": "形成"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": true,
+      "noun": "所定間隔"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "接続"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "故障判別"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "敷設"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "検煙部"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3
+      ],
+      "in_impl": false,
+      "noun": "煙感知システム"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3
+      ],
+      "in_impl": true,
+      "noun": "煙感知器"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "煙検出レベル"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "監視空間"
+    },
+    {
+      "claims": [
+        2
+      ],
+      "in_impl": true,
+      "noun": "直筒状"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "複数設置"
+    },
+    {
+      "claims": [
+        2,
+        3
+      ],
+      "in_impl": false,
+      "noun": "設置"
+    }
+  ],
+  "title": "煙感知システム",
+  "title_inv_types": [
+    "煙感知システム"
+  ],
+  "var_table": [
+    {
+      "count": 3,
+      "is_dup": false,
+      "physnames": [
+        "空気"
+      ],
+      "vsym": "Ａ"
+    },
+    {
+      "count": 3,
+      "is_dup": true,
+      "physnames": [
+        "中間位置",
+        "分岐点"
+      ],
+      "vsym": "Ｃ"
+    },
+    {
+      "count": 4,
+      "is_dup": false,
+      "physnames": [
+        "吸引力"
+      ],
+      "vsym": "Ｐ"
+    },
+    {
+      "count": 1,
+      "is_dup": false,
+      "physnames": [
+        "検出信号"
+      ],
+      "vsym": "Ｓ"
+    }
+  ]
+}

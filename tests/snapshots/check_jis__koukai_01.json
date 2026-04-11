@@ -1,0 +1,8 @@
+[
+  {
+    "detail": "文書全体 行1付近：﻿特開平09-135919",
+    "level": "warning",
+    "milestone": "M5",
+    "msg": "JIS外文字「﻿」 (U+FEFF)が使用されています（Shift_JIS変換不可）"
+  }
+]

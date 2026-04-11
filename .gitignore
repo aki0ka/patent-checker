@@ -50,3 +50,4 @@ htmlcov/
 # テスト用ファイル
 特許公報.zip
 特許公報/
+tests/fixtures/

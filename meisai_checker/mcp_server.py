@@ -39,9 +39,9 @@ from mcp.server.fastmcp import FastMCP
 from meisai_checker.analyzer import analyze
 from meisai_checker.preprocessor import normalize, DocFormat
 from meisai_checker.parser import parse_claims, split_sections
-from meisai_checker.m7_ambiguity import check_ambiguity
-from meisai_checker.m8_docfields import check_docfields
-from meisai_checker.m9_gansho import check_gansho
+from meisai_checker.patent.ambiguity import check_ambiguity
+from meisai_checker.structure.docfields import check_docfields
+from meisai_checker.structure.gansho import check_gansho
 
 mcp = FastMCP("meisai-checker")
 

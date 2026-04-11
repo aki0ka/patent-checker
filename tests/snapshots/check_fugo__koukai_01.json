@@ -1,0 +1,290 @@
+[
+  [
+    {
+      "detail": "offset [776, 1143]",
+      "level": "error",
+      "milestone": "M4",
+      "msg": "符号「２」に複数の要素名が対応しています：サンプリング管・消防法（誤記または表記ゆれの可能性）",
+      "para_ids": [
+        "p-０００６",
+        "p-０００７"
+      ]
+    },
+    {
+      "detail": "offset [894, 2721]",
+      "level": "error",
+      "milestone": "M4",
+      "msg": "符号「５」に複数の要素名が対応しています：消火ガスボンベ・起動容器（誤記または表記ゆれの可能性）",
+      "para_ids": [
+        "p-０００６",
+        "p-００１１"
+      ]
+    }
+  ],
+  [
+    {
+      "fugos": [
+        "２"
+      ],
+      "name": "サンプリング管"
+    },
+    {
+      "fugos": [
+        "１"
+      ],
+      "name": "ノズル"
+    },
+    {
+      "fugos": [
+        "６２"
+      ],
+      "name": "レバー"
+    },
+    {
+      "fugos": [
+        "６"
+      ],
+      "name": "三方弁"
+    },
+    {
+      "fugos": [
+        "８"
+      ],
+      "name": "制御盤"
+    },
+    {
+      "fugos": [
+        "２１"
+      ],
+      "name": "吸引チューブ"
+    },
+    {
+      "fugos": [
+        "７１"
+      ],
+      "name": "吸引穴"
+    },
+    {
+      "fugos": [
+        "７２"
+      ],
+      "name": "固定具"
+    },
+    {
+      "fugos": [
+        "５３"
+      ],
+      "name": "圧力スイッチ"
+    },
+    {
+      "fugos": [
+        "５５"
+      ],
+      "name": "安全弁"
+    },
+    {
+      "fugos": [
+        "６１"
+      ],
+      "name": "弁体"
+    },
+    {
+      "fugos": [
+        "５１"
+      ],
+      "name": "放出管"
+    },
+    {
+      "fugos": [
+        "１０"
+      ],
+      "name": "検知濃度"
+    },
+    {
+      "fugos": [
+        "５"
+      ],
+      "name": "消火ガスボンベ"
+    },
+    {
+      "fugos": [
+        "２"
+      ],
+      "name": "消防法"
+    },
+    {
+      "fugos": [
+        "４"
+      ],
+      "name": "火災警報盤"
+    },
+    {
+      "fugos": [
+        "７"
+      ],
+      "name": "装置"
+    },
+    {
+      "fugos": [
+        "８１"
+      ],
+      "name": "起動ボタン"
+    },
+    {
+      "fugos": [
+        "５",
+        "５２"
+      ],
+      "name": "起動容器"
+    }
+  ],
+  [
+    {
+      "count": 13,
+      "fugo": "１",
+      "is_dup": false,
+      "names": [
+        "ノズル"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１０",
+      "is_dup": false,
+      "names": [
+        "検知濃度"
+      ]
+    },
+    {
+      "count": 17,
+      "fugo": "２",
+      "is_dup": true,
+      "names": [
+        "サンプリング管",
+        "消防法"
+      ]
+    },
+    {
+      "count": 5,
+      "fugo": "２１",
+      "is_dup": false,
+      "names": [
+        "吸引チューブ"
+      ]
+    },
+    {
+      "count": 4,
+      "fugo": "４",
+      "is_dup": false,
+      "names": [
+        "火災警報盤"
+      ]
+    },
+    {
+      "count": 11,
+      "fugo": "５",
+      "is_dup": true,
+      "names": [
+        "消火ガスボンベ",
+        "起動容器"
+      ]
+    },
+    {
+      "count": 9,
+      "fugo": "５１",
+      "is_dup": false,
+      "names": [
+        "放出管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "５２",
+      "is_dup": false,
+      "names": [
+        "起動容器"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "５３",
+      "is_dup": false,
+      "names": [
+        "圧力スイッチ"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "５５",
+      "is_dup": false,
+      "names": [
+        "安全弁"
+      ]
+    },
+    {
+      "count": 8,
+      "fugo": "６",
+      "is_dup": false,
+      "names": [
+        "三方弁"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "６１",
+      "is_dup": false,
+      "names": [
+        "弁体"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "６２",
+      "is_dup": false,
+      "names": [
+        "レバー"
+      ]
+    },
+    {
+      "count": 22,
+      "fugo": "７",
+      "is_dup": false,
+      "names": [
+        "装置"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "７１",
+      "is_dup": false,
+      "names": [
+        "吸引穴"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "７２",
+      "is_dup": false,
+      "names": [
+        "固定具"
+      ]
+    },
+    {
+      "count": 4,
+      "fugo": "８",
+      "is_dup": false,
+      "names": [
+        "制御盤"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "８１",
+      "is_dup": false,
+      "names": [
+        "起動ボタン"
+      ]
+    }
+  ],
+  []
+]

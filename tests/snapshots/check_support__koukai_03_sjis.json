@@ -1,0 +1,147 @@
+[
+  [
+    {
+      "claim": 3,
+      "level": "warning",
+      "milestone": "M6",
+      "missing_nouns": [
+        "複数の第１媒体"
+      ],
+      "msg": "請求項3：実施形態に未記載の語句: 複数の第１媒体"
+    },
+    {
+      "claim": 6,
+      "level": "warning",
+      "milestone": "M6",
+      "missing_nouns": [
+        "複数の第２媒体"
+      ],
+      "msg": "請求項6：実施形態に未記載の語句: 複数の第２媒体"
+    }
+  ],
+  [
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "光学ノイズ"
+    },
+    {
+      "claims": [
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "光路"
+    },
+    {
+      "claims": [
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "分岐"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "回転"
+    },
+    {
+      "claims": [
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "対応"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "強度"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "検出結果"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "直線偏光"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "in_impl": true,
+      "noun": "磁場計測装置"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": false,
+      "noun": "複数の第１媒体"
+    },
+    {
+      "claims": [
+        6
+      ],
+      "in_impl": false,
+      "noun": "複数の第２媒体"
+    },
+    {
+      "claims": [
+        4
+      ],
+      "in_impl": true,
+      "noun": "計測対象"
+    },
+    {
+      "claims": [
+        1,
+        4
+      ],
+      "in_impl": true,
+      "noun": "計測部"
+    },
+    {
+      "claims": [
+        1,
+        3,
+        6
+      ],
+      "in_impl": true,
+      "noun": "透過"
+    },
+    {
+      "claims": [
+        4
+      ],
+      "in_impl": true,
+      "noun": "配置"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "除去"
+    }
+  ]
+]

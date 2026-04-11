@@ -1,0 +1,212 @@
+[
+  [
+    {
+      "claim": 1,
+      "level": "warning",
+      "milestone": "M6",
+      "missing_nouns": [
+        "吸引量",
+        "増加",
+        "導入",
+        "敷設",
+        "煙感知システム",
+        "煙検出レベル",
+        "複数設置"
+      ],
+      "msg": "請求項1：実施形態に未記載の語句: 吸引量、増加、導入、敷設、煙感知システム、煙検出レベル、複数設置"
+    },
+    {
+      "claim": 2,
+      "level": "warning",
+      "milestone": "M6",
+      "missing_nouns": [
+        "両端",
+        "煙感知システム",
+        "設置"
+      ],
+      "msg": "請求項2：実施形態に未記載の語句: 両端、煙感知システム、設置"
+    },
+    {
+      "claim": 3,
+      "level": "warning",
+      "milestone": "M6",
+      "missing_nouns": [
+        "互い",
+        "煙感知システム",
+        "設置"
+      ],
+      "msg": "請求項3：実施形態に未記載の語句: 互い、煙感知システム、設置"
+    }
+  ],
+  [
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "サンプリングエア"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3
+      ],
+      "in_impl": true,
+      "noun": "サンプリング管"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": true,
+      "noun": "ループ状"
+    },
+    {
+      "claims": [
+        2
+      ],
+      "in_impl": false,
+      "noun": "両端"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": false,
+      "noun": "互い"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "制御部"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "受信装置"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "吸引量"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "増加"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "導入"
+    },
+    {
+      "claims": [
+        2,
+        3
+      ],
+      "in_impl": true,
+      "noun": "形成"
+    },
+    {
+      "claims": [
+        3
+      ],
+      "in_impl": true,
+      "noun": "所定間隔"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "接続"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "故障判別"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "敷設"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "検煙部"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3
+      ],
+      "in_impl": false,
+      "noun": "煙感知システム"
+    },
+    {
+      "claims": [
+        1,
+        2,
+        3
+      ],
+      "in_impl": true,
+      "noun": "煙感知器"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "煙検出レベル"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": true,
+      "noun": "監視空間"
+    },
+    {
+      "claims": [
+        2
+      ],
+      "in_impl": true,
+      "noun": "直筒状"
+    },
+    {
+      "claims": [
+        1
+      ],
+      "in_impl": false,
+      "noun": "複数設置"
+    },
+    {
+      "claims": [
+        2,
+        3
+      ],
+      "in_impl": false,
+      "noun": "設置"
+    }
+  ]
+]

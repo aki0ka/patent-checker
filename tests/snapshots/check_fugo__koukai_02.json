@@ -1,0 +1,221 @@
+[
+  [
+    {
+      "detail": "offset [1216, 1295]",
+      "level": "warning",
+      "milestone": "M4",
+      "msg": "要素名「監視空間」に複数の符号が対応しています：３２・３４（意図的な場合もありますが確認を推奨）",
+      "para_ids": [
+        "p-００１１",
+        "p-００１１"
+      ]
+    },
+    {
+      "detail": "",
+      "level": "info",
+      "milestone": "M4",
+      "msg": "変数記号「Ｃ」に複数の物理量名が対応しています：中間位置・分岐点（意味の衝突の可能性）",
+      "para_ids": [
+        "p-００１４",
+        "p-００２７"
+      ]
+    }
+  ],
+  [
+    {
+      "fugos": [
+        "１",
+        "１Ｌ"
+      ],
+      "name": "サンプリング管"
+    },
+    {
+      "fugos": [
+        "４"
+      ],
+      "name": "入口"
+    },
+    {
+      "fugos": [
+        "１Ｓ"
+      ],
+      "name": "分岐管"
+    },
+    {
+      "fugos": [
+        "２"
+      ],
+      "name": "分岐部Ｃ"
+    },
+    {
+      "fugos": [
+        "１２"
+      ],
+      "name": "受光素子"
+    },
+    {
+      "fugos": [
+        "２１"
+      ],
+      "name": "暗箱"
+    },
+    {
+      "fugos": [
+        "２５Ｂ"
+      ],
+      "name": "検出部"
+    },
+    {
+      "fugos": [
+        "１１"
+      ],
+      "name": "発光素子"
+    },
+    {
+      "fugos": [
+        "３２",
+        "３４"
+      ],
+      "name": "監視空間"
+    },
+    {
+      "fugos": [
+        "２２"
+      ],
+      "name": "遮光部"
+    }
+  ],
+  [
+    {
+      "count": 12,
+      "fugo": "１",
+      "is_dup": false,
+      "names": [
+        "サンプリング管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１１",
+      "is_dup": false,
+      "names": [
+        "発光素子"
+      ]
+    },
+    {
+      "count": 3,
+      "fugo": "１２",
+      "is_dup": false,
+      "names": [
+        "受光素子"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１Ｌ",
+      "is_dup": false,
+      "names": [
+        "サンプリング管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１Ｓ",
+      "is_dup": false,
+      "names": [
+        "分岐管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "２",
+      "is_dup": false,
+      "names": [
+        "分岐部Ｃ"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "２１",
+      "is_dup": false,
+      "names": [
+        "暗箱"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "２２",
+      "is_dup": false,
+      "names": [
+        "遮光部"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "２５Ｂ",
+      "is_dup": false,
+      "names": [
+        "検出部"
+      ]
+    },
+    {
+      "count": 3,
+      "fugo": "３２",
+      "is_dup": false,
+      "names": [
+        "監視空間"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "３４",
+      "is_dup": false,
+      "names": [
+        "監視空間"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "４",
+      "is_dup": false,
+      "names": [
+        "入口"
+      ]
+    }
+  ],
+  [
+    {
+      "count": 3,
+      "is_dup": false,
+      "physnames": [
+        "空気"
+      ],
+      "vsym": "Ａ"
+    },
+    {
+      "count": 3,
+      "is_dup": true,
+      "physnames": [
+        "中間位置",
+        "分岐点"
+      ],
+      "vsym": "Ｃ"
+    },
+    {
+      "count": 4,
+      "is_dup": false,
+      "physnames": [
+        "吸引力"
+      ],
+      "vsym": "Ｐ"
+    },
+    {
+      "count": 1,
+      "is_dup": false,
+      "physnames": [
+        "検出信号"
+      ],
+      "vsym": "Ｓ"
+    }
+  ]
+]

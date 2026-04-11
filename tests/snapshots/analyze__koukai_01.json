@@ -1,0 +1,736 @@
+{
+  "blocks_count": 10,
+  "claim_list": [
+    {
+      "deps": [],
+      "inv_type": "超高感度火災感知消火システム",
+      "is_error": false,
+      "kind": "独立",
+      "num": 1,
+      "preview": "盤群から各盤内気流を吸引する複数のノズルが配設された該盤群毎のサンプリング管と、 該サンプリング管に収集された気流から超高感度で初期火災を検出する該盤群毎の火災"
+    }
+  ],
+  "element_table": [
+    {
+      "fugos": [
+        "２"
+      ],
+      "name": "サンプリング管"
+    },
+    {
+      "fugos": [
+        "１"
+      ],
+      "name": "ノズル"
+    },
+    {
+      "fugos": [
+        "６２"
+      ],
+      "name": "レバー"
+    },
+    {
+      "fugos": [
+        "６"
+      ],
+      "name": "三方弁"
+    },
+    {
+      "fugos": [
+        "８"
+      ],
+      "name": "制御盤"
+    },
+    {
+      "fugos": [
+        "２１"
+      ],
+      "name": "吸引チューブ"
+    },
+    {
+      "fugos": [
+        "７１"
+      ],
+      "name": "吸引穴"
+    },
+    {
+      "fugos": [
+        "７２"
+      ],
+      "name": "固定具"
+    },
+    {
+      "fugos": [
+        "５３"
+      ],
+      "name": "圧力スイッチ"
+    },
+    {
+      "fugos": [
+        "５５"
+      ],
+      "name": "安全弁"
+    },
+    {
+      "fugos": [
+        "６１"
+      ],
+      "name": "弁体"
+    },
+    {
+      "fugos": [
+        "５１"
+      ],
+      "name": "放出管"
+    },
+    {
+      "fugos": [
+        "１０"
+      ],
+      "name": "検知濃度"
+    },
+    {
+      "fugos": [
+        "５"
+      ],
+      "name": "消火ガスボンベ"
+    },
+    {
+      "fugos": [
+        "２"
+      ],
+      "name": "消防法"
+    },
+    {
+      "fugos": [
+        "４"
+      ],
+      "name": "火災警報盤"
+    },
+    {
+      "fugos": [
+        "７"
+      ],
+      "name": "装置"
+    },
+    {
+      "fugos": [
+        "８１"
+      ],
+      "name": "起動ボタン"
+    },
+    {
+      "fugos": [
+        "５",
+        "５２"
+      ],
+      "name": "起動容器"
+    }
+  ],
+  "fugo_table": [
+    {
+      "count": 13,
+      "fugo": "１",
+      "is_dup": false,
+      "names": [
+        "ノズル"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "１０",
+      "is_dup": false,
+      "names": [
+        "検知濃度"
+      ]
+    },
+    {
+      "count": 17,
+      "fugo": "２",
+      "is_dup": true,
+      "names": [
+        "サンプリング管",
+        "消防法"
+      ]
+    },
+    {
+      "count": 5,
+      "fugo": "２１",
+      "is_dup": false,
+      "names": [
+        "吸引チューブ"
+      ]
+    },
+    {
+      "count": 4,
+      "fugo": "４",
+      "is_dup": false,
+      "names": [
+        "火災警報盤"
+      ]
+    },
+    {
+      "count": 11,
+      "fugo": "５",
+      "is_dup": true,
+      "names": [
+        "消火ガスボンベ",
+        "起動容器"
+      ]
+    },
+    {
+      "count": 9,
+      "fugo": "５１",
+      "is_dup": false,
+      "names": [
+        "放出管"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "５２",
+      "is_dup": false,
+      "names": [
+        "起動容器"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "５３",
+      "is_dup": false,
+      "names": [
+        "圧力スイッチ"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "５５",
+      "is_dup": false,
+      "names": [
+        "安全弁"
+      ]
+    },
+    {
+      "count": 8,
+      "fugo": "６",
+      "is_dup": false,
+      "names": [
+        "三方弁"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "６１",
+      "is_dup": false,
+      "names": [
+        "弁体"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "６２",
+      "is_dup": false,
+      "names": [
+        "レバー"
+      ]
+    },
+    {
+      "count": 22,
+      "fugo": "７",
+      "is_dup": false,
+      "names": [
+        "装置"
+      ]
+    },
+    {
+      "count": 2,
+      "fugo": "７１",
+      "is_dup": false,
+      "names": [
+        "吸引穴"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "７２",
+      "is_dup": false,
+      "names": [
+        "固定具"
+      ]
+    },
+    {
+      "count": 4,
+      "fugo": "８",
+      "is_dup": false,
+      "names": [
+        "制御盤"
+      ]
+    },
+    {
+      "count": 1,
+      "fugo": "８１",
+      "is_dup": false,
+      "names": [
+        "起動ボタン"
+      ]
+    }
+  ],
+  "issues": {
+    "all": [
+      {
+        "check": "FC1",
+        "level": "error",
+        "msg": "【書類名】が存在しません（必須項目）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【図面の簡単な説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明が解決しようとする課題】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【符号の説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【課題を解決するための手段】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "detail": "offset [776, 1143]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「２」に複数の要素名が対応しています：サンプリング管・消防法（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００６",
+          "p-０００７"
+        ]
+      },
+      {
+        "detail": "offset [894, 2721]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「５」に複数の要素名が対応しています：消火ガスボンベ・起動容器（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００６",
+          "p-００１１"
+        ]
+      },
+      {
+        "detail": "文書全体 行1付近：﻿特開平09-135919",
+        "level": "warning",
+        "milestone": "M5",
+        "msg": "JIS外文字「﻿」 (U+FEFF)が使用されています（Shift_JIS変換不可）"
+      },
+      {
+        "detail": "独立請求項の発明種類：超高感度火災感知消火システム",
+        "level": "warning",
+        "milestone": "M5",
+        "msg": "発明の名称「超高感度火災検知消火システム」に含まれない独立請求項の発明種類があります：超高感度火災感知消火システム"
+      },
+      {
+        "level": "info",
+        "milestone": "M4",
+        "msg": "【符号の説明】の「３　検知器」が明細書本文で使用されていません"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【非特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "要約文字数：269字（400字以内）"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１０」（検知濃度）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２１」（吸引チューブ）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「４」（火災警報盤）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５１」（放出管）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５２」（起動容器）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５３」（圧力スイッチ）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５５」（安全弁）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「６１」（弁体）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「６２」（レバー）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「７１」（吸引穴）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「７２」（固定具）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「８」（制御盤）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「８１」（起動ボタン）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M6",
+        "msg": "「発明を実施するための形態」セクションが見つかりません。サポート要件チェックをスキップします"
+      }
+    ],
+    "m2": [],
+    "m3": [],
+    "m4": [
+      {
+        "detail": "offset [776, 1143]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「２」に複数の要素名が対応しています：サンプリング管・消防法（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００６",
+          "p-０００７"
+        ]
+      },
+      {
+        "detail": "offset [894, 2721]",
+        "level": "error",
+        "milestone": "M4",
+        "msg": "符号「５」に複数の要素名が対応しています：消火ガスボンベ・起動容器（誤記または表記ゆれの可能性）",
+        "para_ids": [
+          "p-０００６",
+          "p-００１１"
+        ]
+      },
+      {
+        "level": "info",
+        "milestone": "M4",
+        "msg": "【符号の説明】の「３　検知器」が明細書本文で使用されていません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「１０」（検知濃度）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「２１」（吸引チューブ）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「４」（火災警報盤）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５１」（放出管）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５２」（起動容器）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５３」（圧力スイッチ）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「５５」（安全弁）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「６１」（弁体）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「６２」（レバー）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「７１」（吸引穴）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「７２」（固定具）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「８」（制御盤）が【符号の説明】にありません"
+      },
+      {
+        "level": "warning",
+        "milestone": "M4",
+        "msg": "符号「８１」（起動ボタン）が【符号の説明】にありません"
+      }
+    ],
+    "m5": [
+      {
+        "detail": "文書全体 行1付近：﻿特開平09-135919",
+        "level": "warning",
+        "milestone": "M5",
+        "msg": "JIS外文字「﻿」 (U+FEFF)が使用されています（Shift_JIS変換不可）"
+      },
+      {
+        "detail": "独立請求項の発明種類：超高感度火災感知消火システム",
+        "level": "warning",
+        "milestone": "M5",
+        "msg": "発明の名称「超高感度火災検知消火システム」に含まれない独立請求項の発明種類があります：超高感度火災感知消火システム"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "info",
+        "milestone": "M5",
+        "msg": "項目 【非特許文献】 がありません（条件必須：該当する場合は記載が必要です）"
+      },
+      {
+        "level": "ok",
+        "milestone": "M5",
+        "msg": "要約文字数：269字（400字以内）"
+      }
+    ],
+    "m6": [
+      {
+        "level": "warning",
+        "milestone": "M6",
+        "msg": "「発明を実施するための形態」セクションが見つかりません。サポート要件チェックをスキップします"
+      }
+    ],
+    "m7": [],
+    "m8": [
+      {
+        "check": "FC1",
+        "level": "error",
+        "msg": "【書類名】が存在しません（必須項目）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【図面の簡単な説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【発明が解決しようとする課題】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【符号の説明】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      },
+      {
+        "check": "FC10",
+        "level": "error",
+        "msg": "【課題を解決するための手段】の配下に段落番号（【０００１】等）が記録されていません（必須）。"
+      }
+    ]
+  },
+  "noun_groups": [
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "ガス消火装置",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 128,
+          "word": "該"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "サンプリング管",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 41,
+          "word": "該"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 150,
+          "word": "上記"
+        }
+      ]
+    },
+    {
+      "error": false,
+      "first_claim": 1,
+      "noun": "盤群",
+      "refs": [
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 26,
+          "word": "該"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 73,
+          "word": "該"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 87,
+          "word": "上記"
+        },
+        {
+          "claim": 1,
+          "error": false,
+          "first_claim": 1,
+          "pos": 178,
+          "word": "上記"
+        }
+      ]
+    }
+  ],
+  "ref_hits": [
+    {
+      "claim": 1,
+      "context": "複数のノズルが配設された該盤群毎のサンプリング管と、 ",
+      "noun": "盤群",
+      "pos": 26,
+      "word": "該"
+    },
+    {
+      "claim": 1,
+      "context": "毎のサンプリング管と、 該サンプリング管に収集された気流から超高",
+      "noun": "サンプリング管",
+      "pos": 41,
+      "word": "該"
+    },
+    {
+      "claim": 1,
+      "context": "感度で初期火災を検出する該盤群毎の火災検知装置と、 上",
+      "noun": "盤群",
+      "pos": 73,
+      "word": "該"
+    },
+    {
+      "claim": 1,
+      "context": "群毎の火災検知装置と、 上記盤群の盤内へ初期消火に必要な",
+      "noun": "盤群",
+      "pos": 87,
+      "word": "上記"
+    },
+    {
+      "claim": 1,
+      "context": "いるガス消火装置と、  該ガス消火装置から放出される消火ガスの",
+      "noun": "ガス消火装置",
+      "pos": 128,
+      "word": "該"
+    },
+    {
+      "claim": 1,
+      "context": "出される消火ガスの管路の上記サンプリング管各々の交差部分に各々三方",
+      "noun": "サンプリング管",
+      "pos": 150,
+      "word": "上記"
+    },
+    {
+      "claim": 1,
+      "context": "に各々三方弁が設けられ、上記盤群毎に流通を制御できる切換",
+      "noun": "盤群",
+      "pos": 178,
+      "word": "上記"
+    }
+  ],
+  "setsu_table": {
+    "１": "特殊ノズル",
+    "２": "サンプリング管",
+    "３": "検知器",
+    "５": "消火ガスボンベ",
+    "６": "三方弁",
+    "７": "装置"
+  },
+  "stats": {
+    "page_lines": 170,
+    "total_chars": 4860,
+    "total_claims": 1,
+    "total_lines": 83,
+    "total_pages": 4,
+    "total_paras": 13,
+    "マルチクレーム": 0,
+    "マルチマルチ": 0,
+    "単項従属": 0,
+    "独立": 1
+  },
+  "support_table": [],
+  "title": "超高感度火災検知消火システム",
+  "title_inv_types": [
+    "超高感度火災感知消火システム"
+  ],
+  "var_table": []
+}
