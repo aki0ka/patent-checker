@@ -166,7 +166,14 @@ def analyze(text):
                  check_style(sections) +
                  check_length(sections))
 
-    all_issues = m2_issues + m3_issues + m4_issues + m5_issues + m6_issues + m7_issues + m8_issues + tc_issues
+    # G1: 文法チェック（Layer 5: MeCab必須）
+    try:
+        from .grammar.particles import check_particles
+        g1_issues = check_particles(sections)
+    except Exception:
+        g1_issues = []
+
+    all_issues = m2_issues + m3_issues + m4_issues + m5_issues + m6_issues + m7_issues + m8_issues + tc_issues + g1_issues
 
     noun_groups = build_noun_groups(claims, dep_map, ref_hits, m3_issues)
 
@@ -202,6 +209,7 @@ def analyze(text):
             "m7": m7_issues,
             "m8": m8_issues,
             "tc": tc_issues,
+            "g1": g1_issues,
             "all": all_issues,
         },
         "element_table":    element_table,

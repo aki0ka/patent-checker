@@ -17,6 +17,7 @@ from meisai_checker.textcheck.brackets import check_brackets
 from meisai_checker.textcheck.repetition import check_repetition
 from meisai_checker.textcheck.style import check_style
 from meisai_checker.textcheck.length import check_length
+from meisai_checker.grammar.particles import check_particles
 from meisai_checker.file_reader import read_file
 from meisai_checker.parser import (
     classify_claims,
@@ -91,6 +92,8 @@ CHECK_CASES = [
      lambda t, sec, cl, dm, kd: check_style(sec)),
     ("check_length",
      lambda t, sec, cl, dm, kd: check_length(sec)),
+    ("check_particles",
+     lambda t, sec, cl, dm, kd: check_particles(sec)),
 ]
 
 
