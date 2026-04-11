@@ -42,6 +42,12 @@ git clone https://github.com/aki0ka/meisai-checker.git ~/Desktop/meisai-checker 
 cd ~/Desktop/meisai-checker && ./start.command
 ```
 
+**アップデート**:
+
+```bash
+cd ~/Desktop/meisai-checker && git pull && ./start.command
+```
+
 **完全に消す**: デスクトップの `meisai-checker` フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
 
 ### Windows
@@ -55,6 +61,8 @@ cd ~/Desktop/meisai-checker && ./start.command
 初回は依存ライブラリのセットアップに数分かかります。完了後GUIが自動で起動します。
 
 **2回目以降**: 同じ `start.bat` をダブルクリック
+
+**アップデート**: フォルダをゴミ箱に捨てて、新しい ZIP を展開してください。
 
 **完全に消す**: `meisai-checker-main` フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
 
