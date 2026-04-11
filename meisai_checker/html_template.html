@@ -280,6 +280,7 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
     <button class="hb hb-off" id="copy-btn" title="結果をMarkdownでコピー" onclick="copyResultsMarkdown()" style="font-size:10px;padding:2px 8px;cursor:pointer;display:none">📋 コピー</button>
     <button class="hb hb-off" id="newinput-btn" title="新しい文書を入力" onclick="showInputPanel()" style="font-size:10px;padding:2px 8px;cursor:pointer;display:none">＋ 新規入力</button>
     <button class="hb hb-off" id="debug-btn" title="デバッグログ" onclick="toggleDebugPanel()" style="font-size:10px;padding:2px 6px;cursor:pointer">🐛</button>
+    <button id="update-btn" onclick="openReleasesPage()" style="display:none;font-size:10px;padding:2px 8px;cursor:pointer;background:#2a6;color:#fff;border:none;border-radius:4px" title="GitHubリリースページを開く">🆕 <span id="update-version"></span></button>
   </div>
 </header>
 <div id="debug-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--surface);border-top:2px solid var(--border);z-index:300;display:none;flex-direction:column;">
@@ -420,6 +421,20 @@ function showInputPanel() {
 }
 
 // ── 設定をPythonから受け取る ──
+window.showUpdateBadge = function(tag) {
+  var btn = document.getElementById('update-btn');
+  var lbl = document.getElementById('update-version');
+  if (!btn || !lbl) return;
+  lbl.textContent = 'v' + tag + ' 利用可能';
+  btn.style.display = '';
+};
+
+function openReleasesPage() {
+  if (window.pywebview && window.pywebview.api) {
+    window.pywebview.api.open_releases_page();
+  }
+}
+
 window.applyConfig = function(cfg) {
   if (!cfg) return;
   if (cfg.theme) applyTheme(cfg.theme);

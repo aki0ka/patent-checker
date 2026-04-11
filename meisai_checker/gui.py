@@ -131,6 +131,12 @@ class Api:
         _cfg.set_value(key, value)
         return {'ok': True}
 
+    def open_releases_page(self) -> dict:
+        """GitHubリリースページをブラウザで開く"""
+        import webbrowser
+        webbrowser.open('https://github.com/aki0ka/meisai-checker/releases/latest')
+        return {'ok': True}
+
 
 # ══════════════════════════════════════════════════════════
 # GUI メイン
@@ -180,12 +186,37 @@ def main():
     def on_loaded():
         """ロード完了時: 設定をJSに渡す"""
         import time
+        import threading
         from meisai_checker import __version__
         time.sleep(0.3)
         cfg = _cfg.load()
         cfg['version'] = __version__
         cfg_json = json.dumps(cfg, ensure_ascii=False)
         window.evaluate_js(f'window.applyConfig && window.applyConfig({cfg_json})')
+
+        def _check_update():
+            try:
+                import urllib.request
+                import urllib.error
+                url = 'https://api.github.com/repos/aki0ka/meisai-checker/releases/latest'
+                req = urllib.request.Request(url, headers={'User-Agent': 'meisai-checker'})
+                with urllib.request.urlopen(req, timeout=5) as resp:
+                    data = json.loads(resp.read().decode())
+                tag = data.get('tag_name', '').lstrip('v')
+                if not tag:
+                    return
+                def _ver(s):
+                    try: return tuple(int(x) for x in s.split('.'))
+                    except: return (0,)
+                if _ver(tag) > _ver(__version__):
+                    js_tag = json.dumps(tag)
+                    window.evaluate_js(
+                        f'window.showUpdateBadge && window.showUpdateBadge({js_tag})'
+                    )
+            except Exception:
+                pass  # オフライン・タイムアウト等は無視
+
+        threading.Thread(target=_check_update, daemon=True).start()
 
     window.events.loaded += on_loaded
 
