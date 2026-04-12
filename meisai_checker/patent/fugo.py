@@ -442,6 +442,13 @@ def _extract_elements_tokens(text):
                        and not _is_formal_noun_tok(tokens[j])
                        and tokens[j]['surf'] not in _ZENSHOU_WORDS
                        and tokens[j]['pos'] != '接尾辞'):
+                    # 全角英字1文字 + 直後が全角数字 → 変数記号（Ｖ１等）で停止
+                    # 「電圧Ｖ１」の「Ｖ」で止めて「電圧Ｖ」を要素名にしない
+                    surf_j = tokens[j]['surf']
+                    if (len(surf_j) == 1
+                            and _is_zenkaku_alpha(surf_j[0])
+                            and j + 1 < n and _is_fugo_tok(tokens[j + 1])):
+                        break
                     j += 1
 
                 if j < n and _is_fugo_tok(tokens[j]):

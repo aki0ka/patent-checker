@@ -52,12 +52,6 @@
     },
     {
       "fugos": [
-        "２"
-      ],
-      "name": "分岐部Ｃ"
-    },
-    {
-      "fugos": [
         "１２"
       ],
       "name": "受光素子"
@@ -133,14 +127,6 @@
       "is_dup": false,
       "names": [
         "分岐管"
-      ]
-    },
-    {
-      "count": 1,
-      "fugo": "２",
-      "is_dup": false,
-      "names": [
-        "分岐部Ｃ"
       ]
     },
     {
@@ -346,11 +332,6 @@
       {
         "level": "warning",
         "milestone": "M4",
-        "msg": "符号「２」（分岐部Ｃ）が【符号の説明】にありません"
-      },
-      {
-        "level": "warning",
-        "milestone": "M4",
         "msg": "符号「２１」（暗箱）が【符号の説明】にありません"
       },
       {
@@ -422,11 +403,6 @@
         "level": "warning",
         "milestone": "M4",
         "msg": "符号「１Ｓ」（分岐管）が【符号の説明】にありません"
-      },
-      {
-        "level": "warning",
-        "milestone": "M4",
-        "msg": "符号「２」（分岐部Ｃ）が【符号の説明】にありません"
       },
       {
         "level": "warning",
@@ -910,6 +886,14 @@
         "分岐点"
       ],
       "vsym": "Ｃ"
+    },
+    {
+      "count": 1,
+      "is_dup": false,
+      "physnames": [
+        "分岐部"
+      ],
+      "vsym": "Ｃ２"
     },
     {
       "count": 4,

@@ -43,12 +43,6 @@
     },
     {
       "fugos": [
-        "２"
-      ],
-      "name": "分岐部Ｃ"
-    },
-    {
-      "fugos": [
         "１２"
       ],
       "name": "受光素子"
@@ -127,14 +121,6 @@
       ]
     },
     {
-      "count": 1,
-      "fugo": "２",
-      "is_dup": false,
-      "names": [
-        "分岐部Ｃ"
-      ]
-    },
-    {
       "count": 2,
       "fugo": "２１",
       "is_dup": false,
@@ -200,6 +186,14 @@
         "分岐点"
       ],
       "vsym": "Ｃ"
+    },
+    {
+      "count": 1,
+      "is_dup": false,
+      "physnames": [
+        "分岐部"
+      ],
+      "vsym": "Ｃ２"
     },
     {
       "count": 4,
