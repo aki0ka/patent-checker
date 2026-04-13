@@ -165,7 +165,16 @@ def build_noun_groups(claims, dep_map, ref_hits, m3_issues):
 
     # 初出請求項を特定
     def _find_first_in(noun, target_nums):
-        candidates = [noun]  # 完全一致のみ（語幹フォールバック廃止）
+        from ..tokenizer import _LOC_SUFFIXES
+        candidates = [noun]
+        # 位置接尾辞フォールバック:
+        # 「収容部内」→「収容部」も候補に追加
+        # UniDicが「部内」を複合名詞として一体化した場合、定義語は「収容部」であり
+        # 請求項本文に「収容部内」という語句は現れないため完全一致検索が失敗する
+        if noun and noun[-1] in _LOC_SUFFIXES and len(noun) > 2:
+            base = noun[:-1]
+            if len(base) >= 2:
+                candidates.append(base)
         for num in target_nums:
             body = claims.get(num)
             if body is None:
