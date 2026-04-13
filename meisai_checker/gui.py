@@ -187,10 +187,10 @@ def main():
         """ロード完了時: 設定をJSに渡す"""
         import time
         import threading
-        from meisai_checker import __version__
+        from meisai_checker import __version__, __release_date__
         time.sleep(0.3)
         cfg = _cfg.load()
-        cfg['version'] = __version__
+        cfg['version'] = f"{__version__} ({__release_date__})"
         cfg_json = json.dumps(cfg, ensure_ascii=False)
         window.evaluate_js(f'window.applyConfig && window.applyConfig({cfg_json})')
 

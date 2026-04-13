@@ -163,9 +163,10 @@ def _generate_html_report(result):
 
 def main():
     """CLI メインエントリポイント"""
+    from meisai_checker import __version__, __release_date__
     parser = argparse.ArgumentParser(
         prog='meisai_checker',
-        description='特許明細書方式チェッカー',
+        description=f'特許明細書方式チェッカー v{__version__} ({__release_date__})',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""使用例:
   ファイル解析（サマリー表示）:
