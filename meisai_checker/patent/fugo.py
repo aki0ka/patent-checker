@@ -55,8 +55,9 @@ def _is_katakana_lead(s):
 # ── 公報番号パターン ──────────────────────────────────────────
 
 _KOHO_PAT = re.compile(
-    r'^(?:特開|特公|特許|特願|実開|実公|実願|国際公開|WO|JP)'
-    r'(?:昭|平|令|和)?'
+    r'^(?:特開|特公|特許|特願|実開|実公|実願|国際公開|WO|JP'
+    r'|特表|再公表(?:特許)?|韓国公開特許|登録実用新案)'
+    r'(?:第|昭|平|令|和)?'
 )
 _KOHO_PART_PAT = re.compile(
     r'^(?:開|公|報|昭|平|令|和)(?:昭|平|令|和|開|公|報)?'
@@ -538,14 +539,19 @@ def _lineno_to_para_id(desc_text, lineno):
 def check_fugo(claims, sections):
     """符号チェック（図面符号と変数記号）。"""
     issues = []
-    # スコープ: 「発明を実施するための形態」（旧式含む）を優先して抽出
+    # スコープ: 「発明を実施するための形態」「実施例（N）」のみを抽出
+    # 先行技術文献・発明の効果等は除外し、符号として誤検出しない
     # drawings（図面の簡単な説明）は符号登録源として含める
     _raw = sections.get("_raw", "")
-    _desc_match = re.search(
-        r'【(?:発明を実施するための(?:最良の)?形態|発明の実施の形態)】(.*?)(?=\n【[^】]+】)',
-        _raw, re.DOTALL)
-    desc_text = (_desc_match.group(1) if _desc_match
-                 else sections.get("description", ""))
+    _IMPL_PAT = re.compile(
+        r'【(?:発明を実施するための(?:最良の)?形態'
+        r'|発明の実施の形態'
+        r'|実施(?:形態)?[０-９0-9]*'
+        r')】(.*?)(?=\n【[^\d】][^】]*】|\Z)',
+        re.DOTALL
+    )
+    _impl_parts = _IMPL_PAT.findall(_raw)
+    desc_text = '\n'.join(_impl_parts) if _impl_parts else sections.get("description", "")
     desc_text += sections.get("drawings", "")
     claims_text = sections.get("claims", "")
 

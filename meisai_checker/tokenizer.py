@@ -329,6 +329,13 @@ def _collect_defined_nouns(tokens):
                             if len(core) >= 2 and core not in _SKIP_EXTRA:
                                 nouns.add(core)
                             break
+                # パターンC: 末尾トークンが数詞（符号番号）の場合
+                # 「収容部２０」→「収容部」もベース名詞として登録
+                # （「該収容部内」の先行詞「収容部」が見つかるようにするため）
+                if (len(span) >= 2 and span[-1]['pos1'] == '数詞'):
+                    base = _span_to_str(span[:-1])
+                    if len(base) >= 2 and base not in _SKIP_EXTRA:
+                        nouns.add(base)
             i += len(span) if span else 1
         else:
             i += 1
@@ -394,6 +401,18 @@ def _found_in_scope(noun, scope_tokens):
     意図的に完全一致のみ。「前記閾値」の先行詞は「閾値」として定義されている必要がある。
     「所定の閾値」という先行詞があっても「前記閾値」はエラー
     → 書き手は「前記所定の閾値」と書くか、先に「閾値」を独立定義すべき。
+
+    例外: UniDicが「部内」「側面」等を複合名詞として一体化するケース。
+    「該収容部内」→ noun="収容部内" のとき、末尾の「内」(_LOC_SUFFIXES) を
+    ストリップして「収容部」でも再検索する。
     """
     defined = _collect_defined_nouns(scope_tokens)
-    return noun in defined
+    if noun in defined:
+        return True
+    # 末尾が位置接尾辞文字で終わる複合語（部内・領域内等）のフォールバック
+    # UniDicが位置語を名詞として一体化した場合、ベース名詞でも先行詞を探す
+    if noun and noun[-1] in _LOC_SUFFIXES and len(noun) > 2:
+        base = noun[:-1]
+        if len(base) >= 2 and base in defined:
+            return True
+    return False
