@@ -23,50 +23,61 @@
 
 このツールは **デスクトップの1つのフォルダ内だけ** に全てを保存します。フォルダをゴミ箱に入れれば完全に消えるので、気軽に試せます。
 
-**事前に Python 3.10以上が必要です** (一度入れれば今後他のツールでも使えます):
+### ステップ 1 — uv をインストール（初回のみ・Python 不要）
 
-- **Mac**: [python.org](https://www.python.org/downloads/) からダウンロード (macOS標準の`python3`はXcode付属の3.9で古いので、別途インストールが必要です)
-- **Windows**: [python.org](https://www.python.org/downloads/) からダウンロード (インストール時に「Add Python to PATH」のチェックを忘れずに)
+uv はパッケージ管理ツールです。Python のインストールも自動で行うため、事前準備はこれだけです。
 
-### Mac
-
-**試す** (ターミナルに以下をコピー＆ペーストしてEnter):
+**Mac** — ターミナルに貼り付けて Enter:
 
 ```bash
-git clone https://github.com/aki0ka/meisai-checker.git ~/Desktop/meisai-checker && cd ~/Desktop/meisai-checker && ./start.command
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-初回は依存ライブラリのセットアップに数分かかります。完了後GUIが自動で起動します。
+**Windows** — PowerShell に貼り付けて Enter:
 
-**2回目以降**:
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+インストール後、ターミナル / PowerShell を **一度閉じて再起動** してください。
+
+### ステップ 2 — ツールを起動
+
+**Mac**:
 
 ```bash
-cd ~/Desktop/meisai-checker && ./start.command
+git clone https://github.com/aki0ka/meisai-checker.git ~/Desktop/meisai-checker && ~/Desktop/meisai-checker/start.command
 ```
 
-**アップデート**:
+初回は依存ライブラリのセットアップに数分かかります。完了後 GUI が自動で起動します。
 
-```bash
-cd ~/Desktop/meisai-checker && git pull && ./start.command
-```
-
-**完全に消す**: デスクトップの `meisai-checker` フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
-
-### Windows
-
-**試す**:
+**Windows**:
 
 1. [ZIPをダウンロード](https://github.com/aki0ka/meisai-checker/archive/refs/heads/main.zip)
-2. デスクトップに展開 (フォルダ名 `meisai-checker-main`)
+2. デスクトップに展開（フォルダ名 `meisai-checker-main`）
 3. フォルダ内の `start.bat` をダブルクリック
 
-初回は依存ライブラリのセットアップに数分かかります。完了後GUIが自動で起動します。
+初回は依存ライブラリのセットアップに数分かかります。完了後 GUI が自動で起動します。
 
-**2回目以降**: 同じ `start.bat` をダブルクリック
+---
 
-**アップデート**: フォルダをゴミ箱に捨てて、新しい ZIP を展開してください。
+**2回目以降（Mac）**: `~/Desktop/meisai-checker/start.command` をダブルクリック、またはターミナルで:
 
-**完全に消す**: `meisai-checker-main` フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
+```bash
+~/Desktop/meisai-checker/start.command
+```
+
+**2回目以降（Windows）**: 同じ `start.bat` をダブルクリック
+
+**アップデート（Mac）**:
+
+```bash
+cd ~/Desktop/meisai-checker && git pull
+```
+
+**アップデート（Windows）**: フォルダをゴミ箱に捨てて、新しい ZIP を展開してください。
+
+**完全に消す**: フォルダをゴミ箱にドラッグするだけ。PC上に痕跡は残りません。
 
 ## 使い方
 
@@ -122,10 +133,13 @@ Claudeから使えるツール：
 
 | ツール | 用途 |
 |---|---|
-| `patent_check_full` | 全チェック（M2〜M8）を一括実行 |
-| `patent_check_m7` | 係り受け曖昧性チェックのみ |
-| `patent_check_m8` | 明細書記録項目チェックのみ |
-| `patent_check_m9` | 特許願記録項目チェックのみ |
+| `patent_check_summary` | 全チェック（M2〜M9・TC・G1）のエラー・警告サマリー |
+| `patent_check_issues` | 全チェックの詳細issueリスト（レベル・マイルストーンでフィルタ可） |
+| `patent_check_m3` | M3 照応詞（前記・当該）チェックのみ |
+| `patent_check_m4` | M4 符号チェックのみ |
+| `patent_check_m7` | M7 係り受け曖昧性チェックのみ |
+| `patent_check_m8` | M8 明細書記録項目チェックのみ |
+| `patent_check_m9` | M9 特許願記録項目チェックのみ |
 
 MCPサーバーの出力はTOON形式（JSON比で約30%トークン削減）を使用しています。
 
@@ -148,9 +162,9 @@ sudo xcodebuild -license accept
 
 パスワードを求められたら Mac のログインパスワードを入力します。完了後、もう一度 `./start.command` または `python main.py` を実行してください。
 
-### `python3: command not found` / `python: command not found` と表示される
+### `uv: command not found` と表示される
 
-Python がインストールされていないか、パスが通っていません。[python.org](https://www.python.org/downloads/) から Python 3.10 以上をインストールしてください。
+uv がインストールされていないか、ターミナルを再起動していません。「ステップ 1」のコマンドを実行し、ターミナルを閉じて再起動してから再試行してください。
 
 ### MeCab（形態素解析）が動かない
 

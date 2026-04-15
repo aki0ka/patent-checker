@@ -169,8 +169,8 @@ def main():
     api = Api()
 
     # None や型崩れに備えて明示的に int/bool へ変換する
-    win_w = int(cfg.get('window_width') or 1440)
-    win_h = int(cfg.get('window_height') or 900)
+    win_w = int(cfg.get('window_width') or 1280)
+    win_h = int(cfg.get('window_height') or 760)
     on_top = bool(cfg.get('always_on_top') or False)
 
     window = webview.create_window(

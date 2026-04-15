@@ -17,7 +17,7 @@ def check_abstract(sections):
     if not ab:
         issues.append({
             'milestone': 'M5', 'level': 'info',
-            'msg': '【要約】セクションが見つかりません',
+            'msg': '【要約】／【書類名】要約書 セクションが見つかりません',
         })
         return issues
 
