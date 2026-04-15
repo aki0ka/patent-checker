@@ -1,0 +1,4 @@
+exclude CLAUDE.md
+exclude debug_shuyo.py
+exclude debug_shuyo2.py
+prune .github
