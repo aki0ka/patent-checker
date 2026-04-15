@@ -32,7 +32,7 @@ jobs:
       - name: 依存ライブラリのインストール
         run: |
           pip install pyinstaller
-          pip install fugashi unidic-lite pywebview pyperclip fastmcp
+          pip install fugashi unidic-lite pywebview pyperclip python-docx pdfplumber
 
       - name: PyInstaller でビルド
         run: |
@@ -44,6 +44,9 @@ jobs:
             --hidden-import fugashi \
             --hidden-import pyperclip \
             --hidden-import webview \
+            --hidden-import docx \
+            --hidden-import pdfplumber \
+            --hidden-import pdfminer \
             main.py
         shell: bash
 
