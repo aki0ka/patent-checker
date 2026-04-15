@@ -162,7 +162,15 @@ def _generate_html_report(result):
 # ══════════════════════════════════════════════════════════
 
 def main():
-    """CLI メインエントリポイント"""
+    """CLI メインエントリポイント。引数なしの場合は GUI を起動する。"""
+    if len(_sys.argv) <= 1:
+        try:
+            from meisai_checker.gui import main as _gui_main
+            _gui_main()
+            return
+        except ImportError:
+            pass  # pywebview 未インストール時はそのまま CLI ヘルプへ
+
     from meisai_checker import __version__, __release_date__
     parser = argparse.ArgumentParser(
         prog='meisai_checker',

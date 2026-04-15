@@ -15,4 +15,4 @@ if ! command -v uv >/dev/null 2>&1; then
     exit 1
 fi
 
-uv run --extra gui main.py
+uv run main.py
