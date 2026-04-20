@@ -72,6 +72,13 @@ class Api:
                 if not pages:
                     return {'error': 'テキストを抽出できませんでした（スキャンPDFは非対応）'}
                 return {'text': '\n'.join(pages)}
+            elif ext == '.txt':
+                for enc in ('utf-8', 'utf-8-sig', 'cp932', 'shift_jis'):
+                    try:
+                        return {'text': data.decode(enc)}
+                    except UnicodeDecodeError:
+                        continue
+                return {'error': 'テキストファイルのエンコーディングを判定できませんでした'}
             else:
                 return {'error': f'非対応の形式: {ext}'}
         except Exception as e:

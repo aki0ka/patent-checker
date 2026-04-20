@@ -232,9 +232,9 @@ def main():
         fmt_map = {
             'jplatpat': DocFormat.JPLATPAT,
             'filing': DocFormat.FILING,
-            'auto': DocFormat.UNKNOWN,
+            'auto': None,
         }
-        source_fmt = fmt_map.get(args.format, DocFormat.UNKNOWN)
+        source_fmt = fmt_map.get(args.format, None)
         norm_doc = normalize(raw_text, source_format=source_fmt)
 
         # 解析実行
