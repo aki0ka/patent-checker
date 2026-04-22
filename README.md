@@ -182,3 +182,4 @@ uv run -m meisai_checker.cli --help  # CLIヘルプ
 
 MIT License
 
+
