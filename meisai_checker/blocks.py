@@ -13,6 +13,7 @@ import re
 from collections import defaultdict
 
 from .patent.anaphora import extract_noun_phrase_after
+from .tokenizer import _tokenize, _noun_after_zenshou
 from .patent.fugo import _extract_elements_tokens
 
 
@@ -144,31 +145,40 @@ def _highlight_claim(text, claim_num, m3_error_nouns, fugo_errors, element_table
                     break
         if matched:
             continue
-        # 前記・上記・当該 ＋ 名詞句 → 全体を1スパン（水色）
+        # 前記・上記・当該 ＋ 名詞句 → 全体を1スパン（水色、動詞スキップ部は紫）
         for word in ['前記', '上記', '当該']:
             if text[i:i+len(word)] == word:
-                noun, consumed = extract_noun_phrase_after(text, i + len(word))
+                sub_toks = _tokenize(text[i:])
+                noun, noun_rel_start, noun_rel_end = _noun_after_zenshou(sub_toks, 0)
                 is_err = (claim_num, noun) in m3_error_nouns
                 cls = 'hl-zenshou-err' if is_err else 'hl-zenshou'
                 safe_noun = esc(noun) if noun else ''
-                # 表示テキスト = word + 元テキストのconsumed分（修飾語含む）
-                raw_after = text[i + len(word): i + len(word) + consumed]
-                full = esc(word + raw_after) if noun else esc(word)
-                out.append(f'<span class="{cls}" data-noun="{safe_noun}" data-claim="{claim_num}">{full}</span>')
-                i += len(word) + consumed
+                if noun and noun_rel_start > len(word):
+                    gap  = esc(text[i + len(word) : i + noun_rel_start])
+                    body = esc(text[i + noun_rel_start : i + noun_rel_end])
+                    inner = f'{esc(word)}<span class="hl-zenshou-skip">{gap}</span>{body}'
+                else:
+                    inner = esc(text[i : i + noun_rel_end]) if noun else esc(word)
+                out.append(f'<span class="{cls}" data-noun="{safe_noun}" data-claim="{claim_num}">{inner}</span>')
+                i += noun_rel_end if noun else len(word)
                 matched = True
                 break
         if not matched:
-            # 該（当該以外）＋ 名詞句 → 全体を1スパン（水色）
+            # 該（当該以外）＋ 名詞句 → 全体を1スパン（水色、動詞スキップ部は紫）
             if text[i:i+1] == '該' and (i == 0 or text[i-2:i] != '当該'):
-                noun, consumed = extract_noun_phrase_after(text, i + 1)
+                sub_toks = _tokenize(text[i:])
+                noun, noun_rel_start, noun_rel_end = _noun_after_zenshou(sub_toks, 0)
                 is_err = (claim_num, noun) in m3_error_nouns
                 cls = 'hl-zenshou-err' if is_err else 'hl-zenshou'
                 safe_noun = esc(noun) if noun else ''
-                raw_after = text[i + 1: i + 1 + consumed]
-                full = '該' + esc(raw_after) if noun else '該'
-                out.append(f'<span class="{cls}" data-noun="{safe_noun}" data-claim="{claim_num}">{full}</span>')
-                i += 1 + consumed
+                if noun and noun_rel_start > 1:
+                    gap  = esc(text[i + 1 : i + noun_rel_start])
+                    body = esc(text[i + noun_rel_start : i + noun_rel_end])
+                    inner = f'該<span class="hl-zenshou-skip">{gap}</span>{body}'
+                else:
+                    inner = esc(text[i : i + noun_rel_end]) if noun else '該'
+                out.append(f'<span class="{cls}" data-noun="{safe_noun}" data-claim="{claim_num}">{inner}</span>')
+                i += noun_rel_end if noun else 1
             else:
                 out.append(esc(text[i]))
                 i += 1

@@ -113,7 +113,7 @@ def analyze(text):
             if t['surf'] == '該' and i > 0 and body_tokens[i-1]['surf'] == '当':
                 continue  # 「当該」の「該」はスキップ
             word = t['surf']
-            noun, noun_end = _noun_after_zenshou(body_tokens, i)
+            noun, _, noun_end = _noun_after_zenshou(body_tokens, i)
             if len(noun) < 2:
                 continue
             char_pos = t['start']

@@ -94,6 +94,10 @@ header{height:var(--hdr);display:flex;align-items:center;gap:14px;
   border-bottom:1.5px solid rgba(56,217,245,.5);
   border-radius:2px 2px 0 0;padding:0 1px;cursor:pointer;transition:background .15s;}
 .hl-zenshou:hover{background:rgba(56,217,245,.15)}
+.hl-zenshou-skip{background:rgba(167,139,250,.15);color:rgba(139,92,246,.9);
+  border-radius:2px;padding:0 1px;}
+.hl-zenshou.noun-active .hl-zenshou-skip,.hl-zenshou-err.noun-active .hl-zenshou-skip{
+  background:rgba(167,139,250,.35)!important;color:rgba(139,92,246,.9)!important;}
 .hl-zenshou-err{background:rgba(224,85,85,.2);color:var(--red);
   border-bottom:1.5px solid rgba(224,85,85,.6);
   border-radius:2px 2px 0 0;padding:0 1px;cursor:pointer;}

@@ -375,7 +375,7 @@ def _noun_after_zenshou(tokens, zenshou_idx):
     n = len(tokens)
     fallback_end = tokens[zenshou_idx]['end'] if zenshou_idx < n else 0
     if j >= n:
-        return '', fallback_end
+        return '', fallback_end, fallback_end
 
     t1 = tokens[j]
 
@@ -396,7 +396,7 @@ def _noun_after_zenshou(tokens, zenshou_idx):
                 span_a = _noun_span(tokens, k)
                 y_a = _span_to_str(span_a)
                 if len(y_a) >= 2 and not (span_a and _is_fugo_tok(span_a[0])):
-                    return y_a, span_a[-1]['end']
+                    return y_a, span_a[0]['start'], span_a[-1]['end']
             # 段階A失敗 → 残りの動詞・助動詞もスキップ（従来の動作）
             while k < n and tokens[k]['pos'] in ('動詞', '助動詞'):
                 k += 1
@@ -408,14 +408,15 @@ def _noun_after_zenshou(tokens, zenshou_idx):
                     # 例: 「判定した汚れ度合い」→「汚れ」(動詞/一般) + 「度合い」= 「汚れ度合い」
                     if (k > 0 and tokens[k-1]['pos'] == '動詞'
                             and tokens[k-1]['pos1'] == '一般'):
-                        return tokens[k-1]['surf'] + y, span_y[-1]['end']
-                    return y, span_y[-1]['end']
+                        return tokens[k-1]['surf'] + y, tokens[k-1]['start'], span_y[-1]['end']
+                    return y, span_y[0]['start'], span_y[-1]['end']
 
     # 通常パターン
     span = _noun_span(tokens, zenshou_idx + 1)
     noun = _span_to_str(span)
-    end_pos = span[-1]['end'] if span else fallback_end
-    return noun, end_pos
+    if span:
+        return noun, span[0]['start'], span[-1]['end']
+    return noun, fallback_end, fallback_end
 
 def _found_in_scope(noun, scope_tokens):
     """noun が scope_tokens の定義済み名詞句に完全一致するか判定。

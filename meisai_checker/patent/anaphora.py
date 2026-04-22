@@ -69,7 +69,7 @@ def check_zenshou(claims, dep_map):
             if t['surf'] == '該' and i > 0 and tokens[i-1]['surf'] == '当':
                 continue
 
-            noun, _ = _noun_after_zenshou(tokens, i)
+            noun, *_ = _noun_after_zenshou(tokens, i)
             if not noun or len(noun) < 2:
                 continue
 
@@ -100,7 +100,7 @@ def check_zenshou(claims, dep_map):
                 if t['surf'] in _TOUGAI_WORDS:
                     for j, tj in enumerate(prefix):
                         if tj['surf'] in ('前記', '上記'):
-                            prev_noun, _ = _noun_after_zenshou(tokens, j)
+                            prev_noun, *_ = _noun_after_zenshou(tokens, j)
                             if prev_noun == noun:
                                 prev_scope = ancestor_tokens + tokens[:j]
                                 if _found_in_scope(noun, prev_scope):
