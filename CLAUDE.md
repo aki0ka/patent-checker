@@ -5,6 +5,8 @@
 日本語特許明細書・特許願の方式要件を自動チェックするツール。
 **完全ローカル動作・無料・OSS（MIT）**
 
+バージョン管理: `git rev-list --count HEAD` をマイナーバージョンに使用。mainへのpushごとにGitHub Actionsが `0.N.0` に自動更新。
+
 - GitHub: https://github.com/aki0ka/meisai-checker
 - 作者: 岡田 晃久（弁理士 登録番号14374）
 - リリース名: meisai-checker（旧称 patent-checker、2026-04に改名）
