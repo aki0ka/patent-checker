@@ -32,23 +32,33 @@ def get_all_ancestors(num, dep_map, _cache=None):
     return ancestors
 
 
+def _scope_tokens_for_parent(parent, dep_map, claims, cache):
+    """親請求項1つのフルスコープ（親＋その全祖先）のトークンリストを返す。"""
+    anc = get_all_ancestors(parent, dep_map, cache)
+    toks = []
+    for a in sorted(anc | {parent}):
+        toks += _tokenize(claims.get(a, ''))
+    return toks
+
+
 def check_zenshou(claims, dep_map):
     """前記・上記・当該・該の先行詞チェック（fugashiトークンベース）。
 
     スコープ：
       前記・上記 → 同一請求項の前方 ＋ 全祖先請求項
+                   多項従属の場合は直接親ごとに独立してスコープを評価し、
+                   全ての直接親のスコープで先行詞が見つかる場合のみOKとする
       当該・該   → 同一請求項の前方のみ
     """
     issues = []
-    # 共有キャッシュを作成（複数のget_all_ancestors呼び出しで再利用）
     _cache = {}
 
     for num in sorted(claims.keys()):
         body = claims[num]
         tokens = _tokenize(body)
 
+        direct_parents = dep_map.get(num, [])
         ancestors = get_all_ancestors(num, dep_map, _cache)
-        # 祖先テキストをトークン化してスコープとして使う
         ancestor_tokens = []
         for a in sorted(ancestors):
             ancestor_tokens += _tokenize(claims.get(a, ''))
@@ -56,7 +66,6 @@ def check_zenshou(claims, dep_map):
         for i, t in enumerate(tokens):
             if t['surf'] not in _ZENSHOU_WORDS:
                 continue
-            # 「該」が「当該」の一部でないか確認
             if t['surf'] == '該' and i > 0 and tokens[i-1]['surf'] == '当':
                 continue
 
@@ -64,39 +73,56 @@ def check_zenshou(claims, dep_map):
             if not noun or len(noun) < 2:
                 continue
 
-            # スコープトークンを決定
+            prefix = tokens[:i]  # 同一請求項の前方
+
             if t['surf'] in _TOUGAI_WORDS:
                 # 当該・該：同一請求項の前方のみ
-                scope_tokens = tokens[:i]
+                scope_tokens = prefix
+                found = _found_in_scope(noun, scope_tokens)
             else:
-                # 前記・上記：祖先 + 同一請求項の前方
-                scope_tokens = ancestor_tokens + tokens[:i]
+                # 前記・上記
+                # まず同一請求項の前方で見つかれば常にOK
+                if _found_in_scope(noun, prefix):
+                    continue
+                if len(direct_parents) <= 1:
+                    # 単項従属または独立：全祖先を結合してチェック
+                    found = _found_in_scope(noun, ancestor_tokens)
+                else:
+                    # 多項従属：全ての直接親のスコープそれぞれで見つかる必要がある
+                    found = all(
+                        _found_in_scope(noun, _scope_tokens_for_parent(p, dep_map, claims, _cache))
+                        for p in direct_parents
+                    )
+                scope_tokens = ancestor_tokens + prefix  # エラーメッセージ用
 
-            if not _found_in_scope(noun, scope_tokens):
-                # 当該・該の拡張ルール:
-                # 同一請求項の前方に「前記N」or「上記N」があり、
-                # かつその「前記N」がエラーでない（祖先スコープに先行詞あり）場合は許可
+            if not found:
                 suppressed = False
                 if t['surf'] in _TOUGAI_WORDS:
-                    # 同一請求項前方に「前記N」または「上記N」があるか確認
-                    for j, tj in enumerate(tokens[:i]):
+                    for j, tj in enumerate(prefix):
                         if tj['surf'] in ('前記', '上記'):
                             prev_noun = _noun_after_zenshou(tokens, j)
                             if prev_noun == noun:
-                                # この「前記N」自体がエラーでないか確認
                                 prev_scope = ancestor_tokens + tokens[:j]
                                 if _found_in_scope(noun, prev_scope):
                                     suppressed = True
                                     break
                 if not suppressed:
-                    dep_chain = sorted(ancestors) if t['surf'] not in _TOUGAI_WORDS else []
+                    if t['surf'] not in _TOUGAI_WORDS and len(direct_parents) > 1:
+                        # 多項従属の場合、どの親で見つからないかを示す
+                        missing = [p for p in direct_parents
+                                   if not _found_in_scope(noun,
+                                       _scope_tokens_for_parent(p, dep_map, claims, _cache))]
+                        detail = f"（請求項{missing}に従属する場合にスコープ外）"
+                    elif t['surf'] not in _TOUGAI_WORDS:
+                        dep_chain = sorted(ancestors)
+                        detail = (f"（参照先：同一請求項前方＋従属元{dep_chain}）"
+                                  if dep_chain else "")
+                    else:
+                        detail = "（当該・該のスコープは従属元を含みません）"
                     issues.append({
                         'claim': num, 'level': 'error',
                         'word': t['surf'], 'noun': noun,
-                        'msg': (f"請求項{num}：「{t['surf']}{noun}」の先行詞が"
-                                f"スコープ内に見つかりません"
-                                + (f"（参照先：同一請求項前方＋従属元{dep_chain}）"
-                                   if dep_chain else "（当該・該のスコープは従属元を含みません）"))
+                        'msg': f"請求項{num}：「{t['surf']}{noun}」の先行詞がスコープ内に見つかりません{detail}",
                     })
     return issues
 
