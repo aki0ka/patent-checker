@@ -113,18 +113,19 @@ def analyze(text):
             if t['surf'] == '該' and i > 0 and body_tokens[i-1]['surf'] == '当':
                 continue  # 「当該」の「該」はスキップ
             word = t['surf']
-            noun = _noun_after_zenshou(body_tokens, i)
+            noun, noun_end = _noun_after_zenshou(body_tokens, i)
             if len(noun) < 2:
                 continue
-            # context: 前後の生テキストから取得
             char_pos = t['start']
-            context = body[max(0, char_pos-12): char_pos+len(word)+len(noun)+12
+            # context: 照応詞から名詞句末尾までを含む前後の生テキスト
+            context = body[max(0, char_pos-12): noun_end+12
                           ].replace("\n", " ").replace("\r", "")
             ref_hits.append({
                 "claim":   num,
                 "word":    word,
                 "noun":    noun,
                 "pos":     char_pos,
+                "end_pos": noun_end,   # マーカー終端（照応詞〜名詞句末）
                 "context": context,
             })
 

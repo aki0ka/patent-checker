@@ -354,7 +354,10 @@ def _is_alpha_fugo_tok(t):
     return bool(re.fullmatch(r'[Ａ-Ｚａ-ｚ]{1,2}', t['surf']))
 
 def _noun_after_zenshou(tokens, zenshou_idx):
-    """照応詞トークンの直後から名詞句を取得して文字列で返す。
+    """照応詞トークンの直後から名詞句を取得して (noun_str, end_char_pos) を返す。
+
+    end_char_pos: 抽出した名詞句の末尾文字位置（マーカー終端に使用）。
+                  名詞が取れなかった場合は照応詞トークン自体の end を返す。
 
     通常ケース: 前記 → 名詞句をそのまま返す。
 
@@ -362,38 +365,52 @@ def _noun_after_zenshou(tokens, zenshou_idx):
       例: 「前記分析した関係」→ 「関係」
           「前記受信した〜データ」→ 「〜データ」
       条件: 前記直後がサ変可能名詞(X) + 動詞・助動詞列 + 名詞句(Y) の形。
-            接尾辞（済み・済む等）が続く場合はこのパターンに該当しない
-            （「前記学習済みニューラルネットワーク」は通常パターンで正しく取得）。
-      この場合 Y を返す。X は別途スコープ内での先行詞確認に使われる。
+            接尾辞（済み等）が続く場合はこのパターンに該当しない。
+
+      段階A: た/だ の直後で一旦停止し _noun_span を試みる。
+             成功すれば Y を返す（「前記判定した結果」→「結果」等）。
+      段階A失敗: 残り動詞もすべてスキップして従来通り Y を返す。
     """
     j = zenshou_idx + 1
     n = len(tokens)
+    fallback_end = tokens[zenshou_idx]['end'] if zenshou_idx < n else 0
     if j >= n:
-        return ''
+        return '', fallback_end
 
     t1 = tokens[j]
 
     # 「前記Xした/されたY」パターン検出
-    # 条件1: 前記直後がサ変可能名詞
-    if (t1['pos'] == '名詞' and t1.get('pos2') == 'サ変可能'):
-        # 条件2: 直後に接尾辞（済み等）が続かない（そちらは通常パターン）
+    if t1['pos'] == '名詞' and t1.get('pos2') == 'サ変可能':
         k = j + 1
         if k < n and tokens[k]['pos'] == '接尾辞':
             pass  # 「学習済み〜」は通常パターンへ
         elif k < n and tokens[k]['pos'] in ('動詞', '助動詞'):
-            # 条件3: 動詞・助動詞列を読み飛ばす
+            # 段階A: た/だ の直後で一旦停止
+            while k < n and tokens[k]['pos'] in ('動詞', '助動詞'):
+                if tokens[k]['surf'] in ('た', 'だ'):
+                    k += 1
+                    break
+                k += 1
+            # 段階A: 停止点で noun_span を試みる
+            if k < n:
+                span_a = _noun_span(tokens, k)
+                y_a = _span_to_str(span_a)
+                if len(y_a) >= 2 and not (span_a and _is_fugo_tok(span_a[0])):
+                    return y_a, span_a[-1]['end']
+            # 段階A失敗 → 残りの動詞・助動詞もスキップ（従来の動作）
             while k < n and tokens[k]['pos'] in ('動詞', '助動詞'):
                 k += 1
-            # 条件4: その後に名詞句が続く
             if k < n and _is_noun_tok(tokens[k]) and not _is_fugo_tok(tokens[k]):
                 span_y = _noun_span(tokens, k)
                 y = _span_to_str(span_y)
                 if len(y) >= 2:
-                    return y
+                    return y, span_y[-1]['end']
 
     # 通常パターン
     span = _noun_span(tokens, zenshou_idx + 1)
-    return _span_to_str(span)
+    noun = _span_to_str(span)
+    end_pos = span[-1]['end'] if span else fallback_end
+    return noun, end_pos
 
 def _found_in_scope(noun, scope_tokens):
     """noun が scope_tokens の定義済み名詞句に完全一致するか判定。
