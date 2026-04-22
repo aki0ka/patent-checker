@@ -237,7 +237,7 @@ def build_noun_groups(claims, dep_map, ref_hits, m3_issues):
                 suppressed_first = None
                 for j, tj in enumerate(claim_tokens):
                     if tj['surf'] in ('前記', '上記'):
-                        prev_noun, _ = _noun_after_zenshou(claim_tokens, j)
+                        prev_noun, *_ = _noun_after_zenshou(claim_tokens, j)
                         if prev_noun == noun:
                             prev_scope = anc_tokens + claim_tokens[:j]
                             if _found_in_scope(noun, prev_scope):
