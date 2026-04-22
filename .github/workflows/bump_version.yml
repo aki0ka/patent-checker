@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write   # PyPI Trusted Publishing 用
 
     steps:
       - uses: actions/checkout@v4
@@ -37,3 +38,16 @@ jobs:
           git diff --cached --quiet && echo "変更なし" && exit 0
           git commit -m "chore: bump version to ${VERSION}"
           git push
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: ビルド
+        run: |
+          pip install build
+          python -m build
+
+      - name: PyPI へ公開
+        uses: pypa/gh-action-pypi-publish@release/v1
