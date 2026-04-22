@@ -1,0 +1,37 @@
+name: Bump Version
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - meisai_checker/__init__.py
+      - pyproject.toml
+      - .github/workflows/bump_version.yml
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: バージョン計算・更新
+        run: |
+          MINOR=$(git rev-list --count HEAD)
+          VERSION="0.${MINOR}.0"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          sed -i "s/^version = .*/version = \"${VERSION}\"/" pyproject.toml
+          sed -i "s/__version__ = .*/__version__ = \"${VERSION}\"/" meisai_checker/__init__.py
+
+      - name: コミット・プッシュ
+        run: |
+          git config user.email "35630414+aki0ka@users.noreply.github.com"
+          git config user.name "aki0ka"
+          git add pyproject.toml meisai_checker/__init__.py
+          git diff --cached --quiet && echo "変更なし" && exit 0
+          git commit -m "chore: bump version to ${VERSION}"
+          git push
