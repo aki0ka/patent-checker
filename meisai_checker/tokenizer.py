@@ -404,6 +404,11 @@ def _noun_after_zenshou(tokens, zenshou_idx):
                 span_y = _noun_span(tokens, k)
                 y = _span_to_str(span_y)
                 if len(y) >= 2:
+                    # 直前トークンが一般動詞（連用形として機能）なら複合名詞として結合
+                    # 例: 「判定した汚れ度合い」→「汚れ」(動詞/一般) + 「度合い」= 「汚れ度合い」
+                    if (k > 0 and tokens[k-1]['pos'] == '動詞'
+                            and tokens[k-1]['pos1'] == '一般'):
+                        return tokens[k-1]['surf'] + y, span_y[-1]['end']
                     return y, span_y[-1]['end']
 
     # 通常パターン
