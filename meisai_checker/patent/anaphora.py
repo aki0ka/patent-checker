@@ -316,6 +316,42 @@ def _redundant_modifier_clause_start(tokens, zenshou_idx, noun_end=None):
     return None
 
 
+def _pre_modifier_clause_start(tokens, zenshou_idx, noun_end=None):
+    """照応詞の直前に置かれた連体修飾節の開始トークン位置を返す（該当なければ None）。
+
+    「出力された前記データ」「記憶される前記データ」のように、節内に
+    「前記Aが」という主語を持たない形も対象にする点で
+    _redundant_modifier_clause_start より広い（あちらの検出条件を包含する）。
+
+    理論的背景は同じ：「前記X」は先行詞を一意に選択済みなので、その手前に
+    置かれた連体修飾節は絞り込みとして機能しない（再絞り込み不可）。
+
+    右側主要部の扱い（「〜した前記BのC」で節がCにかかる可能性）は
+    _redundant_modifier_clause_start と同じく noun_end で除外する。
+    """
+    i = zenshou_idx
+    if i == 0:
+        return None
+    prev = tokens[i - 1]
+    if not prev['cform'].startswith('連体形'):
+        return None
+    if prev['pos'] not in ('動詞', '助動詞', '形容詞'):
+        return None
+    if noun_end is not None:
+        for tk in tokens[i + 1:]:
+            if tk['start'] < noun_end:
+                continue
+            if tk['start'] == noun_end and tk['surf'] == 'の' and tk['pos'] == '助詞':
+                return None
+            break
+    clause_start = 0
+    for k in range(i - 2, -1, -1):
+        if tokens[k]['pos'] == '補助記号':
+            clause_start = k + 1
+            break
+    return clause_start
+
+
 def _preceding_clause_disambiguates(tokens, zenshou_idx):
     """zenshou_idxを含む節（直前の句読点以降）に、他の前記/当該参照が
     先行して含まれていれば True。
@@ -361,6 +397,21 @@ def _redundant_modifier_warning(num, surf, noun, mod_text):
         'msg': (f"請求項{num}：「{mod_text}{surf}{noun}」の「{surf}{noun}」は既に先行詞が一意です。"
                 f"この修飾節が新しい技術的事実の追加であれば問題ありませんが、"
                 f"先行詞の絞り込みを意図したものであれば機能していない可能性があります。"),
+    }
+
+
+def _pre_modifier_warning(num, surf, noun, mod_text):
+    # 節が長い場合（「〜であって、」を挟まない長文の連体修飾）はメッセージが
+    # 読めなくなるため、照応詞に近い側を残して先頭を省略する。
+    if len(mod_text) > 30:
+        mod_text = '…' + mod_text[-30:]
+    return {
+        'claim': num, 'level': 'info',
+        'word': surf, 'noun': noun,
+        'msg': (f"請求項{num}：「{mod_text}{surf}{noun}」の「{surf}{noun}」は"
+                f"それだけで先行詞が一意に定まります。"
+                f"直前の修飾「{mod_text}」は絞り込みとして機能しないため、"
+                f"新しい技術的事実を追加する意図でなければ削除を検討してください。"),
     }
 
 
@@ -647,6 +698,13 @@ def check_zenshou(claims, dep_map):
                             if _mod_start is not None:
                                 mod_text = body[tokens[_mod_start]['start']:tokens[i]['start']]
                                 issues.append(_redundant_modifier_warning(num, t['surf'], noun, mod_text))
+                            elif first_seen_as_plural.get(noun) is not True:
+                                # 主語「前記Aが」を伴わない前置連体修飾（「出力された前記データ」）。
+                                # 群として導入された先行詞は部分参照の意図がありうるため対象外。
+                                _mod_start = _pre_modifier_clause_start(tokens, i, _noun_end)
+                                if _mod_start is not None:
+                                    mod_text = body[tokens[_mod_start]['start']:tokens[i]['start']]
+                                    issues.append(_pre_modifier_warning(num, t['surf'], noun, mod_text))
                     continue
                 if len(direct_parents) <= 1:
                     # 単項従属または独立：全祖先を結合してチェック
@@ -808,6 +866,13 @@ def check_zenshou(claims, dep_map):
                     if _mod_start is not None:
                         mod_text = body[tokens[_mod_start]['start']:tokens[i]['start']]
                         issues.append(_redundant_modifier_warning(num, t['surf'], noun, mod_text))
+                    elif first_seen_as_plural.get(noun) is not True:
+                        # 主語「前記Aが」を伴わない前置連体修飾（「出力された前記データ」）。
+                        # 群として導入された先行詞は部分参照の意図がありうるため対象外。
+                        _mod_start = _pre_modifier_clause_start(tokens, i, _noun_end)
+                        if _mod_start is not None:
+                            mod_text = body[tokens[_mod_start]['start']:tokens[i]['start']]
+                            issues.append(_pre_modifier_warning(num, t['surf'], noun, mod_text))
     return issues
 
 
