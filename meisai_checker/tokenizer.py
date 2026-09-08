@@ -421,6 +421,13 @@ def _noun_span(tokens, start_idx):
             # パターン1a: 直前が接頭辞「第」
             if prev['pos'] == '接頭辞' and prev['surf'] == '第':
                 is_ordinal = True
+            # パターン1a': 「第」+ 数詞 で span が終わっている（「第１の閾値」型）
+            # MeCab は「第１」を接頭辞「第」＋数詞「１」に分割するため、
+            # 「の」の直前トークンは数詞になる。この場合も序数修飾として継続し、
+            # 「第１」で打ち切って「前記第１」を照応詞にしてしまうのを防ぐ。
+            elif (prev['pos1'] == '数詞' and len(span) >= 2
+                  and span[-2]['pos'] == '接頭辞' and span[-2]['surf'] == '第'):
+                is_ordinal = True
             # パターン1b: 直前が「番目」
             elif prev['surf'] == '番目':
                 is_ordinal = True

@@ -80,11 +80,23 @@ def test_sukunakutomo_ichino_bridges_like_sukunakutomo_hitotsuno():
 
 
 def test_dai_ichi_no_matches_dai_ichi_no_and_dai_ni_no():
-    """「第一の」「第１の」「第二の」の橋渡し挙動は数字の表記に関わらず揃う。"""
+    """「第一の」「第１の」「第二の」の挙動は数字の表記に関わらず揃う。
+
+    序数「第N（の）」は識別子として先行詞名の一部になるため、
+    「第一の基板」を「前記基板」と序数を落として参照するのは
+    先行詞不一致（「の」なし型の「第１測定値」→「前記測定値」と同じ扱い）。
+    「一」だけが _LIMITERS 経由で特別扱いされないことをここで担保する。
+    """
     for label in ('第一の', '第１の', '第二の'):
         text = (f'{label}基板を用意する準備工程と、'
                 '前記基板に配線を形成する形成工程とを含む、方法。')
-        assert _errors({1: text}) == [], label
+        errors = _errors({1: text})
+        assert len(errors) == 1, label
+        assert errors[0]['noun'] == '基板', label
+
+        full = (f'{label}基板を用意する準備工程と、'
+                f'前記{label}基板に配線を形成する形成工程とを含む、方法。')
+        assert _errors({1: full}) == [], label
 
 
 def test_ichino_with_verb_compound_noun_kept_together():
@@ -109,3 +121,22 @@ def test_ichino_parent_claim_domain_via_prefix():
     # ここでは error にまで昇格しないことのみを回帰観点として確認する
     # （群先行警告と当該exception4ゲートは重複しうるため）。
     assert all(e['claim'] == 2 for e in errors)
+
+
+def test_dai_n_no_full_noun_is_antecedent_key():
+    """「第Nの〜」は「第N」で打ち切らず名詞句全体を先行詞キーにする。
+
+    MeCab は「第１」を接頭辞「第」＋数詞「１」に分割するため、「の」の
+    継続判定を接頭辞のみで見ると「第１」で名詞句が切れ、「前記第１」が
+    照応詞として登録されてしまう（「第１の閾値」と「第１測定値」で挙動が
+    割れる）。両者が同じ扱いになることを担保する。
+    """
+    text = ('第１の閾値と第２の閾値と第１測定値と第２測定値とを取得する取得部と、'
+            '前記第１の閾値と前記第１測定値とを比較する第１比較部と、'
+            '前記第２の閾値と前記第２測定値とを比較する第２比較部と、'
+            'を備える測定装置。')
+    assert _errors({1: text}) == []
+
+    issues = check_zenshou({1: text}, {1: []})
+    nouns = {i.get('noun') for i in issues}
+    assert '第１' not in nouns and '第２' not in nouns
