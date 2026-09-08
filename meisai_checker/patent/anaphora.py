@@ -22,7 +22,6 @@ from ..tokenizer import (
     _PAREN_PAT,
     _ZENSHOU_WORDS,
     _TOUGAI_WORDS,
-    _QUANT_MODS,
     _LOC_SUFFIXES_BOUNDARY,
     _LEADING_QUANT_PREFIXES,
 )
@@ -40,6 +39,35 @@ _CLAIM_REF_PAT = re.compile(
 _ZENSHOU_QUANT_PRE_PAT = re.compile(
     r'(?:前記|上記|当該|該)(?:各|複数の|すべての|全ての|それぞれの|多数の|少数の)?$'
 )
+
+# 照応詞の直前に置かれた量化修飾語（「複数の前記X」型）の表層パターン。
+# 語彙集合（_QUANT_MODS）だけでは以下を取りこぼすため、トークン境界に
+# 揃えた表層マッチで補う：
+#   ・「夫々」「其々」：MeCabが「夫」＋「々」（補助記号）に分割する
+#   ・「複数個」「多数個」：「複数」＋「個」の2トークンになる
+#   ・「２つ」「三個」「数本」：数詞＋助数詞接尾辞
+_QUANT_PREFIX_SURF_PAT = re.compile(
+    r'(?:各々|夫々|其々|おのおの|それぞれ'
+    r'|複数個?|多数個?|少数|全て|すべて|全部|一部|双方|両方|各'
+    r'|[0-9０-９一二三四五六七八九十百幾数]+(?:つ|個|本|台|枚|組|対|群|以上|以下))$'
+)
+
+def _quant_prefix_before(tokens, i):
+    """tokens[i]（照応詞）の直前が「量化修飾語＋の」なら、その表層を返す。
+
+    「複数の前記端末」→ "複数"、「２つの前記端末」→ "２つ"、
+    「夫々の前記端末」→ "夫々"。該当しなければ None。
+
+    トークン境界に揃えた部分文字列にのみ fullmatch をかけ、
+    「総数の前記X」のような語中一致を拾わないようにする。
+    """
+    if i < 2 or tokens[i - 1]['surf'] != 'の':
+        return None
+    for k in range(max(0, i - 5), i - 1):
+        cand = ''.join(t['surf'] for t in tokens[k:i - 1])
+        if _QUANT_PREFIX_SURF_PAT.fullmatch(cand):
+            return cand
+    return None
 
 # 請求項前文の候補パターン（"…であって"/"…において" の後）
 # 実装では末尾名詞との繰り返しを確認して判定
@@ -481,11 +509,10 @@ def check_zenshou(claims, dep_map):
             # 「量化子＋の＋前記X」パターン検出（例：「複数の前記端末」）
             # 日本語名詞は数のマーキングがないため常に誤りとは言い切れないが、
             # 群全体か一部かの指示範囲が文脈なしには定まらず曖昧になりやすい。
-            if (t['surf'] in _ZENSHOU_WORDS and t['surf'] not in _TOUGAI_WORDS
-                    and i >= 2
-                    and tokens[i - 1]['surf'] == 'の'
-                    and tokens[i - 2]['surf'] in _QUANT_MODS):
-                quant = tokens[i - 2]['surf']
+            quant = None
+            if t['surf'] in _ZENSHOU_WORDS and t['surf'] not in _TOUGAI_WORDS:
+                quant = _quant_prefix_before(tokens, i)
+            if quant:
                 issues.append({
                     'claim': num, 'level': 'warning',
                     'word': t['surf'], 'noun': noun,
